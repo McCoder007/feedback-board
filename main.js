@@ -33,21 +33,23 @@ const firebaseConfig = {
     measurementId: "G-FZQ5CBDLTV"
 };
 
+
 // Initialize Firebase
-// Initialize Firebase
+let app, db, auth;
+
 try {
-    const app = initializeApp(firebaseConfig);
+    app = initializeApp(firebaseConfig);
     console.log("Firebase app initialized successfully");
     
     try {
-        const db = getFirestore(app);
+        db = getFirestore(app);
         console.log("Firestore initialized successfully");
     } catch (firestoreError) {
         console.error("Firestore initialization error:", firestoreError);
     }
     
     try {
-        const auth = getAuth(app);
+        auth = getAuth(app);
         console.log("Auth initialized successfully");
     } catch (authError) {
         console.error("Auth initialization error:", authError);
