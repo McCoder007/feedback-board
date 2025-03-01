@@ -83,23 +83,30 @@ let currentUser = null;
 
 // Initialize the app and load data
 window.addEventListener('DOMContentLoaded', () => {
-  // Check if user is already logged in
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUser = user;
-      updateUserUI();
-      loadAllItems();
+    // Make sure auth is initialized before using it
+    if (auth) {
+      // Check if user is already logged in
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          currentUser = user;
+          updateUserUI();
+          loadAllItems();
+        } else {
+          currentUser = null;
+          updateUserUI();
+          // Still load items for anonymous viewing
+          loadAllItems();
+        }
+      });
+      
+      // Set up event listeners
+      setupEventListeners();
     } else {
-      currentUser = null;
-      updateUserUI();
-      // Still load items for anonymous viewing
+      console.error("Auth not initialized yet");
+      // Still try to load items for viewing
       loadAllItems();
     }
   });
-
-  // Set up event listeners
-  setupEventListeners();
-});
 
 // Set up all event listeners
 function setupEventListeners() {
