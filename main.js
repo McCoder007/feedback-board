@@ -51,6 +51,27 @@ try {
     try {
         auth = getAuth(app);
         console.log("Auth initialized successfully");
+        
+        // Add the DOMContentLoaded event listener here, after auth is initialized
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check if user is already logged in
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    updateUserUI();
+                    loadAllItems();
+                } else {
+                    currentUser = null;
+                    updateUserUI();
+                    // Still load items for anonymous viewing
+                    loadAllItems();
+                }
+            });
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
     } catch (authError) {
         console.error("Auth initialization error:", authError);
     }
