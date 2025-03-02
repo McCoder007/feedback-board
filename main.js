@@ -414,7 +414,7 @@ async function handleVote(itemId, voteType, isAlreadyVoted, card) {
 // Function to load all items
 async function loadAllItems(sortBy = 'newest') {
   try {
-    // Clear existing items
+    // Clear existing items first to avoid duplicates
     document.querySelectorAll('.cards').forEach(column => {
       column.innerHTML = '';
     });
@@ -437,21 +437,20 @@ async function loadAllItems(sortBy = 'newest') {
     const querySnapshot = await getDocs(itemsQuery);
     let items = [];
     
-    // Create a map to identify duplicate item IDs
-    const seenIds = new Set();
+    // Store unique items by ID
+    const uniqueItems = {};
     
     querySnapshot.forEach((doc) => {
-      const itemId = doc.id;
-      
-      // Only add the item if we haven't seen its ID before
-      if (!seenIds.has(itemId)) {
-        seenIds.add(itemId);
-        items.push({
-          id: itemId,
-          ...doc.data()
-        });
-      }
+      const item = {
+        id: doc.id,
+        ...doc.data()
+      };
+      // Only store the latest version of each item
+      uniqueItems[doc.id] = item;
     });
+    
+    // Convert unique items object to array
+    items = Object.values(uniqueItems);
     
     // Sort if needed
     if (sortBy === 'most-votes') {
@@ -466,6 +465,8 @@ async function loadAllItems(sortBy = 'newest') {
     items.forEach(item => {
       addItemToUI(item);
     });
+    
+    console.log(`Loaded ${items.length} unique items`);
   } catch (error) {
     showNotification('Error loading items: ' + error.message, true);
   }
