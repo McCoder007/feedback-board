@@ -79,6 +79,56 @@ logoutBtn.textContent = 'Logout';
 logoutBtn.style.display = 'none';
 userInfo.parentNode.appendChild(logoutBtn);
 
+// Dark mode toggle
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+
+// Initialize theme based on localStorage or user preference
+function initTheme() {
+    // Check localStorage first
+    const savedTheme = localStorage.getItem('feedbackBoardTheme');
+    
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    } else if (savedTheme === 'light') {
+        document.body.classList.remove('dark-mode');
+    } else {
+        // Check user preferred color scheme
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('feedbackBoardTheme', 'dark');
+        }
+    }
+    
+    // Add listener for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('feedbackBoardTheme')) {
+            if (e.matches) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+    });
+}
+
+// Toggle theme function
+function toggleTheme() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('feedbackBoardTheme', isDarkMode ? 'dark' : 'light');
+    
+    // Add a smooth animation effect for the toggle
+    themeToggleBtn.classList.add('animate-toggle');
+    setTimeout(() => themeToggleBtn.classList.remove('animate-toggle'), 500);
+}
+
+// Theme toggle setup
+function setupThemeToggle() {
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
+    initTheme();
+}
+
 // Initialize the app and load data - SINGLE EVENT LISTENER
 window.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded, initializing app...");
@@ -96,6 +146,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Set up event listeners immediately
     setupEventListeners();
+
+    // Initialize theme - add this line here
+    setupThemeToggle();
 
     // Make sure auth is initialized before using it
     if (auth) {
