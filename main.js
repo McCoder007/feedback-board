@@ -79,6 +79,11 @@ userInfo.parentNode.appendChild(logoutBtn);
 
 // Initialize the app and load data - SINGLE EVENT LISTENER
 window.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM fully loaded, initializing app...");
+
+    // Set up event listeners immediately
+    setupEventListeners();
+
     // Make sure auth is initialized before using it
     if (auth) {
       // Check if user is already logged in
@@ -94,14 +99,23 @@ window.addEventListener('DOMContentLoaded', () => {
           loadAllItems();
         }
       });
-      
-      // Set up event listeners
-      setupEventListeners();
     } else {
       console.error("Auth not initialized yet");
       // Still try to load items for viewing
       setTimeout(() => loadAllItems(), 1000);
     }
+    
+    // Failsafe: ensure board is displayed even if data loading fails
+    setTimeout(() => {
+      const loadingIndicator = document.getElementById('loading-indicator');
+      const board = document.querySelector('.board');
+      
+      if (loadingIndicator && loadingIndicator.style.display !== 'none') {
+        console.log("Failsafe timeout triggered - showing board anyway");
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+        if (board) board.style.display = 'grid';
+      }
+    }, 5000); // 5 second timeout
 });
 
 // Set up all event listeners
@@ -484,9 +498,6 @@ async function loadAllItems(sortBy = 'newest') {
     console.log(`Loaded ${items.length} unique items`);
     
     // Hide loading indicator, show board
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const board = document.querySelector('.board');
-    
     if (loadingIndicator) loadingIndicator.style.display = 'none';
     if (board) board.style.display = 'grid';
     
