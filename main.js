@@ -846,47 +846,61 @@ async function loadAllItems(sortBy) {
 
 // Function to update user UI
 function updateUserUI() {
-    const loginBtn = document.getElementById('login-btn');
-    const signupBtn = document.getElementById('signup-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const userInfo = document.querySelector('.user-info');
-    
-    if (!userInfo) {
-        console.error("User UI elements not found");
-        return;
-    }
-    
-    if (currentUser) {
-        if (loginBtn) loginBtn.style.display = 'none';
-        if (signupBtn) signupBtn.style.display = 'none';
-        if (logoutBtn) logoutBtn.style.display = 'block';
-        userInfo.style.display = 'flex';
-        
-        // Get user data from Firestore
-        if (db) {
-            getDocs(query(collection(db, "users"), where("uid", "==", currentUser.uid)))
-                .then((querySnapshot) => {
-                    if (!querySnapshot.empty) {
-                        const userData = querySnapshot.docs[0].data();
-                        const username = userData.username || currentUser.email.split('@')[0];
-                        
-                        const avatar = userInfo.querySelector('.avatar');
-                        const usernameEl = userInfo.querySelector('.username');
-                        
-                        if (avatar) avatar.textContent = username.substring(0, 2).toUpperCase();
-                        if (usernameEl) usernameEl.textContent = username;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error getting user data:", error);
-                });
-        }
-    } else {
-        if (loginBtn) loginBtn.style.display = 'block';
-        if (signupBtn) signupBtn.style.display = 'block';
-        if (logoutBtn) logoutBtn.style.display = 'none';
-        userInfo.style.display = 'none';
-    }
+  try {
+      // Get all the UI elements we need
+      const loginBtn = document.getElementById('login-btn');
+      const signupBtn = document.getElementById('signup-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      const userInfo = document.querySelector('.user-info');
+      
+      // Check if we found the user info element
+      if (!userInfo) {
+          console.warn("User info element not found");
+          return;
+      }
+      
+      if (currentUser) {
+          // User is logged in
+          // Hide login/signup buttons if they exist
+          if (loginBtn) loginBtn.style.display = 'none';
+          if (signupBtn) signupBtn.style.display = 'none';
+          
+          // Show logout button if it exists
+          if (logoutBtn) logoutBtn.style.display = 'block';
+          
+          // Show user info
+          userInfo.style.display = 'flex';
+          
+          // Get user data from Firestore
+          if (db) {
+              getDocs(query(collection(db, "users"), where("uid", "==", currentUser.uid)))
+                  .then((querySnapshot) => {
+                      if (!querySnapshot.empty) {
+                          const userData = querySnapshot.docs[0].data();
+                          const username = userData.username || currentUser.email.split('@')[0];
+                          
+                          const avatar = userInfo.querySelector('.avatar');
+                          const usernameEl = userInfo.querySelector('.username');
+                          
+                          if (avatar) avatar.textContent = username.substring(0, 2).toUpperCase();
+                          if (usernameEl) usernameEl.textContent = username;
+                      }
+                  })
+                  .catch(error => {
+                      console.error("Error getting user data:", error);
+                  });
+          }
+      } else {
+          // User is logged out - but this part might not be needed
+          // since we're already logged in as per your screenshot
+          if (loginBtn) loginBtn.style.display = 'block';
+          if (signupBtn) signupBtn.style.display = 'block';
+          if (logoutBtn) logoutBtn.style.display = 'none';
+          if (userInfo) userInfo.style.display = 'none';
+      }
+  } catch (error) {
+      console.error("Error in updateUserUI:", error);
+  }
 }
 
 // Function to show notification
