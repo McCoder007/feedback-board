@@ -296,11 +296,9 @@ function setupEventListeners() {
   });
 }
 
-// Add this line before the function
 let isSubmitting = false;
 
 async function addNewItem(columnType, content) {
-  // Add these lines at the beginning of the function
   if (isSubmitting) return;
   isSubmitting = true;
   
@@ -315,23 +313,16 @@ async function addNewItem(columnType, content) {
       downvotes: []
     });
     
-    // Remove the addItemToUI part entirely (delete these lines)
-    // addItemToUI({
-    //   id: docRef.id,
-    //   content: content,
-    //   columnType: columnType,
-    //   upvotes: [],
-    //   downvotes: []
-    // });
-    
     // Reset form and close modal
     addItemForm.reset();
     addItemModal.classList.remove('active');
     showNotification('Item added successfully!');
+    
+    // Reload all items to show the new item
+    loadAllItems();
   } catch (error) {
     showNotification('Error adding item: ' + error.message, true);
   } finally {
-    // Add this line at the end, in the finally block
     isSubmitting = false;
   }
 }
@@ -432,18 +423,34 @@ async function loadAllItems(sortBy = 'newest') {
     let itemsQuery;
     
     switch (sortBy) {
-      // Your existing switch cases here
+      case 'oldest':
+        itemsQuery = query(collection(db, "items"), orderBy("createdAt", "asc"));
+        break;
+      case 'most-votes':
+        itemsQuery = query(collection(db, "items"));
+        break;
+      default: // newest
+        itemsQuery = query(collection(db, "items"), orderBy("createdAt", "desc"));
+        break;
     }
     
     const querySnapshot = await getDocs(itemsQuery);
     let items = [];
     
-    // Add to array first to allow sorting
+    // Create a map to identify duplicate item IDs
+    const seenIds = new Set();
+    
     querySnapshot.forEach((doc) => {
-      items.push({
-        id: doc.id,
-        ...doc.data()
-      });
+      const itemId = doc.id;
+      
+      // Only add the item if we haven't seen its ID before
+      if (!seenIds.has(itemId)) {
+        seenIds.add(itemId);
+        items.push({
+          id: itemId,
+          ...doc.data()
+        });
+      }
     });
     
     // Sort if needed
@@ -455,7 +462,7 @@ async function loadAllItems(sortBy = 'newest') {
       });
     }
     
-    // Then add to UI after sorting
+    // Add to UI
     items.forEach(item => {
       addItemToUI(item);
     });
