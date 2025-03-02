@@ -432,21 +432,13 @@ async function loadAllItems(sortBy = 'newest') {
     let itemsQuery;
     
     switch (sortBy) {
-      case 'oldest':
-        itemsQuery = query(collection(db, "items"), orderBy("createdAt", "asc"));
-        break;
-      case 'most-votes':
-        // In a real app, this would be more complex
-        itemsQuery = query(collection(db, "items"));
-        break;
-      default: // newest
-        itemsQuery = query(collection(db, "items"), orderBy("createdAt", "desc"));
-        break;
+      // Your existing switch cases here
     }
     
     const querySnapshot = await getDocs(itemsQuery);
     let items = [];
     
+    // Add to array first to allow sorting
     querySnapshot.forEach((doc) => {
       items.push({
         id: doc.id,
@@ -454,7 +446,7 @@ async function loadAllItems(sortBy = 'newest') {
       });
     });
     
-    // If sorting by votes, do it client-side
+    // Sort if needed
     if (sortBy === 'most-votes') {
       items.sort((a, b) => {
         const aScore = (a.upvotes?.length || 0) - (a.downvotes?.length || 0);
@@ -463,7 +455,7 @@ async function loadAllItems(sortBy = 'newest') {
       });
     }
     
-    // Add items to UI
+    // Then add to UI after sorting
     items.forEach(item => {
       addItemToUI(item);
     });
