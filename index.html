@@ -45,15 +45,26 @@
         </header>
         
         <div class="search-tools">
-            <div class="search-input">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search feedback...">
+            <div class="search-and-sort">
+                <div class="search-input">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search feedback...">
+                </div>
+                <select>
+                    <option value="newest">Sort by newest</option>
+                    <option value="oldest">Sort by oldest</option>
+                    <option value="most-votes">Sort by most votes</option>
+                </select>
             </div>
-            <select>
-                <option value="newest">Sort by newest</option>
-                <option value="oldest">Sort by oldest</option>
-                <option value="most-votes">Sort by most votes</option>
-            </select>
+            
+            <div class="export-tools">
+                <button id="export-csv-btn" class="btn btn-outline">
+                    <i class="fas fa-file-csv"></i> Export to CSV
+                </button>
+                <button id="export-pdf-btn" class="btn btn-outline">
+                    <i class="fas fa-file-pdf"></i> Export to PDF
+                </button>
+            </div>
         </div>
         
         <!-- Initial loading state -->
@@ -174,6 +185,9 @@
 
     <div class="notification" id="notification">Item added successfully!</div>
 
+    <!-- Add PDF generation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <script type="module" src="main.js"></script>
 </body>
 </html>
