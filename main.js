@@ -116,6 +116,11 @@ function setupEventListeners() {
       
       columnTypeInput.value = btn.dataset.column;
       addItemModal.classList.add('active');
+      
+      // Auto-focus the textarea when modal opens
+      setTimeout(() => {
+        document.getElementById('item-content').focus();
+      }, 100);
     });
   });
 
@@ -138,6 +143,18 @@ function setupEventListeners() {
     if (!content.trim()) return;
     
     addNewItem(columnType, content);
+  });
+  
+  // Handle Enter key in the textarea
+  document.getElementById('item-content').addEventListener('keydown', (e) => {
+    // Check if the key pressed was Enter without Shift (to allow for multi-line input with Shift+Enter)
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent default behavior (new line)
+      
+      // Trigger form submission
+      const submitBtn = addItemForm.querySelector('button[type="submit"]');
+      submitBtn.click();
+    }
   });
 
   // Login button
@@ -303,7 +320,7 @@ async function addNewItem(columnType, content) {
 }
 
 // Function to add item to UI
-function addItemToUI(item) {
+function addItemToUI(item, appendMode = false) {
   const column = document.querySelector(`.${item.columnType} .cards`);
   if (!column) {
     console.error(`Column ${item.columnType} not found`);
@@ -332,7 +349,12 @@ function addItemToUI(item) {
     </div>
   `;
   
-  column.prepend(card);
+  // If appendMode is true, append to bottom, otherwise prepend to top
+  if (appendMode) {
+    column.appendChild(card);
+  } else {
+    column.prepend(card);
+  }
 }
 
 // Function to handle votes
@@ -433,10 +455,24 @@ async function loadAllItems(sortBy = 'newest') {
       });
     }
     
-    // Add to UI
-    items.forEach(item => {
-      addItemToUI(item);
-    });
+    // Add to UI based on sort order
+    if (sortBy === 'most-votes') {
+      // For most votes, add highest voted items at the top (default prepend)
+      items.forEach(item => {
+        addItemToUI(item, false);
+      });
+    } else if (sortBy === 'oldest') {
+      // For oldest, older items should be at the top
+      // Since they're already sorted by oldest first, append to maintain order
+      items.forEach(item => {
+        addItemToUI(item, true);
+      });
+    } else {
+      // For newest, newest items should be at the top (default prepend behavior)
+      items.forEach(item => {
+        addItemToUI(item, false);
+      });
+    }
     
     console.log(`Loaded ${items.length} unique items`);
   } catch (error) {
