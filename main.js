@@ -22,7 +22,6 @@ import {
 } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js';
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyA52dIm2y8-D9tuzScz5UxAy1-ljfiQPtw",
     authDomain: "feedback-board-b5889.firebaseapp.com",
@@ -33,9 +32,9 @@ const firebaseConfig = {
     measurementId: "G-FZQ5CBDLTV"
 };
 
-
 // Initialize Firebase
 let app, db, auth;
+let currentUser = null;
 
 try {
     app = initializeApp(firebaseConfig);
@@ -51,27 +50,6 @@ try {
     try {
         auth = getAuth(app);
         console.log("Auth initialized successfully");
-        
-        // Add the DOMContentLoaded event listener here, after auth is initialized
-        window.addEventListener('DOMContentLoaded', () => {
-            // Check if user is already logged in
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    currentUser = user;
-                    updateUserUI();
-                    loadAllItems();
-                } else {
-                    currentUser = null;
-                    updateUserUI();
-                    // Still load items for anonymous viewing
-                    loadAllItems();
-                }
-            });
-            
-            // Set up event listeners
-            setupEventListeners();
-        });
-        
     } catch (authError) {
         console.error("Auth initialization error:", authError);
     }
@@ -99,10 +77,7 @@ logoutBtn.textContent = 'Logout';
 logoutBtn.style.display = 'none';
 userInfo.parentNode.appendChild(logoutBtn);
 
-// Current user state
-let currentUser = null;
-
-// Initialize the app and load data
+// Initialize the app and load data - SINGLE EVENT LISTENER
 window.addEventListener('DOMContentLoaded', () => {
     // Make sure auth is initialized before using it
     if (auth) {
@@ -125,9 +100,9 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
       console.error("Auth not initialized yet");
       // Still try to load items for viewing
-      loadAllItems();
+      setTimeout(() => loadAllItems(), 1000);
     }
-  });
+});
 
 // Set up all event listeners
 function setupEventListeners() {
@@ -251,9 +226,9 @@ function setupEventListeners() {
       }
       
       const card = upvoteBtn.closest('.card');
-      const itemId = card.dataset.id;
-      const voteCount = upvoteBtn.querySelector('span');
+      if (!card || !card.dataset.id) return;
       
+      const itemId = card.dataset.id;
       await handleVote(itemId, 'upvote', upvoteBtn.classList.contains('upvoted'), card);
     }
     
@@ -266,9 +241,9 @@ function setupEventListeners() {
       }
       
       const card = downvoteBtn.closest('.card');
-      const itemId = card.dataset.id;
-      const voteCount = downvoteBtn.querySelector('span');
+      if (!card || !card.dataset.id) return;
       
+      const itemId = card.dataset.id;
       await handleVote(itemId, 'downvote', downvoteBtn.classList.contains('downvoted'), card);
     }
   });
@@ -330,6 +305,10 @@ async function addNewItem(columnType, content) {
 // Function to add item to UI
 function addItemToUI(item) {
   const column = document.querySelector(`.${item.columnType} .cards`);
+  if (!column) {
+    console.error(`Column ${item.columnType} not found`);
+    return;
+  }
   
   const card = document.createElement('div');
   card.className = 'card';
@@ -437,20 +416,13 @@ async function loadAllItems(sortBy = 'newest') {
     const querySnapshot = await getDocs(itemsQuery);
     let items = [];
     
-    // Store unique items by ID
-    const uniqueItems = {};
-    
     querySnapshot.forEach((doc) => {
       const item = {
         id: doc.id,
         ...doc.data()
       };
-      // Only store the latest version of each item
-      uniqueItems[doc.id] = item;
+      items.push(item);
     });
-    
-    // Convert unique items object to array
-    items = Object.values(uniqueItems);
     
     // Sort if needed
     if (sortBy === 'most-votes') {
@@ -517,7 +489,3 @@ function showNotification(message, isError = false) {
     notification.classList.remove('show');
   }, 3000);
 }
-
-
-
-
