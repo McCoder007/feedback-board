@@ -351,10 +351,6 @@ async function handleVote(itemId, voteType, isAlreadyVoted, card) {
     const upvotes = itemData.upvotes || [];
     const downvotes = itemData.downvotes || [];
     
-    // For logging before changes
-    const oldUpvoteCount = upvotes.length;
-    const oldDownvoteCount = downvotes.length;
-    
     let updateData = {};
     
     // Handle upvote
@@ -380,19 +376,20 @@ async function handleVote(itemId, voteType, isAlreadyVoted, card) {
       }
     }
     
+    // Save the current sort method
+    const currentSortBy = document.querySelector('.search-tools select').value;
+    
     // Update Firestore
     await updateDoc(itemRef, updateData);
     
-    // Get the current sort value from the select element
-    const currentSortBy = document.querySelector('.search-tools select').value;
-    
-    // Add a small delay to ensure Firestore update is processed
-    setTimeout(() => {
-      loadAllItems(currentSortBy);
-    }, 100);
-    
-    // Optional: Provide immediate UI feedback by updating the card
+    // Immediately update the UI for the current card
     updateCardVoteUI(card, voteType, isAlreadyVoted, updateData);
+    
+    // If sorting by most votes, we need to reposition the cards
+    if (currentSortBy === 'most-votes') {
+      // Instead of reloading everything, just reposition this card if needed
+      await repositionCardAfterVote(itemId, card, updateData, currentSortBy);
+    }
     
   } catch (error) {
     console.error('Error handling vote:', error);
@@ -436,6 +433,106 @@ function updateCardVoteUI(card, voteType, isAlreadyVoted, updateData) {
       downvoteBtn.classList.add('downvoted');
       upvoteBtn.classList.remove('upvoted');
     }
+  }
+}
+
+// New helper function to reposition a card after voting without reloading everything
+async function repositionCardAfterVote(itemId, card, updateData, sortBy) {
+  if (sortBy !== 'most-votes' || !card) return;
+  
+  try {
+    const columnType = card.closest('.column').classList[1]; // Get column type (went-well, to-improve, etc)
+    const column = document.querySelector(`.${columnType} .cards`);
+    if (!column) return;
+    
+    // Calculate the new score for this card
+    const newUpvotes = updateData.upvotes?.length || 0;
+    const newDownvotes = updateData.downvotes?.length || 0;
+    const newScore = newUpvotes - newDownvotes;
+    
+    // Get all cards in this column
+    const cards = Array.from(column.querySelectorAll('.card'));
+    
+    // If there's only one card, no need to reposition
+    if (cards.length <= 1) return;
+    
+    // Calculate scores for all cards to determine new position
+    const cardScores = await Promise.all(cards.map(async (c) => {
+      // Skip the current card, we already know its score
+      if (c === card) {
+        return { card: c, score: newScore };
+      }
+      
+      const cId = c.dataset.id;
+      const upvoteCount = parseInt(c.querySelector('.upvote span').textContent) || 0;
+      const downvoteCount = parseInt(c.querySelector('.downvote span').textContent) || 0;
+      const score = upvoteCount - downvoteCount;
+      
+      return { card: c, score };
+    }));
+    
+    // Sort the cards by score (highest first)
+    cardScores.sort((a, b) => {
+      // First sort by score
+      const scoreDiff = b.score - a.score;
+      if (scoreDiff !== 0) {
+        return scoreDiff;
+      }
+      
+      // If scores are equal and one is our card, prioritize newer items
+      // Since we can't easily get timestamp here, we'll just assume our card is newer
+      if (a.card === card) return -1;
+      if (b.card === card) return 1;
+      
+      return 0;
+    });
+    
+    // Find the new position of our card
+    const newIndex = cardScores.findIndex(c => c.card === card);
+    
+    // If the card is already in the right position, no need to reposition
+    const currentIndex = cards.indexOf(card);
+    if (newIndex === currentIndex) return;
+    
+    // Add a subtle highlight effect to make it easier to track the card movement
+    card.classList.add('highlight-card');
+    
+    // Animate the card's removal
+    card.style.transition = 'opacity 0.2s ease-out';
+    card.style.opacity = '0';
+    
+    // After a short delay, reposition the card
+    setTimeout(() => {
+      // Remove the card from DOM temporarily
+      card.remove();
+      
+      // Insert it at the new position
+      if (newIndex === 0) {
+        // If it should be first, prepend it
+        column.prepend(card);
+      } else if (newIndex >= cards.length - 1) {
+        // If it should be last, append it
+        column.appendChild(card);
+      } else {
+        // Otherwise insert it before the card that should come after it
+        const nextCard = cardScores[newIndex + 1].card;
+        column.insertBefore(card, nextCard);
+      }
+      
+      // Animate the card's appearance
+      card.style.opacity = '1';
+      
+      // Remove the highlight effect after animation
+      setTimeout(() => {
+        card.classList.remove('highlight-card');
+        card.style.transition = '';
+      }, 1000);
+    }, 200);
+    
+  } catch (error) {
+    console.error('Error repositioning card:', error);
+    // If anything goes wrong, fall back to reloading all items
+    loadAllItems(sortBy);
   }
 }
 
