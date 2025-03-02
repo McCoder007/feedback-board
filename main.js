@@ -334,7 +334,7 @@ async function addNewItem(columnType, content) {
 }
 
 // Function to add item to UI
-function addItemToUI(item, appendMode = false) {
+function addItemToUI(item, items, index) {
   const column = document.querySelector(`.${item.columnType} .cards`);
   if (!column) {
     console.error(`Column ${item.columnType} not found`);
@@ -363,11 +363,18 @@ function addItemToUI(item, appendMode = false) {
     </div>
   `;
   
-  // If appendMode is true, append to bottom, otherwise prepend to top
-  if (appendMode) {
-    column.appendChild(card);
-  } else {
+  // Add the card at the appropriate position in the column
+  if (index === 0) {
+    // If it's the first item, prepend it
     column.prepend(card);
+  } else {
+    // Otherwise, insert it after the previous item
+    const previousCards = column.querySelectorAll('.card');
+    if (index < previousCards.length) {
+      column.insertBefore(card, previousCards[index]);
+    } else {
+      column.appendChild(card);
+    }
   }
 }
 
@@ -444,17 +451,8 @@ async function loadAllItems(sortBy = 'newest') {
     // Get items from Firestore
     let itemsQuery;
     
-    switch (sortBy) {
-      case 'oldest':
-        itemsQuery = query(collection(db, "items"), orderBy("createdAt", "asc"));
-        break;
-      case 'most-votes':
-        itemsQuery = query(collection(db, "items"));
-        break;
-      default: // newest
-        itemsQuery = query(collection(db, "items"), orderBy("createdAt", "desc"));
-        break;
-    }
+    // Get all items - we'll sort them in JavaScript for consistent ordering
+    itemsQuery = query(collection(db, "items"));
     
     const querySnapshot = await getDocs(itemsQuery);
     let items = [];
@@ -467,35 +465,58 @@ async function loadAllItems(sortBy = 'newest') {
       items.push(item);
     });
     
-    // Sort if needed
-    if (sortBy === 'most-votes') {
-      items.sort((a, b) => {
-        const aScore = (a.upvotes?.length || 0) - (a.downvotes?.length || 0);
-        const bScore = (b.upvotes?.length || 0) - (b.downvotes?.length || 0);
-        return bScore - aScore;
-      });
+    // Sort based on selected option
+    switch (sortBy) {
+      case 'newest':
+        // Sort by created date (newest first)
+        items.sort((a, b) => {
+          const aTime = a.createdAt?.seconds || 0;
+          const bTime = b.createdAt?.seconds || 0;
+          return bTime - aTime; // Descending order (newest first)
+        });
+        break;
+        
+      case 'oldest':
+        // Sort by created date (oldest first)
+        items.sort((a, b) => {
+          const aTime = a.createdAt?.seconds || 0;
+          const bTime = b.createdAt?.seconds || 0;
+          return aTime - bTime; // Ascending order (oldest first)
+        });
+        break;
+        
+      case 'most-votes':
+        // Sort by vote score (upvotes - downvotes)
+        items.sort((a, b) => {
+          const aScore = (a.upvotes?.length || 0) - (a.downvotes?.length || 0);
+          const bScore = (b.upvotes?.length || 0) - (b.downvotes?.length || 0);
+          return bScore - aScore; // Descending order (highest score first)
+        });
+        break;
     }
     
-    // Add to UI based on sort order
-    if (sortBy === 'most-votes') {
-      // For most votes, add highest voted items at the top (default prepend)
-      items.forEach(item => {
-        addItemToUI(item, false);
-      });
-    } else if (sortBy === 'oldest') {
-      // For oldest, older items should be at the top
-      // Since they're already sorted by oldest first, append to maintain order
-      items.forEach(item => {
-        addItemToUI(item, true);
-      });
-    } else {
-      // For newest, newest items should be at the top (default prepend behavior)
-      items.forEach(item => {
-        addItemToUI(item, false);
+    console.log(`Sorted ${items.length} items by ${sortBy}`);
+    
+    // Organize items by column type for better rendering
+    const columnItems = {
+      'went-well': [],
+      'to-improve': [],
+      'action-items': []
+    };
+    
+    // Group items by column
+    items.forEach(item => {
+      if (columnItems[item.columnType]) {
+        columnItems[item.columnType].push(item);
+      }
+    });
+    
+    // Add items to UI in the correct order
+    for (const column in columnItems) {
+      columnItems[column].forEach((item, index) => {
+        addItemToUI(item, columnItems[column], index);
       });
     }
-    
-    console.log(`Loaded ${items.length} unique items`);
     
     // Hide loading indicator, show board
     if (loadingIndicator) loadingIndicator.style.display = 'none';
