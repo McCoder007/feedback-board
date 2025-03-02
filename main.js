@@ -4,7 +4,8 @@ import {
   getFirestore, 
   collection, 
   addDoc, 
-  getDocs, 
+  getDocs,
+  getDoc,
   doc,
   updateDoc,
   deleteDoc,
@@ -333,109 +334,121 @@ async function addNewItem(columnType, content) {
   }
 }
 
-// Function to add item to UI
-function addItemToUI(item, items, index) {
-  const column = document.querySelector(`.${item.columnType} .cards`);
-  if (!column) {
-    console.error(`Column ${item.columnType} not found`);
-    return;
-  }
-  
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.dataset.id = item.id;
-  
-  // Check if current user has voted
-  const hasUpvoted = item.upvotes && item.upvotes.includes(currentUser?.uid);
-  const hasDownvoted = item.downvotes && item.downvotes.includes(currentUser?.uid);
-  
-  card.innerHTML = `
-    <p>${item.content}</p>
-    <div class="card-actions">
-      <button class="vote-btn upvote ${hasUpvoted ? 'upvoted' : ''}">
-        <i class="fas fa-arrow-up"></i>
-        <span>${item.upvotes ? item.upvotes.length : 0}</span>
-      </button>
-      <button class="vote-btn downvote ${hasDownvoted ? 'downvoted' : ''}">
-        <i class="fas fa-arrow-down"></i>
-        <span>${item.downvotes ? item.downvotes.length : 0}</span>
-      </button>
-    </div>
-  `;
-  
-  // Add the card at the appropriate position in the column
-  if (index === 0) {
-    // If it's the first item, prepend it
-    column.prepend(card);
-  } else {
-    // Otherwise, insert it after the previous item
-    const previousCards = column.querySelectorAll('.card');
-    if (index < previousCards.length) {
-      column.insertBefore(card, previousCards[index]);
-    } else {
-      column.appendChild(card);
-    }
-  }
-}
-
 // Function to handle votes
 async function handleVote(itemId, voteType, isAlreadyVoted, card) {
   try {
     const itemRef = doc(db, "items", itemId);
-    const itemSnapshot = await getDocs(query(collection(db, "items"), where("__name__", "==", itemId)));
     
-    if (itemSnapshot.empty) {
+    // Get the latest document directly using the document reference
+    const itemDoc = await getDoc(itemRef);
+    
+    if (!itemDoc.exists()) {
       showNotification('Item not found', true);
       return;
     }
     
-    const itemData = itemSnapshot.docs[0].data();
+    const itemData = itemDoc.data();
     const upvotes = itemData.upvotes || [];
     const downvotes = itemData.downvotes || [];
+    
+    // For logging before changes
+    const oldUpvoteCount = upvotes.length;
+    const oldDownvoteCount = downvotes.length;
+    
+    let updateData = {};
     
     // Handle upvote
     if (voteType === 'upvote') {
       if (isAlreadyVoted) {
         // Remove upvote
-        const newUpvotes = upvotes.filter(uid => uid !== currentUser.uid);
-        await updateDoc(itemRef, { upvotes: newUpvotes });
+        updateData.upvotes = upvotes.filter(uid => uid !== currentUser.uid);
       } else {
         // Add upvote and remove downvote if exists
-        const newUpvotes = [...upvotes, currentUser.uid];
-        const newDownvotes = downvotes.filter(uid => uid !== currentUser.uid);
-        await updateDoc(itemRef, { 
-          upvotes: newUpvotes,
-          downvotes: newDownvotes
-        });
+        updateData.upvotes = [...upvotes, currentUser.uid];
+        updateData.downvotes = downvotes.filter(uid => uid !== currentUser.uid);
       }
     } 
     // Handle downvote
     else if (voteType === 'downvote') {
       if (isAlreadyVoted) {
         // Remove downvote
-        const newDownvotes = downvotes.filter(uid => uid !== currentUser.uid);
-        await updateDoc(itemRef, { downvotes: newDownvotes });
+        updateData.downvotes = downvotes.filter(uid => uid !== currentUser.uid);
       } else {
         // Add downvote and remove upvote if exists
-        const newDownvotes = [...downvotes, currentUser.uid];
-        const newUpvotes = upvotes.filter(uid => uid !== currentUser.uid);
-        await updateDoc(itemRef, { 
-          downvotes: newDownvotes,
-          upvotes: newUpvotes
-        });
+        updateData.downvotes = [...downvotes, currentUser.uid];
+        updateData.upvotes = upvotes.filter(uid => uid !== currentUser.uid);
       }
     }
     
-    // Refresh all items to update UI
-    loadAllItems();
+    // Update Firestore
+    await updateDoc(itemRef, updateData);
+    
+    // Get the current sort value from the select element
+    const currentSortBy = document.querySelector('.search-tools select').value;
+    
+    // Add a small delay to ensure Firestore update is processed
+    setTimeout(() => {
+      loadAllItems(currentSortBy);
+    }, 100);
+    
+    // Optional: Provide immediate UI feedback by updating the card
+    updateCardVoteUI(card, voteType, isAlreadyVoted, updateData);
+    
   } catch (error) {
+    console.error('Error handling vote:', error);
     showNotification('Error handling vote: ' + error.message, true);
   }
 }
 
-// Function to load all items
+// Helper function to update card UI immediately without waiting for Firestore
+function updateCardVoteUI(card, voteType, isAlreadyVoted, updateData) {
+  if (!card) return;
+  
+  const upvoteBtn = card.querySelector('.upvote');
+  const downvoteBtn = card.querySelector('.downvote');
+  
+  if (!upvoteBtn || !downvoteBtn) return;
+  
+  const upvoteCount = upvoteBtn.querySelector('span');
+  const downvoteCount = downvoteBtn.querySelector('span');
+  
+  // Update the vote counts based on updateData
+  if (updateData.upvotes !== undefined) {
+    upvoteCount.textContent = updateData.upvotes.length;
+  }
+  
+  if (updateData.downvotes !== undefined) {
+    downvoteCount.textContent = updateData.downvotes.length;
+  }
+  
+  // Update button styles
+  if (voteType === 'upvote') {
+    if (isAlreadyVoted) {
+      upvoteBtn.classList.remove('upvoted');
+    } else {
+      upvoteBtn.classList.add('upvoted');
+      downvoteBtn.classList.remove('downvoted');
+    }
+  } else if (voteType === 'downvote') {
+    if (isAlreadyVoted) {
+      downvoteBtn.classList.remove('downvoted');
+    } else {
+      downvoteBtn.classList.add('downvoted');
+      upvoteBtn.classList.remove('upvoted');
+    }
+  }
+}
+
+// Function to load all items with proper sorting
 async function loadAllItems(sortBy = 'newest') {
   try {
+    // Store the current sort option in a data attribute on the select element
+    // This will help us remember what sort was active when reloading
+    const sortSelect = document.querySelector('.search-tools select');
+    if (sortSelect && sortBy) {
+      sortSelect.value = sortBy;
+    }
+    
     // Show loading indicator, hide board
     const loadingIndicator = document.getElementById('loading-indicator');
     const board = document.querySelector('.board');
@@ -443,16 +456,24 @@ async function loadAllItems(sortBy = 'newest') {
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     if (board) board.style.display = 'none';
     
-    // Get all items from Firestore (without sorting in the query)
-    const querySnapshot = await getDocs(collection(db, "items"));
+    // Create a query with cache disabled to ensure fresh data
+    const itemsQuery = query(collection(db, "items"));
+    
+    // Get fresh data from Firestore
+    const querySnapshot = await getDocs(itemsQuery);
     let items = [];
     
-    // Convert to array
+    // Convert to array and log each item's vote counts for debugging
     querySnapshot.forEach((doc) => {
-      items.push({
+      const item = {
         id: doc.id,
         ...doc.data()
-      });
+      };
+      
+      // Log vote counts for debugging
+      console.log(`Item ${item.id} (${item.columnType}): Upvotes=${item.upvotes?.length || 0}, Downvotes=${item.downvotes?.length || 0}`);
+      
+      items.push(item);
     });
     
     console.log(`Loaded ${items.length} items, sorting by ${sortBy}`);
@@ -474,7 +495,27 @@ async function loadAllItems(sortBy = 'newest') {
       items.sort((a, b) => {
         const aScore = (a.upvotes?.length || 0) - (a.downvotes?.length || 0);
         const bScore = (b.upvotes?.length || 0) - (b.downvotes?.length || 0);
-        return bScore - aScore; // Descending (highest votes first)
+        
+        // Log the score calculations for debugging
+        console.log(`Sort: Item ${a.id} score ${aScore} vs Item ${b.id} score ${bScore}`);
+        
+        // First sort by score
+        const scoreComparison = bScore - aScore;
+        if (scoreComparison !== 0) {
+          return scoreComparison; // Items have different scores
+        }
+        
+        // If scores are equal, use recency as a tiebreaker
+        const aTime = a.createdAt?.seconds || 0;
+        const bTime = b.createdAt?.seconds || 0;
+        return bTime - aTime; // Newer items come first when scores are tied
+      });
+      
+      // Log the final sort order for debugging
+      console.log("Final sort order (most-votes):");
+      items.forEach(item => {
+        const score = (item.upvotes?.length || 0) - (item.downvotes?.length || 0);
+        console.log(`Item ${item.id} (${item.columnType}): Score=${score}`);
       });
     }
     
@@ -503,6 +544,9 @@ async function loadAllItems(sortBy = 'newest') {
       if (!column) continue;
       
       const columnItemsArray = columnItems[columnType];
+      
+      // Log each column's items
+      console.log(`Adding ${columnItemsArray.length} items to ${columnType} column`);
       
       // For each column, append items in their current order
       columnItemsArray.forEach(item => {
