@@ -70,6 +70,8 @@ const loginForm = document.getElementById('login-form');
 const signupForm = document.getElementById('signup-form');
 const columnTypeInput = document.getElementById('column-type');
 const notification = document.getElementById('notification');
+// Dark mode toggle
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
 const loginBtn = document.getElementById('login-btn');
 const signupBtn = document.getElementById('signup-btn');
 const userInfo = document.querySelector('.user-info');
@@ -79,36 +81,27 @@ logoutBtn.textContent = 'Logout';
 logoutBtn.style.display = 'none';
 userInfo.parentNode.appendChild(logoutBtn);
 
-// Dark mode toggle
-const themeToggleBtn = document.getElementById('theme-toggle-btn');
 
 // Initialize theme based on localStorage or user preference
 function initTheme() {
-    // Check localStorage first
-    const savedTheme = localStorage.getItem('feedbackBoardTheme');
-    
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-    } else if (savedTheme === 'light') {
-        document.body.classList.remove('dark-mode');
-    } else {
-        // Check user preferred color scheme
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('feedbackBoardTheme', 'dark');
-        }
-    }
-    
-    // Add listener for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem('feedbackBoardTheme')) {
-            if (e.matches) {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
-        }
-    });
+  const savedTheme = localStorage.getItem('feedbackBoardTheme');
+  
+  if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+  } else if (savedTheme === 'light') {
+      document.body.classList.remove('dark-mode');
+  } else {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.body.classList.add('dark-mode');
+          localStorage.setItem('feedbackBoardTheme', 'dark');
+      }
+  }
+}
+
+function toggleTheme() {
+  const isDarkMode = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('feedbackBoardTheme', isDarkMode ? 'dark' : 'light');
+  console.log("Theme toggled, dark mode:", isDarkMode); // Add this for debugging
 }
 
 // Toggle theme function
@@ -123,10 +116,21 @@ function toggleTheme() {
 
 // Theme toggle setup
 function setupThemeToggle() {
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', toggleTheme);
-    }
-    initTheme();
+  console.log("Setting up theme toggle, button exists:", themeToggleBtn !== null);
+  
+  if (themeToggleBtn) {
+      // Remove any existing listeners to avoid duplicates
+      themeToggleBtn.removeEventListener('click', toggleTheme);
+      
+      // Add the click event listener
+      themeToggleBtn.addEventListener('click', toggleTheme);
+      console.log("Added click listener to theme toggle button");
+  } else {
+      console.error("Theme toggle button not found in the DOM");
+  }
+  
+  // Initialize the theme
+  initTheme();
 }
 
 // Initialize the app and load data - SINGLE EVENT LISTENER
