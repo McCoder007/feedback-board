@@ -310,6 +310,9 @@ async function addNewItem(columnType, content) {
   isSubmitting = true;
   
   try {
+    // Get the current sort order before adding the item
+    const currentSortBy = document.querySelector('.search-tools select').value;
+    
     // Add item to Firestore
     const docRef = await addDoc(collection(db, "items"), {
       content: content,
@@ -325,8 +328,8 @@ async function addNewItem(columnType, content) {
     addItemModal.classList.remove('active');
     showNotification('Item added successfully!');
     
-    // Reload all items to show the new item
-    loadAllItems();
+    // Reload all items with the current sort order preserved
+    loadAllItems(currentSortBy);
   } catch (error) {
     showNotification('Error adding item: ' + error.message, true);
   } finally {
