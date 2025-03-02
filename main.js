@@ -415,6 +415,13 @@ async function handleVote(itemId, voteType, isAlreadyVoted, card) {
 // Function to load all items
 async function loadAllItems(sortBy = 'newest') {
   try {
+    // Show loading indicator, hide board
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const board = document.querySelector('.board');
+    
+    if (loadingIndicator) loadingIndicator.style.display = 'flex';
+    if (board) board.style.display = 'none';
+    
     // Clear existing items first to avoid duplicates
     document.querySelectorAll('.cards').forEach(column => {
       column.innerHTML = '';
@@ -475,8 +482,23 @@ async function loadAllItems(sortBy = 'newest') {
     }
     
     console.log(`Loaded ${items.length} unique items`);
+    
+    // Hide loading indicator, show board
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const board = document.querySelector('.board');
+    
+    if (loadingIndicator) loadingIndicator.style.display = 'none';
+    if (board) board.style.display = 'grid';
+    
   } catch (error) {
     showNotification('Error loading items: ' + error.message, true);
+    
+    // Hide loading indicator and show board even on error
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const board = document.querySelector('.board');
+    
+    if (loadingIndicator) loadingIndicator.style.display = 'none';
+    if (board) board.style.display = 'grid';
   }
 }
 
