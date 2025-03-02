@@ -36,6 +36,7 @@ const firebaseConfig = {
 // Initialize Firebase
 let app, db, auth;
 let currentUser = null;
+let currentSortOrder = 'newest'; // Default sort
 
 try {
     app = initializeApp(firebaseConfig);
@@ -82,6 +83,17 @@ userInfo.parentNode.appendChild(logoutBtn);
 window.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded, initializing app...");
 
+    // Load saved sort preference
+    const savedSort = localStorage.getItem('feedbackBoardSort');
+    if (savedSort) {
+      currentSortOrder = savedSort;
+      // Update select element to match saved preference
+      const sortSelect = document.querySelector('.search-tools select');
+      if (sortSelect) {
+        sortSelect.value = currentSortOrder;
+      }
+    }
+
     // Set up event listeners immediately
     setupEventListeners();
 
@@ -92,18 +104,18 @@ window.addEventListener('DOMContentLoaded', () => {
         if (user) {
           currentUser = user;
           updateUserUI();
-          loadAllItems();
+          loadAllItems(currentSortOrder);
         } else {
           currentUser = null;
           updateUserUI();
           // Still load items for anonymous viewing
-          loadAllItems();
+          loadAllItems(currentSortOrder);
         }
       });
     } else {
       console.error("Auth not initialized yet");
       // Still try to load items for viewing
-      setTimeout(() => loadAllItems(), 1000);
+      setTimeout(() => loadAllItems(currentSortOrder), 1000);
     }
     
     // Failsafe: ensure board is displayed even if data loading fails
@@ -299,7 +311,10 @@ function setupEventListeners() {
   // Sort functionality
   const sortSelect = document.querySelector('select');
   sortSelect.addEventListener('change', () => {
-    loadAllItems(sortSelect.value);
+    // Store the selected sort in our variable and localStorage
+    currentSortOrder = sortSelect.value;
+    localStorage.setItem('feedbackBoardSort', currentSortOrder);
+    loadAllItems(currentSortOrder);
   });
 }
 
@@ -310,9 +325,6 @@ async function addNewItem(columnType, content) {
   isSubmitting = true;
   
   try {
-    // Get the current sort order before adding the item
-    const currentSortBy = document.querySelector('.search-tools select').value;
-    
     // Add item to Firestore
     const docRef = await addDoc(collection(db, "items"), {
       content: content,
@@ -328,8 +340,8 @@ async function addNewItem(columnType, content) {
     addItemModal.classList.remove('active');
     showNotification('Item added successfully!');
     
-    // Reload all items with the current sort order preserved
-    loadAllItems(currentSortBy);
+    // Use the tracked sort order
+    loadAllItems(currentSortOrder);
   } catch (error) {
     showNotification('Error adding item: ' + error.message, true);
   } finally {
@@ -379,9 +391,6 @@ async function handleVote(itemId, voteType, isAlreadyVoted, card) {
       }
     }
     
-    // Save the current sort method
-    const currentSortBy = document.querySelector('.search-tools select').value;
-    
     // Update Firestore
     await updateDoc(itemRef, updateData);
     
@@ -389,9 +398,9 @@ async function handleVote(itemId, voteType, isAlreadyVoted, card) {
     updateCardVoteUI(card, voteType, isAlreadyVoted, updateData);
     
     // If sorting by most votes, we need to reposition the cards
-    if (currentSortBy === 'most-votes') {
+    if (currentSortOrder === 'most-votes') {
       // Instead of reloading everything, just reposition this card if needed
-      await repositionCardAfterVote(itemId, card, updateData, currentSortBy);
+      await repositionCardAfterVote(itemId, card, updateData, currentSortOrder);
     }
     
   } catch (error) {
@@ -439,7 +448,7 @@ function updateCardVoteUI(card, voteType, isAlreadyVoted, updateData) {
   }
 }
 
-// New helper function to reposition a card after voting without reloading everything
+// Helper function to reposition a card after voting without reloading everything
 async function repositionCardAfterVote(itemId, card, updateData, sortBy) {
   if (sortBy !== 'most-votes' || !card) return;
   
@@ -540,12 +549,20 @@ async function repositionCardAfterVote(itemId, card, updateData, sortBy) {
 }
 
 // Function to load all items with proper sorting
-async function loadAllItems(sortBy = 'newest') {
+async function loadAllItems(sortBy) {
   try {
-    // Store the current sort option in a data attribute on the select element
-    // This will help us remember what sort was active when reloading
+    // If sortBy is provided, update our tracking variable
+    if (sortBy) {
+      currentSortOrder = sortBy;
+      localStorage.setItem('feedbackBoardSort', currentSortOrder);
+    } else {
+      // If no sortBy provided, use the tracked order
+      sortBy = currentSortOrder;
+    }
+    
+    // Update the select element to match
     const sortSelect = document.querySelector('.search-tools select');
-    if (sortSelect && sortBy) {
+    if (sortSelect) {
       sortSelect.value = sortBy;
     }
     
@@ -570,9 +587,6 @@ async function loadAllItems(sortBy = 'newest') {
         ...doc.data()
       };
       
-      // Log vote counts for debugging
-      console.log(`Item ${item.id} (${item.columnType}): Upvotes=${item.upvotes?.length || 0}, Downvotes=${item.downvotes?.length || 0}`);
-      
       items.push(item);
     });
     
@@ -596,9 +610,6 @@ async function loadAllItems(sortBy = 'newest') {
         const aScore = (a.upvotes?.length || 0) - (a.downvotes?.length || 0);
         const bScore = (b.upvotes?.length || 0) - (b.downvotes?.length || 0);
         
-        // Log the score calculations for debugging
-        console.log(`Sort: Item ${a.id} score ${aScore} vs Item ${b.id} score ${bScore}`);
-        
         // First sort by score
         const scoreComparison = bScore - aScore;
         if (scoreComparison !== 0) {
@@ -609,13 +620,6 @@ async function loadAllItems(sortBy = 'newest') {
         const aTime = a.createdAt?.seconds || 0;
         const bTime = b.createdAt?.seconds || 0;
         return bTime - aTime; // Newer items come first when scores are tied
-      });
-      
-      // Log the final sort order for debugging
-      console.log("Final sort order (most-votes):");
-      items.forEach(item => {
-        const score = (item.upvotes?.length || 0) - (item.downvotes?.length || 0);
-        console.log(`Item ${item.id} (${item.columnType}): Score=${score}`);
       });
     }
     
@@ -644,9 +648,6 @@ async function loadAllItems(sortBy = 'newest') {
       if (!column) continue;
       
       const columnItemsArray = columnItems[columnType];
-      
-      // Log each column's items
-      console.log(`Adding ${columnItemsArray.length} items to ${columnType} column`);
       
       // For each column, append items in their current order
       columnItemsArray.forEach(item => {
