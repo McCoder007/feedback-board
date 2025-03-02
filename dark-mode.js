@@ -20,15 +20,9 @@ function setupDarkModeToggle() {
     });
 }
 
-// Add this to your existing DOMContentLoaded event listener in main.js
-function initializeDarkMode() {
-    // Wait for DOM to be fully loaded
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupDarkModeToggle);
-    } else {
-        setupDarkModeToggle();
-    }
-}
-
 // Initialize dark mode
-initializeDarkMode();
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupDarkModeToggle);
+} else {
+    setupDarkModeToggle();
+}
