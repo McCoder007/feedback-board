@@ -443,78 +443,93 @@ async function loadAllItems(sortBy = 'newest') {
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     if (board) board.style.display = 'none';
     
-    // Clear existing items first to avoid duplicates
-    document.querySelectorAll('.cards').forEach(column => {
-      column.innerHTML = '';
-    });
-    
-    // Get items from Firestore
-    let itemsQuery;
-    
-    // Get all items - we'll sort them in JavaScript for consistent ordering
-    itemsQuery = query(collection(db, "items"));
-    
-    const querySnapshot = await getDocs(itemsQuery);
+    // Get all items from Firestore (without sorting in the query)
+    const querySnapshot = await getDocs(collection(db, "items"));
     let items = [];
     
+    // Convert to array
     querySnapshot.forEach((doc) => {
-      const item = {
+      items.push({
         id: doc.id,
         ...doc.data()
-      };
-      items.push(item);
+      });
     });
     
+    console.log(`Loaded ${items.length} items, sorting by ${sortBy}`);
+    
     // Sort based on selected option
-    switch (sortBy) {
-      case 'newest':
-        // Sort by created date (newest first)
-        items.sort((a, b) => {
-          const aTime = a.createdAt?.seconds || 0;
-          const bTime = b.createdAt?.seconds || 0;
-          return bTime - aTime; // Descending order (newest first)
-        });
-        break;
-        
-      case 'oldest':
-        // Sort by created date (oldest first)
-        items.sort((a, b) => {
-          const aTime = a.createdAt?.seconds || 0;
-          const bTime = b.createdAt?.seconds || 0;
-          return aTime - bTime; // Ascending order (oldest first)
-        });
-        break;
-        
-      case 'most-votes':
-        // Sort by vote score (upvotes - downvotes)
-        items.sort((a, b) => {
-          const aScore = (a.upvotes?.length || 0) - (a.downvotes?.length || 0);
-          const bScore = (b.upvotes?.length || 0) - (b.downvotes?.length || 0);
-          return bScore - aScore; // Descending order (highest score first)
-        });
-        break;
+    if (sortBy === 'newest') {
+      items.sort((a, b) => {
+        const aTime = a.createdAt?.seconds || 0;
+        const bTime = b.createdAt?.seconds || 0;
+        return bTime - aTime; // Descending (newest first)
+      });
+    } else if (sortBy === 'oldest') {
+      items.sort((a, b) => {
+        const aTime = a.createdAt?.seconds || 0;
+        const bTime = b.createdAt?.seconds || 0;
+        return aTime - bTime; // Ascending (oldest first) 
+      });
+    } else if (sortBy === 'most-votes') {
+      items.sort((a, b) => {
+        const aScore = (a.upvotes?.length || 0) - (a.downvotes?.length || 0);
+        const bScore = (b.upvotes?.length || 0) - (b.downvotes?.length || 0);
+        return bScore - aScore; // Descending (highest votes first)
+      });
     }
     
-    console.log(`Sorted ${items.length} items by ${sortBy}`);
-    
-    // Organize items by column type for better rendering
+    // Group items by column
     const columnItems = {
       'went-well': [],
       'to-improve': [],
       'action-items': []
     };
     
-    // Group items by column
+    // Add items to their respective column arrays
     items.forEach(item => {
       if (columnItems[item.columnType]) {
         columnItems[item.columnType].push(item);
       }
     });
     
-    // Add items to UI in the correct order
-    for (const column in columnItems) {
-      columnItems[column].forEach((item, index) => {
-        addItemToUI(item, columnItems[column], index);
+    // Clear existing items from the DOM
+    document.querySelectorAll('.cards').forEach(column => {
+      column.innerHTML = '';
+    });
+    
+    // Add items to the DOM in the sorted order (one column at a time)
+    for (const columnType in columnItems) {
+      const column = document.querySelector(`.${columnType} .cards`);
+      if (!column) continue;
+      
+      const columnItemsArray = columnItems[columnType];
+      
+      // For each column, append items in their current order
+      columnItemsArray.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.id = item.id;
+        
+        // Check if current user has voted
+        const hasUpvoted = item.upvotes && item.upvotes.includes(currentUser?.uid);
+        const hasDownvoted = item.downvotes && item.downvotes.includes(currentUser?.uid);
+        
+        card.innerHTML = `
+          <p>${item.content}</p>
+          <div class="card-actions">
+            <button class="vote-btn upvote ${hasUpvoted ? 'upvoted' : ''}">
+              <i class="fas fa-arrow-up"></i>
+              <span>${item.upvotes ? item.upvotes.length : 0}</span>
+            </button>
+            <button class="vote-btn downvote ${hasDownvoted ? 'downvoted' : ''}">
+              <i class="fas fa-arrow-down"></i>
+              <span>${item.downvotes ? item.downvotes.length : 0}</span>
+            </button>
+          </div>
+        `;
+        
+        // Always append (not prepend) to maintain the sorted order
+        column.appendChild(card);
       });
     }
     
@@ -523,6 +538,7 @@ async function loadAllItems(sortBy = 'newest') {
     if (board) board.style.display = 'grid';
     
   } catch (error) {
+    console.error('Error loading items:', error);
     showNotification('Error loading items: ' + error.message, true);
     
     // Hide loading indicator and show board even on error
