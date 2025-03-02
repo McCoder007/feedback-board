@@ -77,10 +77,10 @@ input, textarea, select {
 .theme-toggle {
     display: flex;
     align-items: center;
-    gap: 8px;
-    position: absolute;
-    right: 20px;
-    top: 20px;
+    gap: 6px;
+    /* Remove absolute positioning */
+    position: static; 
+    margin-right: 10px;
 }
 
 .switch {
@@ -143,6 +143,11 @@ input:checked + .slider:before {
 
 .theme-toggle .sun-icon {
     color: #f59e0b;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
 }
 
 /* Responsive adjustments */
