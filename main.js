@@ -59,388 +59,431 @@ try {
     console.error("Firebase initialization error:", error);
 }
 
-// DOM Elements
-const addItemBtns = document.querySelectorAll('.add-item');
-const closeModalBtns = document.querySelectorAll('.close-modal, .close-modal-btn');
-const addItemModal = document.getElementById('add-item-modal');
-const loginModal = document.getElementById('login-modal');
-const signupModal = document.getElementById('signup-modal');
-const addItemForm = document.getElementById('add-item-form');
-const loginForm = document.getElementById('login-form');
-const signupForm = document.getElementById('signup-form');
-const columnTypeInput = document.getElementById('column-type');
-const notification = document.getElementById('notification');
-const loginBtn = document.getElementById('login-btn');
-const signupBtn = document.getElementById('signup-btn');
-const userInfo = document.querySelector('.user-info');
-const logoutBtn = document.createElement('button');
-logoutBtn.className = 'btn btn-outline';
-logoutBtn.textContent = 'Logout';
-logoutBtn.style.display = 'none';
-userInfo.parentNode.appendChild(logoutBtn);
-
-// Initialize the app and load data - SINGLE EVENT LISTENER
+// Initialize the app and load data
 window.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded, initializing app...");
 
-    // Load saved sort preference
-    const savedSort = localStorage.getItem('feedbackBoardSort');
-    if (savedSort) {
-      currentSortOrder = savedSort;
-      // Update select element to match saved preference
-      const sortSelect = document.querySelector('.search-tools select');
-      if (sortSelect) {
-        sortSelect.value = currentSortOrder;
-      }
-    }
-
-    // Set up event listeners immediately
-    setupEventListeners();
-
-    // Make sure auth is initialized before using it
-    if (auth) {
-      // Check if user is already logged in
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          currentUser = user;
-          updateUserUI();
-          loadAllItems(currentSortOrder);
-        } else {
-          currentUser = null;
-          updateUserUI();
-          // Still load items for anonymous viewing
-          loadAllItems(currentSortOrder);
+    try {
+        // Load saved sort preference
+        const savedSort = localStorage.getItem('feedbackBoardSort');
+        if (savedSort) {
+            currentSortOrder = savedSort;
+            // Update select element to match saved preference
+            const sortSelect = document.querySelector('.search-tools select');
+            if (sortSelect) {
+                sortSelect.value = currentSortOrder;
+            }
         }
-      });
-    } else {
-      console.error("Auth not initialized yet");
-      // Still try to load items for viewing
-      setTimeout(() => loadAllItems(currentSortOrder), 1000);
+
+        // Set up event listeners immediately
+        setupEventListeners();
+
+        // Make sure auth is initialized before using it
+        if (auth) {
+            // Check if user is already logged in
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    updateUserUI();
+                    loadAllItems(currentSortOrder);
+                } else {
+                    currentUser = null;
+                    updateUserUI();
+                    // Still load items for anonymous viewing
+                    loadAllItems(currentSortOrder);
+                }
+            });
+        } else {
+            console.error("Auth not initialized yet");
+            // Still try to load items for viewing
+            setTimeout(() => loadAllItems(currentSortOrder), 1000);
+        }
+    } catch (error) {
+        console.error("Error during app initialization:", error);
     }
     
     // Failsafe: ensure board is displayed even if data loading fails
     setTimeout(() => {
-      const loadingIndicator = document.getElementById('loading-indicator');
-      const board = document.querySelector('.board');
-      
-      if (loadingIndicator && loadingIndicator.style.display !== 'none') {
-        console.log("Failsafe timeout triggered - showing board anyway");
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-        if (board) board.style.display = 'grid';
-      }
-    }, 5000); // 5 second timeout
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const board = document.querySelector('.board');
+        
+        if (loadingIndicator && loadingIndicator.style.display !== 'none') {
+            console.log("Failsafe timeout triggered - showing board anyway");
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+            if (board) board.style.display = 'grid';
+        }
+    }, 3000); // 3 second timeout for failsafe
 });
 
 // Set up all event listeners
 function setupEventListeners() {
-  // Add item buttons
-  addItemBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!currentUser) {
-        showNotification('Please log in to add items', true);
-        return;
-      }
-      
-      columnTypeInput.value = btn.dataset.column;
-      addItemModal.classList.add('active');
-      
-      // Auto-focus the textarea when modal opens
-      setTimeout(() => {
-        document.getElementById('item-content').focus();
-      }, 100);
-    });
-  });
-
-  // Close modal buttons
-  closeModalBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.modal').forEach(modal => {
-        modal.classList.remove('active');
-      });
-    });
-  });
-
-  // Add item form submission
-  addItemForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const content = document.getElementById('item-content').value;
-    const columnType = columnTypeInput.value;
-    
-    if (!content.trim()) return;
-    
-    addNewItem(columnType, content);
-  });
-  
-  // Handle Enter key in the textarea
-  document.getElementById('item-content').addEventListener('keydown', (e) => {
-    // Check if the key pressed was Enter without Shift (to allow for multi-line input with Shift+Enter)
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevent default behavior (new line)
-      
-      // Trigger form submission
-      const submitBtn = addItemForm.querySelector('button[type="submit"]');
-      submitBtn.click();
-    }
-  });
-
-  // Login button
-  loginBtn.addEventListener('click', () => {
-    loginModal.classList.add('active');
-  });
-
-  // Signup button
-  signupBtn.addEventListener('click', () => {
-    signupModal.classList.add('active');
-  });
-
-  // Logout button
-  logoutBtn.addEventListener('click', () => {
-    signOut(auth).then(() => {
-      currentUser = null;
-      updateUserUI();
-      showNotification('Logged out successfully!');
-    }).catch((error) => {
-      showNotification('Error logging out: ' + error.message, true);
-    });
-  });
-
-  // Login form submission
-  loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        currentUser = userCredential.user;
-        loginModal.classList.remove('active');
-        showNotification('Logged in successfully!');
-        loginForm.reset();
-      })
-      .catch((error) => {
-        showNotification('Login error: ' + error.message, true);
-      });
-  });
-
-  // Signup form submission
-  signupForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    const confirmPassword = document.getElementById('signup-confirm-password').value;
-    const username = document.getElementById('signup-username').value;
-    
-    if (password !== confirmPassword) {
-      showNotification('Passwords do not match', true);
-      return;
-    }
-    
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        currentUser = userCredential.user;
+    try {
+        console.log("Setting up event listeners...");
         
-        // Add username to user profile in Firestore
-        addDoc(collection(db, "users"), {
-          uid: currentUser.uid,
-          username: username,
-          email: email,
-          createdAt: serverTimestamp()
-        });
+        // Check if elements exist before adding event listeners
+        const addItemBtns = document.querySelectorAll('.add-item');
+        const closeModalBtns = document.querySelectorAll('.close-modal, .close-modal-btn');
+        const addItemModal = document.getElementById('add-item-modal');
+        const loginModal = document.getElementById('login-modal');
+        const signupModal = document.getElementById('signup-modal');
+        const addItemForm = document.getElementById('add-item-form');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const columnTypeInput = document.getElementById('column-type');
+        const notification = document.getElementById('notification');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const userInfo = document.querySelector('.user-info');
+        const logoutBtn = document.getElementById('logout-btn');
         
-        signupModal.classList.remove('active');
-        showNotification('Signed up successfully!');
-        signupForm.reset();
-      })
-      .catch((error) => {
-        showNotification('Signup error: ' + error.message, true);
-      });
-  });
-
-  // Global click listener for votes
-  document.addEventListener('click', async (e) => {
-    // Handle upvotes
-    const upvoteBtn = e.target.closest('.upvote');
-    if (upvoteBtn) {
-      if (!currentUser) {
-        showNotification('Please log in to vote', true);
-        return;
-      }
-      
-      const card = upvoteBtn.closest('.card');
-      if (!card || !card.dataset.id) return;
-      
-      const itemId = card.dataset.id;
-      await handleVote(itemId, 'upvote', upvoteBtn.classList.contains('upvoted'), card);
-    }
-    
-    // Handle downvotes
-    const downvoteBtn = e.target.closest('.downvote');
-    if (downvoteBtn) {
-      if (!currentUser) {
-        showNotification('Please log in to vote', true);
-        return;
-      }
-      
-      const card = downvoteBtn.closest('.card');
-      if (!card || !card.dataset.id) return;
-      
-      const itemId = card.dataset.id;
-      await handleVote(itemId, 'downvote', downvoteBtn.classList.contains('downvoted'), card);
-    }
-  });
-
-  // Search functionality
-  const searchInput = document.querySelector('.search-input input');
-  searchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.card');
-    
-    cards.forEach(card => {
-      const content = card.querySelector('p').textContent.toLowerCase();
-      if (content.includes(searchTerm)) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  });
-
-  // Sort functionality
-  const sortSelect = document.querySelector('select');
-  sortSelect.addEventListener('change', () => {
-    // Store the selected sort in our variable and localStorage
-    currentSortOrder = sortSelect.value;
-    localStorage.setItem('feedbackBoardSort', currentSortOrder);
-    loadAllItems(currentSortOrder);
-  });
-  
-  // Export to CSV button
-  const exportCSVBtn = document.getElementById('export-csv-btn');
-  if (exportCSVBtn) {
-    exportCSVBtn.addEventListener('click', async () => {
-      try {
-        // Show notification
-        showNotification('Generating CSV...');
-        
-        // Get data with timestamps if possible
-        const fbItems = await getItemsWithTimestamps();
-        
-        // If we have data from Firebase with timestamps, use it to enhance our export
-        if (fbItems.length > 0) {
-          // Create a map of item IDs to their timestamps
-          const itemTimestamps = {};
-          fbItems.forEach(item => {
-            if (item.id && item.createdAt) {
-              itemTimestamps[item.id] = item.createdAt;
-            }
-          });
-          
-          // Get data from DOM and enhance with timestamps
-          const wentWellCards = getColumnData('went-well');
-          const toImproveCards = getColumnData('to-improve');
-          const actionItemsCards = getColumnData('action-items');
-          
-          // Update timestamps where possible
-          const updateTimestamps = (items) => {
-            return items.map(item => {
-              if (item.id && itemTimestamps[item.id]) {
-                item.createdAt = itemTimestamps[item.id];
-              }
-              return item;
+        // Add item buttons
+        if (addItemBtns && addItemBtns.length > 0) {
+            addItemBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (!currentUser) {
+                        showNotification('Please log in to add items', true);
+                        return;
+                    }
+                    
+                    if (columnTypeInput) columnTypeInput.value = btn.dataset.column;
+                    if (addItemModal) addItemModal.classList.add('active');
+                    
+                    // Auto-focus the textarea when modal opens
+                    setTimeout(() => {
+                        const itemContent = document.getElementById('item-content');
+                        if (itemContent) itemContent.focus();
+                    }, 100);
+                });
             });
-          };
-          
-          // Update all columns with timestamps
-          const updatedWentWell = updateTimestamps(wentWellCards);
-          const updatedToImprove = updateTimestamps(toImproveCards);
-          const updatedActionItems = updateTimestamps(actionItemsCards);
-          
-          // Define column headers
-          const headers = ['Column', 'Content', 'Upvotes', 'Downvotes', 'Created At'];
-          let csvContent = headers.join(',') + '\n';
-          
-          // Combine all data
-          const allData = [
-            ...updatedWentWell,
-            ...updatedToImprove,
-            ...updatedActionItems
-          ];
-          
-          // Convert data to CSV rows
-          allData.forEach(item => {
-            // Format date
-            const date = item.createdAt ? new Date(item.createdAt * 1000).toLocaleString() : 'N/A';
-            
-            // Escape content to handle commas and quotes in the text
-            const escapedContent = item.content.replace(/"/g, '""');
-            
-            const row = [
-              `"${item.columnType}"`,
-              `"${escapedContent}"`,
-              item.upvotes,
-              item.downvotes,
-              `"${date}"`
-            ];
-            
-            csvContent += row.join(',') + '\n';
-          });
-          
-          // Create a downloadable link for the CSV
-          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.setAttribute('href', url);
-          link.setAttribute('download', `team-feedback-${new Date().toISOString().slice(0, 10)}.csv`);
-          link.style.display = 'none';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          showNotification('CSV export complete!');
-        } else {
-          // Fall back to simpler export method
-          exportToCSV();
         }
-      } catch (error) {
-        console.error('Error exporting CSV:', error);
-        showNotification('Error exporting to CSV: ' + error.message, true);
-      }
-    });
-  }
-  
-  // Export to PDF button
-  const exportPDFBtn = document.getElementById('export-pdf-btn');
-  if (exportPDFBtn) {
-    exportPDFBtn.addEventListener('click', async () => {
-      try {
-        // Get data with timestamps if possible
-        const fbItems = await getItemsWithTimestamps();
+
+        // Close modal buttons
+        if (closeModalBtns && closeModalBtns.length > 0) {
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const modals = document.querySelectorAll('.modal');
+                    if (modals && modals.length > 0) {
+                        modals.forEach(modal => {
+                            modal.classList.remove('active');
+                        });
+                    }
+                });
+            });
+        }
+
+        // Add item form submission
+        if (addItemForm) {
+            addItemForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const content = document.getElementById('item-content')?.value || '';
+                const columnType = columnTypeInput?.value || '';
+                
+                if (!content.trim()) return;
+                
+                addNewItem(columnType, content);
+            });
+        }
         
-        // If we have data from Firebase with timestamps, use it to enhance our export
-        if (fbItems.length > 0) {
-          // Create a map of item IDs to their timestamps and other data
-          const itemData = {};
-          fbItems.forEach(item => {
-            if (item.id) {
-              itemData[item.id] = item;
-            }
-          });
-          
-          // Enhanced export to PDF with timestamps
-          exportToPDF(itemData);
-        } else {
-          // Fall back to simpler export method
-          exportToPDF();
+        // Handle Enter key in the textarea
+        const itemContent = document.getElementById('item-content');
+        if (itemContent) {
+            itemContent.addEventListener('keydown', (e) => {
+                // Check if the key pressed was Enter without Shift (to allow for multi-line input with Shift+Enter)
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault(); // Prevent default behavior (new line)
+                    
+                    // Trigger form submission
+                    const submitBtn = addItemForm?.querySelector('button[type="submit"]');
+                    if (submitBtn) submitBtn.click();
+                }
+            });
         }
-      } catch (error) {
-        console.error('Error exporting PDF:', error);
-        showNotification('Error exporting to PDF: ' + error.message, true);
-      }
-    });
-  }
+
+        // Login button
+        if (loginBtn) {
+            loginBtn.addEventListener('click', () => {
+                if (loginModal) loginModal.classList.add('active');
+            });
+        }
+
+        // Signup button
+        if (signupBtn) {
+            signupBtn.addEventListener('click', () => {
+                if (signupModal) signupModal.classList.add('active');
+            });
+        }
+
+        // Logout button
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (auth) {
+                    signOut(auth).then(() => {
+                        currentUser = null;
+                        updateUserUI();
+                        showNotification('Logged out successfully!');
+                    }).catch((error) => {
+                        showNotification('Error logging out: ' + error.message, true);
+                    });
+                }
+            });
+        }
+
+        // Login form submission
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('login-email')?.value || '';
+                const password = document.getElementById('login-password')?.value || '';
+                
+                if (auth) {
+                    signInWithEmailAndPassword(auth, email, password)
+                        .then((userCredential) => {
+                            currentUser = userCredential.user;
+                            if (loginModal) loginModal.classList.remove('active');
+                            showNotification('Logged in successfully!');
+                            loginForm.reset();
+                        })
+                        .catch((error) => {
+                            showNotification('Login error: ' + error.message, true);
+                        });
+                }
+            });
+        }
+
+        // Signup form submission
+        if (signupForm) {
+            signupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('signup-email')?.value || '';
+                const password = document.getElementById('signup-password')?.value || '';
+                const confirmPassword = document.getElementById('signup-confirm-password')?.value || '';
+                const username = document.getElementById('signup-username')?.value || '';
+                
+                if (password !== confirmPassword) {
+                    showNotification('Passwords do not match', true);
+                    return;
+                }
+                
+                if (auth && db) {
+                    createUserWithEmailAndPassword(auth, email, password)
+                        .then((userCredential) => {
+                            currentUser = userCredential.user;
+                            
+                            // Add username to user profile in Firestore
+                            addDoc(collection(db, "users"), {
+                                uid: currentUser.uid,
+                                username: username,
+                                email: email,
+                                createdAt: serverTimestamp()
+                            });
+                            
+                            if (signupModal) signupModal.classList.remove('active');
+                            showNotification('Signed up successfully!');
+                            signupForm.reset();
+                        })
+                        .catch((error) => {
+                            showNotification('Signup error: ' + error.message, true);
+                        });
+                }
+            });
+        }
+
+        // Global click listener for votes
+        document.addEventListener('click', async (e) => {
+            // Handle upvotes
+            const upvoteBtn = e.target.closest('.upvote');
+            if (upvoteBtn) {
+                if (!currentUser) {
+                    showNotification('Please log in to vote', true);
+                    return;
+                }
+                
+                const card = upvoteBtn.closest('.card');
+                if (!card || !card.dataset.id) return;
+                
+                const itemId = card.dataset.id;
+                await handleVote(itemId, 'upvote', upvoteBtn.classList.contains('upvoted'), card);
+            }
+            
+            // Handle downvotes
+            const downvoteBtn = e.target.closest('.downvote');
+            if (downvoteBtn) {
+                if (!currentUser) {
+                    showNotification('Please log in to vote', true);
+                    return;
+                }
+                
+                const card = downvoteBtn.closest('.card');
+                if (!card || !card.dataset.id) return;
+                
+                const itemId = card.dataset.id;
+                await handleVote(itemId, 'downvote', downvoteBtn.classList.contains('downvoted'), card);
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.card');
+                
+                if (cards && cards.length > 0) {
+                    cards.forEach(card => {
+                        const content = card.querySelector('p')?.textContent.toLowerCase() || '';
+                        if (content.includes(searchTerm)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        }
+
+        // Sort functionality
+        const sortSelect = document.querySelector('select');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', () => {
+                // Store the selected sort in our variable and localStorage
+                currentSortOrder = sortSelect.value;
+                localStorage.setItem('feedbackBoardSort', currentSortOrder);
+                loadAllItems(currentSortOrder);
+            });
+        }
+        
+        // Export to CSV button
+        const exportCSVBtn = document.getElementById('export-csv-btn');
+        if (exportCSVBtn) {
+            exportCSVBtn.addEventListener('click', async () => {
+                try {
+                    // Show notification
+                    showNotification('Generating CSV...');
+                    
+                    // Get data with timestamps if possible
+                    const fbItems = await getItemsWithTimestamps();
+                    
+                    // If we have data from Firebase with timestamps, use it to enhance our export
+                    if (fbItems.length > 0) {
+                        // Create a map of item IDs to their timestamps
+                        const itemTimestamps = {};
+                        fbItems.forEach(item => {
+                            if (item.id && item.createdAt) {
+                                itemTimestamps[item.id] = item.createdAt;
+                            }
+                        });
+                        
+                        // Get data from DOM and enhance with timestamps
+                        const wentWellCards = getColumnData('went-well');
+                        const toImproveCards = getColumnData('to-improve');
+                        const actionItemsCards = getColumnData('action-items');
+                        
+                        // Update timestamps where possible
+                        const updateTimestamps = (items) => {
+                            return items.map(item => {
+                                if (item.id && itemTimestamps[item.id]) {
+                                    item.createdAt = itemTimestamps[item.id];
+                                }
+                                return item;
+                            });
+                        };
+                        
+                        // Update all columns with timestamps
+                        const updatedWentWell = updateTimestamps(wentWellCards);
+                        const updatedToImprove = updateTimestamps(toImproveCards);
+                        const updatedActionItems = updateTimestamps(actionItemsCards);
+                        
+                        // Define column headers
+                        const headers = ['Column', 'Content', 'Upvotes', 'Downvotes', 'Created At'];
+                        let csvContent = headers.join(',') + '\n';
+                        
+                        // Combine all data
+                        const allData = [
+                            ...updatedWentWell,
+                            ...updatedToImprove,
+                            ...updatedActionItems
+                        ];
+                        
+                        // Convert data to CSV rows
+                        allData.forEach(item => {
+                            // Format date
+                            const date = item.createdAt ? new Date(item.createdAt * 1000).toLocaleString() : 'N/A';
+                            
+                            // Escape content to handle commas and quotes in the text
+                            const escapedContent = item.content.replace(/"/g, '""');
+                            
+                            const row = [
+                                `"${item.columnType}"`,
+                                `"${escapedContent}"`,
+                                item.upvotes,
+                                item.downvotes,
+                                `"${date}"`
+                            ];
+                            
+                            csvContent += row.join(',') + '\n';
+                        });
+                        
+                        // Create a downloadable link for the CSV
+                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.setAttribute('href', url);
+                        link.setAttribute('download', `team-feedback-${new Date().toISOString().slice(0, 10)}.csv`);
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        showNotification('CSV export complete!');
+                    } else {
+                        // Fall back to simpler export method
+                        exportToCSV();
+                    }
+                } catch (error) {
+                    console.error('Error exporting CSV:', error);
+                    showNotification('Error exporting to CSV: ' + error.message, true);
+                }
+            });
+        }
+        
+        // Export to PDF button
+        const exportPDFBtn = document.getElementById('export-pdf-btn');
+        if (exportPDFBtn) {
+            exportPDFBtn.addEventListener('click', async () => {
+                try {
+                    // Get data with timestamps if possible
+                    const fbItems = await getItemsWithTimestamps();
+                    
+                    // If we have data from Firebase with timestamps, use it to enhance our export
+                    if (fbItems.length > 0) {
+                        // Create a map of item IDs to their timestamps and other data
+                        const itemData = {};
+                        fbItems.forEach(item => {
+                            if (item.id) {
+                                itemData[item.id] = item;
+                            }
+                        });
+                        
+                        // Enhanced export to PDF with timestamps
+                        exportToPDF(itemData);
+                    } else {
+                        // Fall back to simpler export method
+                        exportToPDF();
+                    }
+                } catch (error) {
+                    console.error('Error exporting PDF:', error);
+                    showNotification('Error exporting to PDF: ' + error.message, true);
+                }
+            });
+        }
+        
+        console.log("Event listeners setup complete.");
+    } catch (error) {
+        console.error("Error setting up event listeners:", error);
+    }
 }
 
 // Function to handle votes
