@@ -41,7 +41,6 @@ h1 {
 
 header {
     border-bottom-color: var(--border-color);
-    position: relative; /* For absolute positioning of theme toggle */
 }
 
 .column, .card {
@@ -73,13 +72,17 @@ input, textarea, select {
     color: var(--secondary-text);
 }
 
+/* User controls container */
+.user-controls {
+    display: flex;
+    align-items: center;
+}
+
 /* Toggle Switch Styles */
 .theme-toggle {
     display: flex;
     align-items: center;
     gap: 6px;
-    /* Remove absolute positioning */
-    position: static; 
     margin-right: 10px;
 }
 
@@ -145,15 +148,15 @@ input:checked + .slider:before {
     color: #f59e0b;
 }
 
-.user-controls {
-    display: flex;
-    align-items: center;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    .user-controls {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
     .theme-toggle {
-        top: 10px;
-        right: 10px;
+        margin-right: 0;
     }
 }
