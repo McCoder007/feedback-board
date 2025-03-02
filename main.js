@@ -296,8 +296,14 @@ function setupEventListeners() {
   });
 }
 
-// Function to add a new item
+// Add this line before the function
+let isSubmitting = false;
+
 async function addNewItem(columnType, content) {
+  // Add these lines at the beginning of the function
+  if (isSubmitting) return;
+  isSubmitting = true;
+  
   try {
     // Add item to Firestore
     const docRef = await addDoc(collection(db, "items"), {
@@ -309,14 +315,14 @@ async function addNewItem(columnType, content) {
       downvotes: []
     });
     
-    // Add item to UI
-    addItemToUI({
-      id: docRef.id,
-      content: content,
-      columnType: columnType,
-      upvotes: [],
-      downvotes: []
-    });
+    // Remove the addItemToUI part entirely (delete these lines)
+    // addItemToUI({
+    //   id: docRef.id,
+    //   content: content,
+    //   columnType: columnType,
+    //   upvotes: [],
+    //   downvotes: []
+    // });
     
     // Reset form and close modal
     addItemForm.reset();
@@ -324,6 +330,9 @@ async function addNewItem(columnType, content) {
     showNotification('Item added successfully!');
   } catch (error) {
     showNotification('Error adding item: ' + error.message, true);
+  } finally {
+    // Add this line at the end, in the finally block
+    isSubmitting = false;
   }
 }
 
