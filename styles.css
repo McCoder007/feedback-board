@@ -1,8 +1,8 @@
 :root {
-    --primary-color: #6366f1;
-    --went-well-color: #10b981;
-    --to-improve-color: #ef4444;
-    --action-items-color: #8b5cf6;
+    --primary-color: #0064A4; /* UCI Blue (changed from #6366f1) */
+    --went-well-color: #FFD200; /* UCI Gold (changed from #10b981) */
+    --to-improve-color: #0064A4; /* UCI Blue (changed from #ef4444) */
+    --action-items-color: #C1C5C8; /* Silver/Gray Anteater (changed from #8b5cf6) */
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     
     /* Light theme variables */
@@ -17,16 +17,17 @@
 
 /* Dark theme variables */
 .dark-mode {
-    --bg-color: #111827;
-    --card-bg: #1f2937;
+    --bg-color: #051a2f; /* Deep blue-black for UCI theme (changed from #111827) */
+    --card-bg: #0a2440; /* Darker blue for UCI theme (changed from #1f2937) */
     --text-color: #f9fafb;
     --text-color-secondary: #d1d5db;
-    --border-color: #374151;
-    --input-border: #4b5563;
+    --border-color: #1e3a5f; /* Slightly lighter blue (changed from #374151) */
+    --input-border: #2d4e76; /* Adjusted for UCI theme (changed from #4b5563) */
     --header-text: #f9fafb;
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
 }
 
+/* The rest of the file remains unchanged */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -87,17 +88,20 @@ h1 {
 
 .went-well .column-header {
     background-color: var(--went-well-color);
-    color: white;
+    color: black; /* Changed to black for better contrast on gold background */
+    font-weight: 700;
 }
 
 .to-improve .column-header {
     background-color: var(--to-improve-color);
     color: white;
+    font-weight: 700;
 }
 
 .action-items .column-header {
     background-color: var(--action-items-color);
-    color: white;
+    color: black; /* Changed to black for better contrast on silver background */
+    font-weight: 700;
 }
 
 .add-item {
@@ -115,8 +119,14 @@ h1 {
     transition: background-color 0.2s;
 }
 
+/* Adjust add button colors for better visibility */
+.went-well .add-item, .action-items .add-item {
+    color: black;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
 .add-item:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 .cards {
@@ -178,16 +188,20 @@ h1 {
     color: var(--primary-color);
 }
 
+.dark-mode .vote-btn:hover {
+    color: var(--went-well-color); /* Use gold color for hover in dark mode */
+}
+
 .vote-btn:active {
     transform: scale(1.2);
 }
 
 .vote-btn.upvoted {
-    color: var(--primary-color);
+    color: var(--went-well-color); /* Changed to gold for upvoted */
 }
 
 .vote-btn.downvoted {
-    color: var(--to-improve-color);
+    color: var(--to-improve-color); /* Blue for downvoted */
 }
 
 .upvote.upvoted, .downvote.downvoted {
@@ -202,13 +216,11 @@ h1 {
 
 /* Highlight effect for cards that are being repositioned */
 .highlight-card {
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.7);
-    z-index: 10;
-    position: relative;
+    box-shadow: 0 0 10px rgba(0, 100, 164, 0.7); /* Changed to UCI blue */
 }
 
 .dark-mode .highlight-card {
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 10px rgba(255, 210, 0, 0.5); /* Changed to UCI gold for dark mode */
 }
 
 /* Theme toggle styles */
@@ -229,13 +241,22 @@ h1 {
     justify-content: center;
     font-size: 1.3rem;
     color: var(--primary-color);
-    background-color: rgba(99, 102, 241, 0.1);
+    background-color: rgba(0, 100, 164, 0.1); /* Changed to UCI blue */
     transition: all 0.3s ease;
 }
 
+.dark-mode #theme-toggle-btn {
+    color: var(--went-well-color); /* Gold in dark mode */
+    background-color: rgba(255, 210, 0, 0.1);
+}
+
 #theme-toggle-btn:hover {
-    background-color: rgba(99, 102, 241, 0.2);
+    background-color: rgba(0, 100, 164, 0.2); /* Changed to UCI blue */
     transform: translateY(-2px);
+}
+
+.dark-mode #theme-toggle-btn:hover {
+    background-color: rgba(255, 210, 0, 0.2); /* Gold in dark mode */
 }
 
 .light-icon, .dark-icon {
@@ -294,7 +315,8 @@ h1 {
 }
 
 .dark-mode .btn-outline {
-    border-color: var(--primary-color);
+    border-color: var(--went-well-color); /* Gold in dark mode */
+    color: var(--went-well-color);
 }
 
 .btn:hover {
@@ -318,6 +340,11 @@ h1 {
     justify-content: center;
     font-weight: 600;
     color: #4b5563;
+}
+
+.dark-mode .avatar {
+    background-color: var(--went-well-color); /* Gold in dark mode */
+    color: #333;
 }
 
 .modal {
@@ -422,8 +449,8 @@ textarea {
     bottom: 20px;
     right: 20px;
     padding: 12px 16px;
-    background-color: #34d399;
-    color: white;
+    background-color: var(--went-well-color); /* Changed to gold */
+    color: black; /* Changed to black for better contrast on gold */
     border-radius: 6px;
     box-shadow: var(--card-shadow);
     transform: translateY(100px);
@@ -437,7 +464,8 @@ textarea {
 }
 
 .notification.error {
-    background-color: #ef4444;
+    background-color: var(--to-improve-color); /* Changed to UCI blue */
+    color: white; /* White for better contrast on blue */
 }
 
 .search-tools {
