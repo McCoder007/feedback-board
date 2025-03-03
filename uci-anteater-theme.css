@@ -147,3 +147,13 @@ body.uci-theme select {
     color: var(--text-color);
     border-color: var(--input-border);
 }
+
+/* Increase spacing between theme selector and user avatar */
+.theme-selector {
+    margin-right: 20px; /* Adjust this value as needed */
+  }
+  
+  /* If that doesn't work, you can target the select element directly */
+  #theme-selector {
+    margin-right: 20px; /* Adjust this value as needed */
+  }
