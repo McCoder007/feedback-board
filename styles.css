@@ -138,10 +138,10 @@ h1 {
 
 .card {
     background-color: var(--card-bg);
-    border-radius: 6px;
+    border-radius: 8px; /* Slightly more rounded corners */
     padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px; /* Slightly more space between cards */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
     border-left: 4px solid #e5e7eb;
     position: relative;
     transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
@@ -168,50 +168,95 @@ h1 {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 10px;
+    gap: 12px; /* Increased gap between buttons */
     color: var(--text-color-secondary);
-    font-size: 0.9rem;
+    font-size: 1rem; /* Slightly larger font size */
+    margin-top: 8px; /* Added space above the voting area */
 }
 
 .vote-btn {
-    background: none;
-    border: none;
+    background-color: rgba(0, 0, 0, 0.05); /* Subtle background for better visibility */
+    border: 1px solid var(--border-color);
+    border-radius: 8px; /* Rounded corners */
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center; /* Center content */
+    gap: 6px; /* Increased space between icon and counter */
     color: var(--text-color-secondary);
-    transition: color 0.2s ease, transform 0.1s ease;
+    transition: all 0.2s ease;
+    padding: 8px 12px; /* Larger touch target */
+    min-width: 70px; /* Minimum width to ensure good touch target size */
+    min-height: 40px; /* Minimum height for better touchability */
+}
+
+/* Make the icons slightly larger */
+.vote-btn i {
+    font-size: 1.2rem;
 }
 
 .vote-btn:hover {
     color: var(--primary-color);
+    background-color: rgba(0, 100, 164, 0.1); /* Light blue background on hover */
+    transform: translateY(-2px); /* Slight lift effect */
 }
 
 .dark-mode .vote-btn:hover {
-    color: var(--went-well-color); /* Use gold color for hover in dark mode */
+    color: var(--went-well-color); /* Gold color for hover in dark mode */
+    background-color: rgba(255, 210, 0, 0.1); /* Gold tint background in dark mode */
 }
 
 .vote-btn:active {
-    transform: scale(1.2);
+    transform: scale(0.95); /* Slight press effect */
 }
 
 .vote-btn.upvoted {
-    color: var(--went-well-color); /* Changed to gold for upvoted */
+    color: var(--went-well-color); /* Gold for upvoted */
+    background-color: rgba(255, 210, 0, 0.15); /* Light gold background */
+    border-color: var(--went-well-color); /* Gold border */
+    font-weight: 500; /* Make text slightly bolder */
 }
 
 .vote-btn.downvoted {
     color: var(--to-improve-color); /* Blue for downvoted */
+    background-color: rgba(0, 100, 164, 0.15); /* Light blue background */
+    border-color: var(--to-improve-color); /* Blue border */
+    font-weight: 500; /* Make text slightly bolder */
 }
 
 .upvote.upvoted, .downvote.downvoted {
     animation: pulse 0.3s ease-in-out;
 }
 
+/* Add a special focus style for keyboard navigation */
+.vote-btn:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 @keyframes pulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+    50% { transform: scale(1.05); }
     100% { transform: scale(1); }
+}
+
+/* Add mobile-specific adjustments */
+@media (max-width: 768px) {
+    .card-actions {
+        justify-content: space-between; /* Spread out buttons on mobile */
+        margin-top: 12px; /* More space above buttons on mobile */
+    }
+    
+    .vote-btn {
+        flex: 1; /* Buttons take equal width */
+        min-height: 48px; /* Taller buttons on mobile */
+        padding: 10px 12px; /* More padding for easier touch */
+    }
+    
+    /* Make the icons even larger on mobile */
+    .vote-btn i {
+        font-size: 1.4rem;
+    }
 }
 
 /* Highlight effect for cards that are being repositioned */
