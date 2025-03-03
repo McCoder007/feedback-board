@@ -419,3 +419,13 @@ async function exportToPDF() {
     console.error('Error exporting PDF:', error);
     showNotification('Error exporting to PDF: ' + error.message, true);
   }
+}
+
+// Export functions
+export {
+  setupExport,
+  exportToCSV,
+  exportToPDF,
+  getColumnData,
+  getItemsWithTimestamps
+};
