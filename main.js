@@ -98,12 +98,6 @@ function initTheme() {
   }
 }
 
-function toggleTheme() {
-  const isDarkMode = document.body.classList.toggle('dark-mode');
-  localStorage.setItem('feedbackBoardTheme', isDarkMode ? 'dark' : 'light');
-  console.log("Theme toggled, dark mode:", isDarkMode); // Add this for debugging
-}
-
 // Toggle theme function
 function toggleTheme() {
     const isDarkMode = document.body.classList.toggle('dark-mode');
