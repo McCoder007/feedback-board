@@ -211,17 +211,18 @@ h1 {
 }
 
 .vote-btn.upvoted {
-    color: var(--went-well-color); /* Gold for upvoted */
-    background-color: rgba(255, 210, 0, 0.15); /* Light gold background */
-    border-color: var(--went-well-color); /* Gold border */
-    font-weight: 500; /* Make text slightly bolder */
+    color: #333333; /* Darker text color for better contrast */
+    background-color: rgba(255, 210, 0, 0.9); /* More solid gold background */
+    border-color: #E6BC00; /* Slightly darker gold border */
+    font-weight: 600; /* Make text bolder */
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5); /* Subtle text shadow for legibility */
 }
 
 .vote-btn.downvoted {
-    color: var(--to-improve-color); /* Blue for downvoted */
-    background-color: rgba(0, 100, 164, 0.15); /* Light blue background */
-    border-color: var(--to-improve-color); /* Blue border */
-    font-weight: 500; /* Make text slightly bolder */
+    color: white; /* White text for better contrast */
+    background-color: rgba(0, 100, 164, 0.85); /* More solid blue background */
+    border-color: #004A7A; /* Slightly darker blue border */
+    font-weight: 600; /* Make text bolder */
 }
 
 .upvote.upvoted, .downvote.downvoted {
