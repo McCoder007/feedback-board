@@ -1,0 +1,149 @@
+/* 
+ * UCI Anteater Pride Theme - Separate Theme File
+ * Add this as a separate CSS file and toggle the 'uci-theme' class on the body element
+ */
+
+/* Light Mode - UCI Anteater Theme */
+body.uci-theme {
+    --primary-color: #0064A4; /* UCI Blue */
+    --secondary-color: #FFD200; /* UCI Gold */
+    --went-well-color: #FFD200; /* UCI Gold */
+    --to-improve-color: #0064A4; /* UCI Blue */
+    --action-items-color: #C1C5C8; /* Silver/Gray (Anteater) */
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    
+    --bg-color: #f9fafb;
+    --card-bg: #ffffff;
+    --text-color: #1f2937;
+    --text-color-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --input-border: #d1d5db;
+    --header-text: #111827;
+    
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Dark Mode - UCI Anteater Theme */
+body.uci-theme.dark-mode {
+    --bg-color: #051a2f; /* Deep blue-black */
+    --card-bg: #0a2440; /* Darker blue */
+    --text-color: #f9fafb;
+    --text-color-secondary: #d1d5db;
+    --border-color: #1e3a5f; /* Slightly lighter blue */
+    --input-border: #2d4e76;
+    --header-text: #f9fafb;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Custom styles for header */
+body.uci-theme header h1 {
+    color: var(--primary-color);
+}
+
+body.uci-theme.dark-mode header h1 {
+    color: var(--secondary-color);
+}
+
+/* Primary and outline buttons */
+body.uci-theme .btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+body.uci-theme .btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+body.uci-theme.dark-mode .btn-outline {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+/* Export buttons */
+body.uci-theme .export-tools .btn {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+body.uci-theme.dark-mode .export-tools .btn {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Theme toggle button */
+body.uci-theme #theme-toggle-btn {
+    color: var(--primary-color);
+    background-color: rgba(0, 100, 164, 0.1);
+}
+
+body.uci-theme.dark-mode #theme-toggle-btn {
+    color: var(--secondary-color);
+    background-color: rgba(255, 210, 0, 0.1);
+}
+
+/* Vote buttons */
+body.uci-theme .vote-btn:hover {
+    color: var(--primary-color);
+}
+
+body.uci-theme.dark-mode .vote-btn:hover {
+    color: var(--secondary-color);
+}
+
+body.uci-theme .upvote.upvoted {
+    color: var(--secondary-color); /* Gold for upvoted */
+}
+
+body.uci-theme .downvote.downvoted {
+    color: var(--to-improve-color); /* Blue for downvoted */
+}
+
+/* Notification colors */
+body.uci-theme .notification {
+    background-color: var(--went-well-color);
+    color: #1f2937; /* Dark text for better contrast on gold */
+}
+
+body.uci-theme .notification.error {
+    background-color: var(--to-improve-color);
+    color: white; /* White text on blue for errors */
+}
+
+/* Card highlighting */
+body.uci-theme .highlight-card {
+    box-shadow: 0 0 10px rgba(255, 210, 0, 0.7);
+}
+
+body.uci-theme.dark-mode .highlight-card {
+    box-shadow: 0 0 10px rgba(255, 210, 0, 0.5);
+}
+
+/* User avatar in dark mode */
+body.uci-theme.dark-mode .avatar {
+    background-color: var(--secondary-color);
+    color: #333;
+}
+
+/* Modal styles */
+body.uci-theme .modal-content {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+body.uci-theme .modal-title {
+    color: var(--header-text);
+}
+
+body.uci-theme input,
+body.uci-theme textarea,
+body.uci-theme select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--input-border);
+}
