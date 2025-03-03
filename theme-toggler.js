@@ -81,4 +81,35 @@ document.addEventListener('DOMContentLoaded', () => {
         headerControls.insertBefore(selectorContainer, headerControls.firstChild);
       }
     }
+    // Fix for sort dropdown becoming blank on refresh
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the sort dropdown
+    const sortSelect = document.querySelector('.search-tools select');
+    
+    if (sortSelect) {
+      // Check if there's a saved sort preference in localStorage
+      const savedSort = localStorage.getItem('feedbackBoardSort');
+      
+      if (savedSort) {
+        // Set the dropdown value to match the saved preference
+        sortSelect.value = savedSort;
+      } else {
+        // If no saved preference, default to 'newest' (or whatever your default is)
+        sortSelect.value = 'newest';
+        // Optionally save this default to localStorage
+        localStorage.setItem('feedbackBoardSort', 'newest');
+      }
+      
+      // Make sure the change event is properly attached
+      sortSelect.addEventListener('change', function() {
+        const selectedSort = this.value;
+        localStorage.setItem('feedbackBoardSort', selectedSort);
+        
+        // Call your existing sort function if available
+        if (typeof loadAllItems === 'function') {
+          loadAllItems(selectedSort);
+        }
+      });
+    }
+  });
   }
