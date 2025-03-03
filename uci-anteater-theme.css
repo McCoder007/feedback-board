@@ -157,3 +157,42 @@ body.uci-theme select {
   #theme-selector {
     margin-right: 30px; /* Adjust this value as needed */
   }
+
+  /* Add this to your uci-anteater-theme.css file */
+
+/* Improve text contrast for accessibility */
+body.uci-theme .went-well .column-header {
+    color: #000000; /* Black text on gold background */
+    font-weight: 700; /* Make text bolder */
+    text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2); /* Subtle text shadow for better readability */
+  }
+  
+  body.uci-theme .action-items .column-header {
+    color: #000000; /* Black text on silver/gray background */
+    font-weight: 700; /* Make text bolder */
+    text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2); /* Subtle text shadow for better readability */
+  }
+  
+  /* Optional: Enhance the blue "To Improve" text if needed */
+  body.uci-theme .to-improve .column-header {
+    font-weight: 700; /* Make text bolder */
+    text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.3); /* Subtle text shadow for better readability */
+  }
+  
+  /* Make the + buttons more visible too */
+  body.uci-theme .column-header .add-item {
+    color: #000000; /* Black for gold and silver backgrounds */
+    background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent white background */
+    width: 24px;
+    height: 24px;
+  }
+  
+  body.uci-theme .to-improve .column-header .add-item {
+    color: #ffffff; /* Keep white for blue background */
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+  }
+  
+  /* Hover effect for better usability */
+  body.uci-theme .column-header .add-item:hover {
+    background-color: rgba(255, 255, 255, 0.5); /* Lighter on hover */
+  }
