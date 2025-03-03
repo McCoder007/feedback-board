@@ -14,7 +14,7 @@ import {
     signOut
   } from './firebase-config.js';
   import { showNotification } from './ui.js';
-  import { loadAllItems } from './board.js';
+  import { setupRealTimeUpdates } from './board.js';
   
   // Current user state
   let currentUser = null;
@@ -166,18 +166,21 @@ import {
         if (user) {
           currentUser = user;
           updateUserUI();
-          loadAllItems();
+          
+          // Set up real-time updates after authentication change
+          setupRealTimeUpdates();
         } else {
           currentUser = null;
           updateUserUI();
-          // Still load items for anonymous viewing
-          loadAllItems();
+          
+          // Still set up real-time updates for anonymous viewing
+          setupRealTimeUpdates();
         }
       });
     } else {
       console.error("Auth not initialized yet");
-      // Still try to load items for viewing
-      setTimeout(() => loadAllItems(), 1000);
+      // Still try to set up updates
+      setTimeout(() => setupRealTimeUpdates(), 1000);
     }
   }
   

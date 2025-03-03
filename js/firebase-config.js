@@ -12,7 +12,8 @@ import {
   query,
   orderBy,
   serverTimestamp,
-  where 
+  where,
+  onSnapshot  // Added onSnapshot for real-time updates
 } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js';
 import { 
   getAuth, 
@@ -73,6 +74,7 @@ export {
     orderBy,
     serverTimestamp,
     where,
+    onSnapshot,  // Export onSnapshot
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged,

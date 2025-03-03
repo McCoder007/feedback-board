@@ -631,3 +631,63 @@ select {
         justify-content: center;
     }
 }
+
+/* Add to styles.css */
+
+/* Animation for new cards that appear in real-time */
+@keyframes new-card-appear {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+    }
+    70% {
+      transform: translateY(5px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  .new-card {
+    animation: new-card-appear 0.8s ease-out forwards;
+    box-shadow: 0 0 15px rgba(0, 100, 164, 0.4); /* UCI blue glow */
+    border-left-width: 6px; /* Make border a bit thicker for emphasis */
+  }
+  
+  .dark-mode .new-card {
+    box-shadow: 0 0 15px rgba(255, 210, 0, 0.4); /* UCI gold glow for dark mode */
+  }
+  
+  /* Animation for cards that are updated in real-time */
+  @keyframes card-update-pulse {
+    0% {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 12px rgba(0, 100, 164, 0.6); /* UCI blue pulse */
+    }
+    100% {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  .card-updated {
+    animation: card-update-pulse 1.2s ease-in-out;
+  }
+  
+  .dark-mode .card-updated {
+    animation-name: card-update-pulse-dark;
+  }
+  
+  @keyframes card-update-pulse-dark {
+    0% {
+      box-shadow: var(--card-shadow);
+    }
+    50% {
+      box-shadow: 0 0 12px rgba(255, 210, 0, 0.5); /* UCI gold pulse for dark mode */
+    }
+    100% {
+      box-shadow: var(--card-shadow);
+    }
+  }
