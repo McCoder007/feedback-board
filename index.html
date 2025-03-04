@@ -215,5 +215,16 @@
     
     <!-- Use the modular JS structure -->
     <script type="module" src="js/main.js"></script>
+    
+    <script>
+        // Force board to display after timeout (fixes stuck loading indicator)
+        setTimeout(function() {
+          var loadingIndicator = document.getElementById('loading-indicator');
+          var board = document.querySelector('.board');
+          
+          if (loadingIndicator) loadingIndicator.style.display = 'none';
+          if (board) board.style.display = window.innerWidth <= 768 ? 'block' : 'grid';
+        }, 5000);
+      </script>
 </body>
 </html>
