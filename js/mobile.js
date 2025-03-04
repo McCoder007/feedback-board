@@ -232,20 +232,25 @@ function setupMobileEnhancements() {
     });
   }
   
-  // Initialize mobile enhancements
-  function initMobileEnhancements() {
-    // Setup based on screen size
-    setupMobileEnhancements();
-    
-    // Set up board observer
-    observeBoardChanges();
-    
-    // Update on window resize
-    window.addEventListener('resize', () => {
-      if (window.innerWidth <= 768) {
-        setupMobileEnhancements();
+// Modify initMobileEnhancements in mobile.js
+function initMobileEnhancements() {
+    // Only run on actual mobile devices
+    if (window.innerWidth <= 768) {
+      console.log("Initializing mobile enhancements");
+      
+      // First ensure board is visible
+      const board = document.querySelector('.board');
+      if (board && board.style.display === 'none') {
+        board.style.display = 'block';
       }
-    });
+      
+      // Then run mobile-specific setup
+      setTimeout(() => {
+        setupCollapsibleColumns();
+        setupSectionNavigation();
+        updateColumnItemCounts();
+      }, 1000); // Delay to ensure board is loaded
+    }
   }
   
   // Export the initialization function

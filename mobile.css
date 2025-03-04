@@ -212,3 +212,21 @@
       justify-content: space-between;
     }
   }
+
+  /* Add this to mobile.css */
+@media (max-width: 768px) {
+    .board {
+      display: block !important; /* Force block display on mobile */
+    }
+    
+    /* Ensure cards are visible */
+    .cards {
+      max-height: none !important;
+      overflow: visible !important;
+    }
+    
+    /* Fix for iOS scrolling */
+    body {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
