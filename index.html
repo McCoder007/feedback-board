@@ -76,12 +76,6 @@
             </div>
         </div>
         
-        <!-- Add pull-to-refresh indicator -->
-        <div class="pull-indicator">
-            <div class="spinner"></div>
-            <span>Pull to refresh</span>
-        </div>
-        
         <!-- Initial loading state -->
         <div id="loading-indicator" class="board-loading">
             <div class="loading-spinner"></div>
@@ -207,19 +201,13 @@
             document.body.classList.add('touch-device');
         }
         
-        // Fix for iOS overscroll behavior
+        // Fix for iOS scrolling behavior
         document.addEventListener('touchmove', function(e) {
-            if (e.target.closest('.cards') === null) {
-                // If not scrolling inside a card container, prevent bouncy scrolling
-                if (e.target.closest('.board') !== null && e.touches.length === 1) {
-                    // Allow default behavior for two-finger gestures (zooming)
-                    if (document.body.classList.contains('allow-overscroll')) {
-                        return;
-                    }
-                    // e.preventDefault(); // Note: This can cause warnings in newer browsers
-                }
+            // Let default scrolling happen in cards
+            if (e.target.closest('.cards')) {
+                return;
             }
-        }, { passive: false });
+        }, { passive: true });
     </script>
 
     <!-- Add PDF generation library -->

@@ -1,65 +1,178 @@
-/* Mobile Responsiveness Improvements */
+/* Mobile Accordion-Style Feedback Board */
 
-/* Improved board layout for mobile */
+/* Base mobile styles */
 @media (max-width: 768px) {
-    /* Convert grid to a scrollable horizontal layout on mobile */
+    /* Convert grid to stacked layout with collapsible sections */
     .board {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-      gap: 15px;
-      padding: 10px 5px 20px 5px;
-      margin: 0 -20px;
-      width: calc(100% + 40px);
-    }
-    
-    /* Add padding to the sides for better visual appearance */
-    .container {
-      padding: 15px;
-    }
-    
-    /* Make columns fixed width and add snap scrolling */
-    .column {
-      min-width: 85%;
-      flex: 0 0 85%;
-      margin-bottom: 0;
-      scroll-snap-align: center;
-      height: auto;
-      max-height: none;
-    }
-    
-    /* Adjust the cards container height for better scrolling */
-    .cards {
-      max-height: 65vh;
+      display: block;
       overflow-y: auto;
-      /* Improve scrolling on mobile with momentum-based scrolling */
-      -webkit-overflow-scrolling: touch;
+      padding: 0;
+    }
+    
+    /* Adjust column styling */
+    .column {
+      margin-bottom: 15px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    /* Make column headers tappable */
+    .column-header {
+      padding: 16px;
+      cursor: pointer;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    /* Add expand/collapse indicator */
+    .column-header:after {
+      content: '\f107'; /* Font Awesome down arrow */
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+    
+    /* Rotate arrow when expanded */
+    .column.collapsed .column-header:after {
+      transform: rotate(-90deg);
+    }
+    
+    /* Hide the + button on collapsed state */
+    .column.collapsed .add-item {
+      display: none;
+    }
+    
+    /* Collapsible cards container */
+    .cards {
+      max-height: none;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+    
+    /* Collapsed state */
+    .column.collapsed .cards {
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    
+    /* Add a badge with count */
+    .column-header .item-count {
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      margin-right: 10px;
     }
     
     /* Make cards more touch-friendly */
     .card {
       padding: 16px;
-      margin-bottom: 16px;
-      border-radius: 12px; /* Slightly more rounded for better mobile aesthetics */
-      border-left-width: 6px; /* Thicker indicator border */
+      margin-bottom: 12px;
+      border-radius: 8px;
     }
     
-    /* Add subtle scroll indicators */
-    .board:after {
-      content: '';
-      flex: 0 0 20px;
-      height: 1px;
+    /* Make voting buttons more touch-friendly */
+    .card-actions {
+      justify-content: space-between;
+      margin-top: 12px;
     }
     
-    .board:before {
-      content: '';
-      flex: 0 0 20px;
-      height: 1px;
+    .vote-btn {
+      min-height: 44px;
+      padding: 10px 12px;
+      flex: 1;
+      max-width: 48%;
+      justify-content: center;
     }
     
-    /* Improve the search and export tools layout */
+    /* Add an active section highlight */
+    .column.active {
+      box-shadow: 0 0 0 2px var(--primary-color);
+    }
+    
+    .dark-mode .column.active {
+      box-shadow: 0 0 0 2px var(--went-well-color);
+    }
+    
+    /* Add a fixed section navigation at bottom */
+    .section-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-around;
+      background-color: var(--card-bg);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      padding: 10px 5px;
+      z-index: 100;
+    }
+    
+    .section-nav-button {
+      border: none;
+      background: none;
+      padding: 8px 10px;
+      border-radius: 5px;
+      color: var(--text-color);
+      font-size: 0.85rem;
+      text-align: center;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .section-nav-button i {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+    
+    .section-nav-button.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .dark-mode .section-nav-button.active {
+      background-color: var(--went-well-color);
+      color: black;
+    }
+    
+    /* Add padding to prevent content being hidden behind the fixed nav */
+    .container {
+      padding-bottom: 70px;
+    }
+    
+    /* Improve modals for mobile */
+    .modal-content {
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    /* Badge to show new items */
+    .column-header .new-badge {
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 30px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      margin-left: 8px;
+      position: relative;
+      top: -1px;
+    }
+    
+    .dark-mode .column-header .new-badge {
+      background-color: var(--went-well-color);
+      color: black;
+    }
+    
+    /* Improved search tools layout */
     .search-tools {
       flex-direction: column;
       gap: 15px;
@@ -80,209 +193,22 @@
       width: 100%;
       justify-content: space-between;
     }
-    
-    .export-tools .btn {
-      flex: 1;
-      margin: 0 5px;
-    }
-    
-    /* Reorganize header for mobile */
+  }
+  
+  /* Compact header for mobile */
+  @media (max-width: 480px) {
     header {
       flex-wrap: wrap;
-      gap: 10px;
     }
     
     h1 {
-      width: auto;
-      margin-bottom: 0;
+      width: 100%;
+      margin-bottom: 10px;
       font-size: 1.5rem;
     }
     
     .header-controls {
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-    
-    /* Make modals more mobile-friendly */
-    .modal-content {
-      width: 90%;
-      max-width: none;
-      max-height: 80vh;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    
-    /* Increase tap target sizes for better mobile usability */
-    .btn, 
-    .vote-btn,
-    .close-modal,
-    #theme-toggle-btn,
-    .add-item {
-      min-height: 44px; /* Apple's recommended minimum touch target size */
-    }
-    
-    /* Add column indicators to help with horizontal navigation */
-    .column-indicators {
-      display: flex;
-      justify-content: center;
-      margin-top: 15px;
-      gap: 8px;
-    }
-    
-    .column-indicator {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: var(--border-color);
-      transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-    
-    .column-indicator.active {
-      background-color: var(--primary-color);
-      transform: scale(1.3);
-    }
-    
-    .dark-mode .column-indicator.active {
-      background-color: var(--went-well-color);
-    }
-    
-    /* Add column navigation buttons for better UX */
-    .column-nav {
-      display: none; /* Hidden on desktop */
-    }
-    
-    @media (max-width: 768px) {
-      .column-nav {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
-      }
-      
-      .column-nav-button {
-        display: flex;
-        align-items: center;
-        background: none;
-        border: none;
-        color: var(--primary-color);
-        font-weight: 500;
-        cursor: pointer;
-      }
-      
-      .dark-mode .column-nav-button {
-        color: var(--went-well-color);
-      }
-      
-      .column-name {
-        margin: 0 15px;
-        font-weight: 600;
-      }
-    }
-    
-    /* Add pull-to-refresh visual indicator */
-    .pull-indicator {
-      height: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: height 0.3s ease;
-      overflow: hidden;
-      color: var(--text-color-secondary);
-      font-size: 0.9rem;
-    }
-    
-    .pull-indicator.active {
-      height: 40px;
-    }
-    
-    .pull-indicator .spinner {
-      width: 20px;
-      height: 20px;
-      border: 2px solid transparent;
-      border-top-color: var(--primary-color);
-      border-radius: 50%;
-      margin-right: 10px;
-      animation: spin 1s linear infinite;
-    }
-    
-    .dark-mode .pull-indicator .spinner {
-      border-top-color: var(--went-well-color);
-    }
-    
-    /* Better visibility for active column on mobile */
-    @media (max-width: 768px) {
-      .column {
-        opacity: 0.8;
-        transform: scale(0.98);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-      }
-      
-      .column.active {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-    
-    /* Fix sticky hover issues on mobile */
-    @media (hover: none) {
-      .vote-btn:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-        color: var(--text-color-secondary);
-        transform: none;
-      }
-      
-      .btn:hover {
-        opacity: 1;
-        transform: none;
-      }
-      
-      #theme-toggle-btn:hover {
-        background-color: rgba(0, 100, 164, 0.1);
-        transform: none;
-      }
-    }
-    
-    /* More space for the vote buttons on mobile */
-    @media (max-width: 768px) {
-      .card-actions {
-        justify-content: space-between;
-        margin-top: 16px;
-      }
-      
-      .vote-btn {
-        padding: 10px 16px;
-        flex-grow: 1;
-        justify-content: center;
-      }
-    }
-  }
-  
-  /* Add some CSS to help with scrollbar visibility on mobile */
-  .cards::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  .cards::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .cards::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-  }
-  
-  .dark-mode .cards::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Add momentum scrolling to the board on mobile */
-  .board {
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Make sure there's sufficient bottom padding to prevent items from being hidden behind bottom nav bars */
-  @media (max-width: 768px) {
-    .container {
-      padding-bottom: 30px;
+      width: 100%;
+      justify-content: space-between;
     }
   }
