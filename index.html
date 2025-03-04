@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Team Feedback Board</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile.css">
     <style>
         /* Add a loading state */
         .board-loading {
@@ -73,6 +74,12 @@
                     <i class="fas fa-file-pdf"></i> Export to PDF
                 </button>
             </div>
+        </div>
+        
+        <!-- Add pull-to-refresh indicator -->
+        <div class="pull-indicator">
+            <div class="spinner"></div>
+            <span>Pull to refresh</span>
         </div>
         
         <!-- Initial loading state -->
@@ -192,6 +199,28 @@
     </div>
 
     <div class="notification" id="notification">Item added successfully!</div>
+
+    <!-- Detect touch devices -->
+    <script>
+        // Add a class to the body for touch devices
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            document.body.classList.add('touch-device');
+        }
+        
+        // Fix for iOS overscroll behavior
+        document.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.cards') === null) {
+                // If not scrolling inside a card container, prevent bouncy scrolling
+                if (e.target.closest('.board') !== null && e.touches.length === 1) {
+                    // Allow default behavior for two-finger gestures (zooming)
+                    if (document.body.classList.contains('allow-overscroll')) {
+                        return;
+                    }
+                    // e.preventDefault(); // Note: This can cause warnings in newer browsers
+                }
+            }
+        }, { passive: false });
+    </script>
 
     <!-- Add PDF generation library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

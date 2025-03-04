@@ -1,0 +1,288 @@
+/* Mobile Responsiveness Improvements */
+
+/* Improved board layout for mobile */
+@media (max-width: 768px) {
+    /* Convert grid to a scrollable horizontal layout on mobile */
+    .board {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      gap: 15px;
+      padding: 10px 5px 20px 5px;
+      margin: 0 -20px;
+      width: calc(100% + 40px);
+    }
+    
+    /* Add padding to the sides for better visual appearance */
+    .container {
+      padding: 15px;
+    }
+    
+    /* Make columns fixed width and add snap scrolling */
+    .column {
+      min-width: 85%;
+      flex: 0 0 85%;
+      margin-bottom: 0;
+      scroll-snap-align: center;
+      height: auto;
+      max-height: none;
+    }
+    
+    /* Adjust the cards container height for better scrolling */
+    .cards {
+      max-height: 65vh;
+      overflow-y: auto;
+      /* Improve scrolling on mobile with momentum-based scrolling */
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Make cards more touch-friendly */
+    .card {
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 12px; /* Slightly more rounded for better mobile aesthetics */
+      border-left-width: 6px; /* Thicker indicator border */
+    }
+    
+    /* Add subtle scroll indicators */
+    .board:after {
+      content: '';
+      flex: 0 0 20px;
+      height: 1px;
+    }
+    
+    .board:before {
+      content: '';
+      flex: 0 0 20px;
+      height: 1px;
+    }
+    
+    /* Improve the search and export tools layout */
+    .search-tools {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .search-and-sort {
+      width: 100%;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      max-width: none;
+      width: 100%;
+    }
+    
+    .export-tools {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .export-tools .btn {
+      flex: 1;
+      margin: 0 5px;
+    }
+    
+    /* Reorganize header for mobile */
+    header {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    h1 {
+      width: auto;
+      margin-bottom: 0;
+      font-size: 1.5rem;
+    }
+    
+    .header-controls {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    /* Make modals more mobile-friendly */
+    .modal-content {
+      width: 90%;
+      max-width: none;
+      max-height: 80vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Increase tap target sizes for better mobile usability */
+    .btn, 
+    .vote-btn,
+    .close-modal,
+    #theme-toggle-btn,
+    .add-item {
+      min-height: 44px; /* Apple's recommended minimum touch target size */
+    }
+    
+    /* Add column indicators to help with horizontal navigation */
+    .column-indicators {
+      display: flex;
+      justify-content: center;
+      margin-top: 15px;
+      gap: 8px;
+    }
+    
+    .column-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--border-color);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    
+    .column-indicator.active {
+      background-color: var(--primary-color);
+      transform: scale(1.3);
+    }
+    
+    .dark-mode .column-indicator.active {
+      background-color: var(--went-well-color);
+    }
+    
+    /* Add column navigation buttons for better UX */
+    .column-nav {
+      display: none; /* Hidden on desktop */
+    }
+    
+    @media (max-width: 768px) {
+      .column-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+      
+      .column-nav-button {
+        display: flex;
+        align-items: center;
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        font-weight: 500;
+        cursor: pointer;
+      }
+      
+      .dark-mode .column-nav-button {
+        color: var(--went-well-color);
+      }
+      
+      .column-name {
+        margin: 0 15px;
+        font-weight: 600;
+      }
+    }
+    
+    /* Add pull-to-refresh visual indicator */
+    .pull-indicator {
+      height: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: height 0.3s ease;
+      overflow: hidden;
+      color: var(--text-color-secondary);
+      font-size: 0.9rem;
+    }
+    
+    .pull-indicator.active {
+      height: 40px;
+    }
+    
+    .pull-indicator .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top-color: var(--primary-color);
+      border-radius: 50%;
+      margin-right: 10px;
+      animation: spin 1s linear infinite;
+    }
+    
+    .dark-mode .pull-indicator .spinner {
+      border-top-color: var(--went-well-color);
+    }
+    
+    /* Better visibility for active column on mobile */
+    @media (max-width: 768px) {
+      .column {
+        opacity: 0.8;
+        transform: scale(0.98);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+      
+      .column.active {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    /* Fix sticky hover issues on mobile */
+    @media (hover: none) {
+      .vote-btn:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: var(--text-color-secondary);
+        transform: none;
+      }
+      
+      .btn:hover {
+        opacity: 1;
+        transform: none;
+      }
+      
+      #theme-toggle-btn:hover {
+        background-color: rgba(0, 100, 164, 0.1);
+        transform: none;
+      }
+    }
+    
+    /* More space for the vote buttons on mobile */
+    @media (max-width: 768px) {
+      .card-actions {
+        justify-content: space-between;
+        margin-top: 16px;
+      }
+      
+      .vote-btn {
+        padding: 10px 16px;
+        flex-grow: 1;
+        justify-content: center;
+      }
+    }
+  }
+  
+  /* Add some CSS to help with scrollbar visibility on mobile */
+  .cards::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .cards::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .cards::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  
+  .dark-mode .cards::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Add momentum scrolling to the board on mobile */
+  .board {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Make sure there's sufficient bottom padding to prevent items from being hidden behind bottom nav bars */
+  @media (max-width: 768px) {
+    .container {
+      padding-bottom: 30px;
+    }
+  }

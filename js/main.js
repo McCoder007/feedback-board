@@ -1,4 +1,6 @@
 // Main entry point for the Team Feedback Board application
+// Add this import for the mobile enhancements
+import { initMobileEnhancements } from './mobile.js';
 import { setupThemeToggle } from './theme.js';
 import { setupAuth } from './auth.js';
 import { initBoard } from './board.js';
@@ -24,4 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
   
   // Setup export functionality
   setupExport();
+  
+  // Initialize mobile enhancements - add this line
+  initMobileEnhancements();
 });
