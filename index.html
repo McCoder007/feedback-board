@@ -215,7 +215,7 @@
     
     <!-- Use the modular JS structure -->
     <script type="module" src="js/main.js"></script>
-    
+
     <script>
         // Force board to display after timeout (fixes stuck loading indicator)
         setTimeout(function() {
@@ -225,6 +225,106 @@
           if (loadingIndicator) loadingIndicator.style.display = 'none';
           if (board) board.style.display = window.innerWidth <= 768 ? 'block' : 'grid';
         }, 5000);
+      </script>
+      // Add this script tag just before the closing </body> tag in your index.html
+
+      <script>
+        // Immediately log when this script loads
+        console.log("Debug script loaded - " + new Date().toISOString());
+        
+        // Log device information
+        console.log("User Agent: " + navigator.userAgent);
+        console.log("Screen size: " + window.innerWidth + "x" + window.innerHeight);
+        
+        // Check if Firebase is defined
+        console.log("Firebase defined: " + (typeof firebase !== 'undefined'));
+        
+        // Check if important elements exist
+        console.log("Loading indicator exists: " + (document.getElementById('loading-indicator') !== null));
+        console.log("Board exists: " + (document.querySelector('.board') !== null));
+        
+        // Log element states
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const board = document.querySelector('.board');
+        
+        if (loadingIndicator) {
+          console.log("Loading indicator display: " + loadingIndicator.style.display);
+        }
+        
+        if (board) {
+          console.log("Board display: " + board.style.display);
+          console.log("Number of columns: " + board.querySelectorAll('.column').length);
+          console.log("Number of cards: " + board.querySelectorAll('.card').length);
+        }
+        
+        // Log Firebase status in 3 seconds (give it time to initialize)
+        setTimeout(function() {
+          console.log("== Firebase status after 3s ==");
+          console.log("Firebase defined (delayed check): " + (typeof firebase !== 'undefined'));
+          
+          try {
+            if (typeof firebase !== 'undefined') {
+              const app = firebase.app();
+              console.log("Firebase app initialized");
+              
+              // Log which features are available
+              const features = ['auth', 'database', 'firestore', 'functions', 'storage'];
+              features.forEach(function(feature) {
+                if (typeof app[feature] === 'function') {
+                  console.log("Firebase " + feature + " is available");
+                }
+              });
+            }
+          } catch (e) {
+            console.error("Error checking Firebase: " + e.message);
+          }
+        }, 3000);
+        
+        // Add a runtime observer to check when the board becomes visible
+        let boardObserver = setInterval(function() {
+          const board = document.querySelector('.board');
+          const loading = document.getElementById('loading-indicator');
+          
+          if (board) {
+            console.log("Board display check: " + board.style.display);
+            console.log("Loading display check: " + (loading ? loading.style.display : "not found"));
+            
+            if (board.style.display !== 'none') {
+              console.log("BOARD IS NOW VISIBLE!");
+              console.log("Card count: " + board.querySelectorAll('.card').length);
+              clearInterval(boardObserver);
+            }
+          }
+        }, 1000);
+        
+        // Force display the board after 5 seconds
+        setTimeout(function() {
+          console.log("Forcing board display");
+          
+          const loadingIndicator = document.getElementById('loading-indicator');
+          const board = document.querySelector('.board');
+          
+          if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+            console.log("Loading indicator hidden");
+          }
+          
+          if (board) {
+            board.style.display = window.innerWidth <= 768 ? 'block' : 'grid';
+            console.log("Board display forced to: " + board.style.display);
+            console.log("Column count: " + board.querySelectorAll('.column').length);
+          }
+        }, 5000);
+        
+        // Run error handler to catch any JS errors
+        window.onerror = function(message, source, lineno, colno, error) {
+          console.error("JS ERROR: " + message);
+          console.error("Source: " + source + " Line: " + lineno + " Col: " + colno);
+          if (error && error.stack) {
+            console.error("Stack: " + error.stack);
+          }
+          return false;
+        };
       </script>
 </body>
 </html>
