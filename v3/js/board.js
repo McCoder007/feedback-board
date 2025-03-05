@@ -38,12 +38,18 @@ import {
   const addItemForm = document.getElementById('add-item-form');
   const itemContentTextarea = document.getElementById('item-content');
   const searchInput = document.querySelector('.search-input input');
-  const sortSelect = document.querySelector('.sort-select');
+  const sortSelect = document.querySelector('select');
   const exportBtn = document.querySelector('.export-btn');
   
   // Function to initialize board functionality
   function initBoard() {
     console.log("Initializing board...");
+    
+    // Check if DOM elements are found
+    console.log("Sort select found:", sortSelect);
+    if (sortSelect) {
+      console.log("Sort select value:", sortSelect.value);
+    }
     
     // Get board ID from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -67,6 +73,9 @@ import {
     
     // Setup event listeners
     setupBoardEventListeners();
+    
+    // Clean up when user leaves the page
+    window.addEventListener('beforeunload', cleanupBoard);
   }
   
   // Load board data
@@ -142,9 +151,14 @@ import {
     
     // Sort select
     if (sortSelect) {
-      sortSelect.addEventListener('change', () => {
+      console.log("Adding change event listener to sort select");
+      sortSelect.addEventListener('change', (e) => {
+        console.log("Sort changed to:", e.target.value);
+        currentSortOrder = e.target.value; // Update the current sort order
         filterItems();
       });
+    } else {
+      console.warn("Sort select not found, cannot add event listener");
     }
     
     // Export button
@@ -370,11 +384,13 @@ import {
   
   // Filter items data based on search and sort
   function filterItemsData(items) {
+    console.log("Filtering items with sort and search");
     let filteredItems = [...items];
     
     // Apply search filter
     if (searchInput && searchInput.value.trim()) {
       const searchTerm = searchInput.value.trim().toLowerCase();
+      console.log("Filtering by search term:", searchTerm);
       filteredItems = filteredItems.filter(item => 
         item.content.toLowerCase().includes(searchTerm)
       );
@@ -383,24 +399,35 @@ import {
     // Apply sorting
     if (sortSelect) {
       const sortOption = sortSelect.value;
+      console.log("Sorting by option:", sortOption);
       
       if (sortOption === 'most-votes') {
-        filteredItems.sort((a, b) => b.votes - a.votes);
+        console.log("Sorting by most votes");
+        filteredItems.sort((a, b) => {
+          const votesA = a.votes || 0;
+          const votesB = b.votes || 0;
+          return votesB - votesA;
+        });
       } else if (sortOption === 'newest') {
+        console.log("Sorting by newest");
         filteredItems.sort((a, b) => {
           const dateA = a.createdAt ? a.createdAt.seconds : 0;
           const dateB = b.createdAt ? b.createdAt.seconds : 0;
           return dateB - dateA;
         });
       } else if (sortOption === 'oldest') {
+        console.log("Sorting by oldest");
         filteredItems.sort((a, b) => {
           const dateA = a.createdAt ? a.createdAt.seconds : 0;
           const dateB = b.createdAt ? b.createdAt.seconds : 0;
           return dateA - dateB;
         });
       }
+    } else {
+      console.warn("Sort select element not found");
     }
     
+    console.log("Filtered items:", filteredItems);
     return filteredItems;
   }
   
