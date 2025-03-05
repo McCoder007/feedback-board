@@ -1,0 +1,693 @@
+:root {
+    --primary-color: #0064A4; /* UCI Blue (changed from #6366f1) */
+    --went-well-color: #FFD200; /* UCI Gold (changed from #10b981) */
+    --to-improve-color: #0064A4; /* UCI Blue (changed from #ef4444) */
+    --action-items-color: #C1C5C8; /* Silver/Gray Anteater (changed from #8b5cf6) */
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    
+    /* Light theme variables */
+    --bg-color: #f9fafb;
+    --card-bg: #ffffff;
+    --text-color: #1f2937;
+    --text-color-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --input-border: #d1d5db;
+    --header-text: #111827;
+}
+
+/* Dark theme variables */
+.dark-mode {
+    --bg-color: #051a2f; /* Deep blue-black for UCI theme (changed from #111827) */
+    --card-bg: #0a2440; /* Darker blue for UCI theme (changed from #1f2937) */
+    --text-color: #f9fafb;
+    --text-color-secondary: #d1d5db;
+    --border-color: #1e3a5f; /* Slightly lighter blue (changed from #374151) */
+    --input-border: #2d4e76; /* Adjusted for UCI theme (changed from #4b5563) */
+    --header-text: #f9fafb;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* The rest of the file remains unchanged */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--header-text);
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.column {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+.column-header {
+    padding: 16px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.went-well .column-header {
+    background-color: var(--went-well-color);
+    color: black; /* Changed to black for better contrast on gold background */
+    font-weight: 700;
+}
+
+.to-improve .column-header {
+    background-color: var(--to-improve-color);
+    color: white;
+    font-weight: 700;
+}
+
+.action-items .column-header {
+    background-color: var(--action-items-color);
+    color: black; /* Changed to black for better contrast on silver background */
+    font-weight: 700;
+}
+
+.add-item {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+/* Adjust add button colors for better visibility */
+.went-well .add-item, .action-items .add-item {
+    color: black;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.add-item:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.cards {
+    padding: 16px;
+    min-height: 100px;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: 8px; /* Slightly more rounded corners */
+    padding: 16px;
+    margin-bottom: 16px; /* Slightly more space between cards */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+    border-left: 4px solid #e5e7eb;
+    position: relative;
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.went-well .card {
+    border-left-color: var(--went-well-color);
+}
+
+.to-improve .card {
+    border-left-color: var(--to-improve-color);
+}
+
+.action-items .card {
+    border-left-color: var(--action-items-color);
+}
+
+.card p {
+    margin-bottom: 12px;
+    word-wrap: break-word;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px; /* Increased gap between buttons */
+    color: var(--text-color-secondary);
+    font-size: 1rem; /* Slightly larger font size */
+    margin-top: 8px; /* Added space above the voting area */
+}
+
+.vote-btn {
+    background-color: rgba(0, 0, 0, 0.05); /* Subtle background for better visibility */
+    border: 1px solid var(--border-color);
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center content */
+    gap: 6px; /* Increased space between icon and counter */
+    color: var(--text-color-secondary);
+    transition: all 0.2s ease;
+    padding: 8px 12px; /* Larger touch target */
+    min-width: 70px; /* Minimum width to ensure good touch target size */
+    min-height: 40px; /* Minimum height for better touchability */
+}
+
+/* Make the icons slightly larger */
+.vote-btn i {
+    font-size: 1.2rem;
+}
+
+.vote-btn:hover {
+    color: var(--primary-color);
+    background-color: rgba(0, 100, 164, 0.1); /* Light blue background on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.dark-mode .vote-btn:hover {
+    color: var(--went-well-color); /* Gold color for hover in dark mode */
+    background-color: rgba(255, 210, 0, 0.1); /* Gold tint background in dark mode */
+}
+
+.vote-btn:active {
+    transform: scale(0.95); /* Slight press effect */
+}
+
+.vote-btn.upvoted {
+    color: #333333; /* Darker text color for better contrast */
+    background-color: rgba(255, 210, 0, 0.9); /* More solid gold background */
+    border-color: #E6BC00; /* Slightly darker gold border */
+    font-weight: 600; /* Make text bolder */
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5); /* Subtle text shadow for legibility */
+}
+
+.vote-btn.downvoted {
+    color: white; /* White text for better contrast */
+    background-color: rgba(0, 100, 164, 0.85); /* More solid blue background */
+    border-color: #004A7A; /* Slightly darker blue border */
+    font-weight: 600; /* Make text bolder */
+}
+
+.upvote.upvoted, .downvote.downvoted {
+    animation: pulse 0.3s ease-in-out;
+}
+
+/* Add a special focus style for keyboard navigation */
+.vote-btn:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Add mobile-specific adjustments */
+@media (max-width: 768px) {
+    .card-actions {
+        justify-content: space-between; /* Spread out buttons on mobile */
+        margin-top: 12px; /* More space above buttons on mobile */
+    }
+    
+    .vote-btn {
+        flex: 1; /* Buttons take equal width */
+        min-height: 48px; /* Taller buttons on mobile */
+        padding: 10px 12px; /* More padding for easier touch */
+    }
+    
+    /* Make the icons even larger on mobile */
+    .vote-btn i {
+        font-size: 1.4rem;
+    }
+}
+
+/* Highlight effect for cards that are being repositioned */
+.highlight-card {
+    box-shadow: 0 0 10px rgba(0, 100, 164, 0.7); /* Changed to UCI blue */
+}
+
+.dark-mode .highlight-card {
+    box-shadow: 0 0 10px rgba(255, 210, 0, 0.5); /* Changed to UCI gold for dark mode */
+}
+
+/* Theme toggle styles */
+.theme-toggle {
+    margin-right: 16px;
+    position: relative;
+}
+
+#theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    background-color: rgba(0, 100, 164, 0.1); /* Changed to UCI blue */
+    transition: all 0.3s ease;
+}
+
+.dark-mode #theme-toggle-btn {
+    color: var(--went-well-color); /* Gold in dark mode */
+    background-color: rgba(255, 210, 0, 0.1);
+}
+
+#theme-toggle-btn:hover {
+    background-color: rgba(0, 100, 164, 0.2); /* Changed to UCI blue */
+    transform: translateY(-2px);
+}
+
+.dark-mode #theme-toggle-btn:hover {
+    background-color: rgba(255, 210, 0, 0.2); /* Gold in dark mode */
+}
+
+.light-icon, .dark-icon {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+.dark-mode .light-icon, body:not(.dark-mode) .dark-icon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0);
+}
+
+.dark-mode .dark-icon, body:not(.dark-mode) .light-icon {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+@keyframes toggle-rotate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(15deg); }
+    100% { transform: scale(1); }
+}
+
+.animate-toggle {
+    animation: toggle-rotate 0.5s ease;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.dark-mode .btn-outline {
+    border-color: var(--went-well-color); /* Gold in dark mode */
+    color: var(--went-well-color);
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.dark-mode .avatar {
+    background-color: var(--went-well-color); /* Gold in dark mode */
+    color: #333;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    width: 100%;
+    max-width: 500px;
+    padding: 24px;
+    transform: translateY(-20px);
+    transition: transform 0.3s, background-color 0.3s ease;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-color-secondary);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+textarea, input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.dark-mode .search-input input {
+    background-color: rgba(31, 41, 55, 0.8);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 16px;
+    background-color: var(--went-well-color); /* Changed to gold */
+    color: black; /* Changed to black for better contrast on gold */
+    border-radius: 6px;
+    box-shadow: var(--card-shadow);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.notification.error {
+    background-color: var(--to-improve-color); /* Changed to UCI blue */
+    color: white; /* White for better contrast on blue */
+}
+
+.search-tools {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.search-and-sort {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    position: relative;
+}
+
+.search-input input {
+    padding-left: 36px;
+}
+
+.search-input i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color-secondary);
+}
+
+select {
+    padding: 8px 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    background-color: var(--card-bg);
+}
+
+.export-tools {
+    display: flex;
+    gap: 10px;
+}
+
+.export-tools .btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.export-tools .btn i {
+    font-size: 0.9rem;
+}
+
+/* Loading spinner */
+.board-loading {
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-spinner {
+    border: 5px solid var(--border-color);
+    border-radius: 50%;
+    border-top: 5px solid var(--primary-color);
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .board {
+        grid-template-columns: 1fr;
+    }
+    
+    header {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .header-controls {
+        margin-left: auto;
+    }
+    
+    h1 {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    .search-tools {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .search-input {
+        max-width: 100%;
+    }
+    
+    .export-tools {
+        width: 100%;
+    }
+    
+    .export-tools .btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+/* Add to styles.css */
+
+/* Animation for new cards that appear in real-time */
+@keyframes new-card-appear {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+    }
+    70% {
+      transform: translateY(5px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  .new-card {
+    animation: new-card-appear 0.8s ease-out forwards;
+    box-shadow: 0 0 15px rgba(0, 100, 164, 0.4); /* UCI blue glow */
+    border-left-width: 6px; /* Make border a bit thicker for emphasis */
+  }
+  
+  .dark-mode .new-card {
+    box-shadow: 0 0 15px rgba(255, 210, 0, 0.4); /* UCI gold glow for dark mode */
+  }
+  
+  /* Animation for cards that are updated in real-time */
+  @keyframes card-update-pulse {
+    0% {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 12px rgba(0, 100, 164, 0.6); /* UCI blue pulse */
+    }
+    100% {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  .card-updated {
+    animation: card-update-pulse 1.2s ease-in-out;
+  }
+  
+  .dark-mode .card-updated {
+    animation-name: card-update-pulse-dark;
+  }
+  
+  @keyframes card-update-pulse-dark {
+    0% {
+      box-shadow: var(--card-shadow);
+    }
+    50% {
+      box-shadow: 0 0 12px rgba(255, 210, 0, 0.5); /* UCI gold pulse for dark mode */
+    }
+    100% {
+      box-shadow: var(--card-shadow);
+    }
+  }

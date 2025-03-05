@@ -60,18 +60,46 @@ function showNotification(message, isError = false) {
     }
   }
   
-  // Setup failsafe to ensure board is displayed even if data loading fails
-  function setupBoardLoadingFailsafe() {
+// Enhanced failsafe function in ui.js
+function setupBoardLoadingFailsafe() {
+    // Set a shorter timeout for mobile devices
+    const timeoutDuration = window.innerWidth <= 768 ? 8000 : 10000;
+    
     setTimeout(() => {
       const loadingIndicator = document.getElementById('loading-indicator');
       const board = document.querySelector('.board');
+      const errorMessage = document.getElementById('error-message');
       
       if (loadingIndicator && loadingIndicator.style.display !== 'none') {
-        console.log("Failsafe timeout triggered - showing board anyway");
+        console.log("Failsafe timeout triggered - attempting recovery");
+        
+        // Hide loading indicator
         if (loadingIndicator) loadingIndicator.style.display = 'none';
-        if (board) board.style.display = 'grid';
+        
+        // Check if we can display the board
+        if (board) {
+          if (board.querySelectorAll('.column').length > 0) {
+            // We have columns, so show the board
+            board.style.display = window.innerWidth <= 768 ? 'block' : 'grid';
+            console.log("Board recovered and displayed");
+          } else {
+            // No columns, show error message
+            if (errorMessage) {
+              errorMessage.style.display = 'block';
+              console.log("Showing error message - no columns found");
+            }
+          }
+        }
       }
-    }, 5000); // 5 second timeout
+    }, timeoutDuration);
+    
+    // Add retry button functionality
+    const retryButton = document.getElementById('retry-button');
+    if (retryButton) {
+      retryButton.addEventListener('click', () => {
+        location.reload();
+      });
+    }
   }
   
   export { 
