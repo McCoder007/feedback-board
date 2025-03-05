@@ -26,6 +26,14 @@ async function initDashboard() {
     setupThemeToggle();
     setupAuth();
     
+    // Check if sort select exists
+    if (sortBoardsSelect) {
+        console.log("Sort select found:", sortBoardsSelect);
+        console.log("Current sort value:", sortBoardsSelect.value);
+    } else {
+        console.error("Sort select element not found!");
+    }
+    
     // Setup event listeners
     setupEventListeners();
     
@@ -59,14 +67,20 @@ function setupEventListeners() {
     createBoardForm.addEventListener('submit', handleCreateBoard);
     
     // Sort boards
-    sortBoardsSelect.addEventListener('change', () => {
-        loadUserBoards();
-    });
+    if (sortBoardsSelect) {
+        console.log("Adding change event listener to sort select");
+        sortBoardsSelect.addEventListener('change', (e) => {
+            console.log("Sort changed to:", e.target.value);
+            loadUserBoards();
+        });
+    }
     
     // Search boards
-    searchBoardsInput.addEventListener('input', debounce(() => {
-        loadUserBoards();
-    }, 300));
+    if (searchBoardsInput) {
+        searchBoardsInput.addEventListener('input', debounce(() => {
+            loadUserBoards();
+        }, 300));
+    }
     
     // Setup modal close buttons
     document.querySelectorAll('.close-modal').forEach(button => {
@@ -154,11 +168,11 @@ async function loadUserBoards() {
     
     try {
         // Get the sort option
-        const sortOption = sortBoardsSelect.value;
+        const sortOption = sortBoardsSelect ? sortBoardsSelect.value : 'recent';
         console.log('Sort option selected:', sortOption);
         
         // Get the search term
-        const searchTerm = searchBoardsInput.value.trim().toLowerCase();
+        const searchTerm = searchBoardsInput ? searchBoardsInput.value.trim().toLowerCase() : '';
         
         // Create query to get user's boards
         let boardsQuery = query(
@@ -166,20 +180,14 @@ async function loadUserBoards() {
             where('ownerId', '==', user.uid)
         );
         
-        // Add sorting - only for createdAt and updatedAt since Firestore can sort these
-        if (sortOption === 'recent') {
-            boardsQuery = query(boardsQuery, orderBy('createdAt', 'desc'));
-        } else if (sortOption === 'activity') {
-            boardsQuery = query(boardsQuery, orderBy('updatedAt', 'desc'));
-        }
-        // For 'name' sorting, we'll sort after fetching the data
-        
+        // We'll fetch all boards and sort client-side for more reliable sorting
         const querySnapshot = await getDocs(boardsQuery);
         
         // Filter by search term if provided
         let boards = [];
         querySnapshot.forEach((doc) => {
             const boardData = { id: doc.id, ...doc.data() };
+            console.log('Board data:', boardData);
             
             // Apply search filter
             if (searchTerm) {
@@ -194,13 +202,29 @@ async function loadUserBoards() {
             }
         });
         
-        // Apply client-side sorting for 'name' option
-        if (sortOption === 'name') {
+        console.log('Boards before sorting:', boards);
+        
+        // Apply client-side sorting
+        if (sortOption === 'recent') {
+            console.log('Sorting by recent');
+            boards.sort((a, b) => {
+                const dateA = a.createdAt ? (a.createdAt.seconds || 0) : 0;
+                const dateB = b.createdAt ? (b.createdAt.seconds || 0) : 0;
+                return dateB - dateA; // Descending order (newest first)
+            });
+        } else if (sortOption === 'name') {
             console.log('Sorting by name');
             boards.sort((a, b) => {
-                const titleA = a.title.toLowerCase();
-                const titleB = b.title.toLowerCase();
+                const titleA = (a.title || '').toLowerCase();
+                const titleB = (b.title || '').toLowerCase();
                 return titleA.localeCompare(titleB);
+            });
+        } else if (sortOption === 'activity') {
+            console.log('Sorting by activity');
+            boards.sort((a, b) => {
+                const dateA = a.updatedAt ? (a.updatedAt.seconds || 0) : 0;
+                const dateB = b.updatedAt ? (b.updatedAt.seconds || 0) : 0;
+                return dateB - dateA; // Descending order (most recent activity first)
             });
         }
         
