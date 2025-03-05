@@ -80,6 +80,7 @@ h1 {
     flex-direction: column;
 }
 
+/* Base column header styles */
 .column-header {
     padding: 16px;
     font-weight: 600;
@@ -247,6 +248,121 @@ h1 {
 
 /* Add mobile-specific adjustments */
 @media (max-width: 768px) {
+    .board {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .column {
+        margin-bottom: 0; /* We'll use grid gap instead */
+        border-radius: 12px; /* Slightly larger border radius on mobile */
+    }
+    
+    /* Make column headers more consistent */
+    .column-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        position: relative;
+        height: 60px; /* Fixed height for consistency */
+        cursor: pointer; /* Make sure it's clickable */
+    }
+    
+    /* Style for the plus button container */
+    .add-item {
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+        background-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Add right chevron for mobile accordion style */
+    .column-header::after {
+        content: '\f054'; /* Unicode for right chevron */
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+        display: inline-block;
+        position: absolute;
+        right: 20px;
+    }
+    
+    /* Rotate chevron when expanded */
+    .column:not(.collapsed) .column-header::after {
+        transform: rotate(90deg);
+    }
+    
+    /* Ensure column header text is properly positioned */
+    .column-header span {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+    
+    /* Hide cards in collapsed columns */
+    .column.collapsed .cards {
+        display: none;
+    }
+    
+    /* Ensure the add button doesn't get hidden by column header click handler */
+    .column-header .add-item {
+        pointer-events: auto;
+    }
+    
+    header {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .header-controls {
+        margin-left: auto;
+        margin-top: 8px;
+    }
+    
+    h1 {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    .search-tools {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .search-input {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .search-and-sort {
+        width: 100%;
+        margin-bottom: 16px;
+    }
+    
+    .export-tools {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .export-tools .btn {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    /* Card and voting styles for mobile */
     .card-actions {
         justify-content: space-between; /* Spread out buttons on mobile */
         margin-top: 12px; /* More space above buttons on mobile */
@@ -289,26 +405,6 @@ h1 {
     /* Add subtle hover effect on headers */
     .column-header:hover {
         opacity: 0.95;
-    }
-    
-    /* Improve add button for mobile */
-    .add-item {
-        width: 40px;
-        height: 40px;
-        font-size: 1.5rem;
-        background-color: rgba(255, 255, 255, 0.5);
-        /* Add a subtle shadow for better visibility */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        /* Ensure it's above other elements */
-        position: relative;
-        z-index: 10;
-        /* Add a subtle border for better visibility */
-        border: 1px solid rgba(255, 255, 255, 0.7);
-    }
-    
-    /* Ensure the add button doesn't get hidden by column header click handler */
-    .column-header .add-item {
-        pointer-events: auto;
     }
 }
 
@@ -644,87 +740,6 @@ select {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
-/* Responsive styles */
-@media (max-width: 768px) {
-    .board {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-    
-    .column {
-        margin-bottom: 0; /* We'll use grid gap instead */
-        border-radius: 12px; /* Slightly larger border radius on mobile */
-    }
-    
-    /* Make column headers work as toggles on mobile */
-    .column-header {
-        cursor: pointer;
-        padding: 16px 20px; /* Slightly more padding on mobile */
-    }
-    
-    /* Add an expand/collapse indicator */
-    .column-header::after {
-        content: '\f107'; /* Unicode for down arrow */
-        font-family: 'Font Awesome 6 Free';
-        font-weight: 900;
-        margin-left: 8px;
-        transition: transform 0.3s ease;
-        display: inline-block;
-    }
-    
-    .column.collapsed .column-header::after {
-        transform: rotate(-90deg);
-    }
-    
-    /* Hide cards in collapsed columns */
-    .column.collapsed .cards {
-        display: none;
-    }
-    
-    header {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    
-    .header-controls {
-        margin-left: auto;
-        margin-top: 8px;
-    }
-    
-    h1 {
-        margin-bottom: 10px;
-        width: 100%;
-    }
-    
-    .search-tools {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .search-input {
-        max-width: 100%;
-        width: 100%;
-    }
-    
-    .search-and-sort {
-        width: 100%;
-        margin-bottom: 16px;
-    }
-    
-    .export-tools {
-        width: 100%;
-        display: flex;
-        gap: 10px;
-    }
-    
-    .export-tools .btn {
-        flex: 1;
-        justify-content: center;
-    }
-}
-
-/* Add to styles.css */
 
 /* Animation for new cards that appear in real-time */
 @keyframes new-card-appear {
