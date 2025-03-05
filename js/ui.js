@@ -30,6 +30,27 @@ function showNotification(message, isError = false) {
       });
     });
     
+    // Add escape key functionality to close modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        // Find any active modals and close them
+        const activeModals = document.querySelectorAll('.modal.active');
+        if (activeModals.length > 0) {
+          activeModals.forEach(modal => {
+            modal.classList.remove('active');
+            
+            // Clear any form inputs if needed
+            const form = modal.querySelector('form');
+            if (form) {
+              form.reset();
+            }
+          });
+          
+          console.log('Modal closed with Escape key');
+        }
+      }
+    });
+    
     // Handle Enter key in the textarea
     const itemContentTextarea = document.getElementById('item-content');
     if (itemContentTextarea) {
