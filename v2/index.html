@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Feedback Board</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Add a loading state */
+        .board-loading {
+            min-height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 5px solid var(--primary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Team Feedback Board</h1>
+            <div class="header-controls">
+                <div class="theme-toggle">
+                    <button id="theme-toggle-btn" aria-label="Toggle dark mode">
+                        <i class="fas fa-sun light-icon"></i>
+                        <i class="fas fa-moon dark-icon"></i>
+                    </button>
+                </div>
+                <div class="auth-buttons">
+                    <button id="login-btn" class="btn btn-primary">Login</button>
+                    <button id="signup-btn" class="btn btn-outline">Sign Up</button>
+                    <div class="user-info" style="display: none;">
+                        <div class="avatar"></div>
+                        <span class="username"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="search-tools">
+            <div class="search-and-sort">
+                <div class="search-input">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search feedback...">
+                </div>
+                <select>
+                    <option value="newest">Sort by newest</option>
+                    <option value="oldest">Sort by oldest</option>
+                    <option value="most-votes">Sort by most votes</option>
+                </select>
+            </div>
+            
+            <div class="export-tools">
+                <button id="export-csv-btn" class="btn btn-outline">
+                    <i class="fas fa-file-csv"></i> Export to CSV
+                </button>
+                <button id="export-pdf-btn" class="btn btn-outline">
+                    <i class="fas fa-file-pdf"></i> Export to PDF
+                </button>
+            </div>
+        </div>
+        
+        <!-- Initial loading state -->
+        <div id="loading-indicator" class="board-loading">
+            <div class="loading-spinner"></div>
+        </div>
+        
+        <!-- Board will be populated by JavaScript -->
+        <div class="board" style="display: none;">
+            <div class="column went-well">
+                <div class="column-header">
+                    <span>Went Well</span>
+                    <button class="add-item" data-column="went-well">+</button>
+                </div>
+                <div class="cards">
+                    <!-- Items will be loaded from Firebase -->
+                </div>
+            </div>
+            
+            <div class="column to-improve">
+                <div class="column-header">
+                    <span>To Improve</span>
+                    <button class="add-item" data-column="to-improve">+</button>
+                </div>
+                <div class="cards">
+                    <!-- Items will be loaded from Firebase -->
+                </div>
+            </div>
+            
+            <div class="column action-items">
+                <div class="column-header">
+                    <span>Action Items</span>
+                    <button class="add-item" data-column="action-items">+</button>
+                </div>
+                <div class="cards">
+                    <!-- Items will be loaded from Firebase -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div class="modal" id="add-item-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Item</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="add-item-form">
+                <div class="form-group">
+                    <label for="item-content">Your feedback:</label>
+                    <textarea id="item-content" required></textarea>
+                </div>
+                <input type="hidden" id="column-type">
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Login</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signup-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Sign Up</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-username">Username:</label>
+                    <input type="text" id="signup-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email:</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password:</label>
+                    <input type="password" id="signup-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm-password">Confirm Password:</label>
+                    <input type="password" id="signup-confirm-password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">Item added successfully!</div>
+
+    <!-- Add PDF generation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Use the modular JS structure -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
