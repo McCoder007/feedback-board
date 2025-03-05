@@ -384,7 +384,7 @@ import {
     if (sortSelect) {
       const sortOption = sortSelect.value;
       
-      if (sortOption === 'votes') {
+      if (sortOption === 'most-votes') {
         filteredItems.sort((a, b) => b.votes - a.votes);
       } else if (sortOption === 'newest') {
         filteredItems.sort((a, b) => {
