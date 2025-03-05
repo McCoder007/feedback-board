@@ -395,40 +395,56 @@ function setupShareOptions(boardUrl, boardTitle) {
 
 // Generate QR Code
 function generateQRCode(url) {
+    console.log('Generating QR code for URL:', url);
     const qrCodeDisplay = document.getElementById('qr-code-display');
     const downloadQrBtn = document.getElementById('download-qr-btn');
     
     // Clear previous QR code
     qrCodeDisplay.innerHTML = '';
     
-    // Generate QR code
-    QRCode.toCanvas(qrCodeDisplay, url, {
-        width: 200,
-        margin: 1,
-        color: {
-            dark: '#000000',
-            light: '#ffffff'
-        }
-    }, function(error) {
-        if (error) {
-            console.error('Error generating QR code:', error);
-            qrCodeDisplay.innerHTML = '<p>Error generating QR code</p>';
-        }
+    try {
+        // Create a canvas element
+        const canvas = document.createElement('canvas');
+        qrCodeDisplay.appendChild(canvas);
+        
+        // Generate QR code
+        QRCode.toCanvas(canvas, url, {
+            width: 200,
+            margin: 1,
+            color: {
+                dark: '#000000',
+                light: '#ffffff'
+            }
+        }, function(error) {
+            if (error) {
+                console.error('Error generating QR code:', error);
+                qrCodeDisplay.innerHTML = '<p>Error generating QR code</p>';
+                return;
+            }
+            
+            console.log('QR code generated successfully');
+        });
         
         // Setup download button
         downloadQrBtn.addEventListener('click', () => {
+            console.log('Download button clicked');
             // Create a temporary link
             const link = document.createElement('a');
             link.download = 'feedback-board-qr.png';
             
             // Get the canvas and convert to data URL
-            const canvas = qrCodeDisplay.querySelector('canvas');
             if (canvas) {
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+                console.log('QR code download initiated');
+            } else {
+                console.error('Canvas not found for download');
             }
         });
-    });
+    } catch (e) {
+        console.error('Exception in QR code generation:', e);
+        qrCodeDisplay.innerHTML = '<p>Error generating QR code: ' + e.message + '</p>';
+    }
 }
 
 // Fallback share method (copy to clipboard)
