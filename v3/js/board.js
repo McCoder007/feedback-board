@@ -229,8 +229,16 @@ import {
       const user = getCurrentUser();
       const isAnonymous = !user;
       
+      console.log('Creating item with data:', {
+        content: content,
+        type: columnType,
+        boardId: currentBoardId,
+        authorId: user ? user.uid : 'anonymous',
+        isAnonymous
+      });
+      
       // Create the item
-      await addDoc(collection(db, ITEMS_COLLECTION), {
+      const docRef = await addDoc(collection(db, ITEMS_COLLECTION), {
         content,
         type: columnType,
         boardId: currentBoardId,
@@ -243,11 +251,14 @@ import {
         isAnonymous
       });
       
+      console.log('Item created successfully with ID:', docRef.id);
+      
       // Update the board's updatedAt timestamp
       if (currentBoardData && currentBoardData.id) {
         await updateDoc(doc(db, BOARDS_COLLECTION, currentBoardData.id), {
           updatedAt: serverTimestamp()
         });
+        console.log('Board updated timestamp updated');
       }
       
       // Close the modal and reset form
@@ -279,10 +290,12 @@ import {
     try {
       // Create query for items in this board
       const itemsRef = collection(db, ITEMS_COLLECTION);
+      console.log('Setting up query for items in board:', currentBoardId);
+      
+      // Try a simpler query first without orderBy to test permissions
       const q = query(
         itemsRef,
-        where('boardId', '==', currentBoardId),
-        orderBy('createdAt', 'desc')
+        where('boardId', '==', currentBoardId)
       );
       
       console.log('Setting up real-time updates for board:', currentBoardId);
@@ -292,7 +305,16 @@ import {
         console.log('Received items update, count:', querySnapshot.size);
         const items = [];
         querySnapshot.forEach((doc) => {
-          items.push({ id: doc.id, ...doc.data() });
+          const item = { id: doc.id, ...doc.data() };
+          console.log('Item data:', item);
+          items.push(item);
+        });
+        
+        // Sort items manually since we're not using orderBy in the query
+        items.sort((a, b) => {
+          const dateA = a.createdAt ? a.createdAt.seconds : 0;
+          const dateB = b.createdAt ? b.createdAt.seconds : 0;
+          return dateB - dateA; // descending order (newest first)
         });
         
         // Process and display items
