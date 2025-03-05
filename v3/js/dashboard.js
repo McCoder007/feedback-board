@@ -67,6 +67,35 @@ function setupEventListeners() {
     searchBoardsInput.addEventListener('input', debounce(() => {
         loadUserBoards();
     }, 300));
+    
+    // Setup modal close buttons
+    document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', () => {
+            // Find the closest modal parent
+            const modal = button.closest('.modal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        });
+    });
+    
+    // Close modals when clicking outside
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    });
+    
+    // Close modals with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal.active').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+    });
 }
 
 // Handle board creation
@@ -267,21 +296,126 @@ async function deleteBoard(boardId) {
 function shareBoardLink(boardId, boardTitle) {
     const boardUrl = `${window.location.origin}${window.location.pathname.replace('dashboard.html', 'board.html')}?id=${boardId}`;
     
-    // Check if the Web Share API is available
+    // Store the board info for sharing
+    window.currentBoardToShare = {
+        id: boardId,
+        title: boardTitle,
+        url: boardUrl
+    };
+    
+    // Show the share modal
+    const shareModal = document.getElementById('share-modal');
+    shareModal.classList.add('active');
+    
+    // Setup share option buttons
+    setupShareOptions(boardUrl, boardTitle);
+}
+
+// Setup share options
+function setupShareOptions(boardUrl, boardTitle) {
+    const copyLinkBtn = document.getElementById('copy-link-btn');
+    const qrCodeBtn = document.getElementById('qr-code-btn');
+    const emailShareBtn = document.getElementById('email-share-btn');
+    const nativeShareBtn = document.getElementById('native-share-btn');
+    const boardUrlContainer = document.querySelector('.board-url-container');
+    const boardUrlInput = document.getElementById('board-url');
+    const copySuccess = document.querySelector('.copy-success');
+    
+    // Hide success message initially
+    copySuccess.style.display = 'none';
+    
+    // Set the board URL
+    boardUrlInput.value = boardUrl;
+    
+    // Copy link button
+    copyLinkBtn.addEventListener('click', () => {
+        boardUrlContainer.style.display = 'block';
+        boardUrlInput.select();
+        document.execCommand('copy');
+        
+        // Show success message
+        copySuccess.style.display = 'block';
+        setTimeout(() => {
+            copySuccess.style.display = 'none';
+        }, 2000);
+    });
+    
+    // QR Code button
+    qrCodeBtn.addEventListener('click', () => {
+        // Close the share modal
+        shareModal.classList.remove('active');
+        
+        // Open the QR code modal
+        const qrCodeModal = document.getElementById('qr-code-modal');
+        qrCodeModal.classList.add('active');
+        
+        // Generate QR code
+        generateQRCode(boardUrl);
+    });
+    
+    // Email share button
+    emailShareBtn.addEventListener('click', () => {
+        const subject = encodeURIComponent(`Feedback Board: ${boardTitle}`);
+        const body = encodeURIComponent(`Check out this feedback board: ${boardTitle}\n\n${boardUrl}`);
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    });
+    
+    // Native share button (Web Share API)
     if (navigator.share) {
-        navigator.share({
-            title: boardTitle,
-            text: `Check out this feedback board: ${boardTitle}`,
-            url: boardUrl
-        })
-        .then(() => console.log('Shared successfully'))
-        .catch((error) => {
-            console.error('Error sharing:', error);
-            fallbackShare(boardUrl);
+        nativeShareBtn.style.display = 'flex';
+        nativeShareBtn.addEventListener('click', () => {
+            navigator.share({
+                title: boardTitle,
+                text: `Check out this feedback board: ${boardTitle}`,
+                url: boardUrl
+            })
+            .then(() => {
+                console.log('Shared successfully');
+                shareModal.classList.remove('active');
+            })
+            .catch(error => console.error('Error sharing:', error));
         });
     } else {
-        fallbackShare(boardUrl);
+        nativeShareBtn.style.display = 'none';
     }
+}
+
+// Generate QR Code
+function generateQRCode(url) {
+    const qrCodeDisplay = document.getElementById('qr-code-display');
+    const downloadQrBtn = document.getElementById('download-qr-btn');
+    
+    // Clear previous QR code
+    qrCodeDisplay.innerHTML = '';
+    
+    // Generate QR code
+    QRCode.toCanvas(qrCodeDisplay, url, {
+        width: 200,
+        margin: 1,
+        color: {
+            dark: '#000000',
+            light: '#ffffff'
+        }
+    }, function(error) {
+        if (error) {
+            console.error('Error generating QR code:', error);
+            qrCodeDisplay.innerHTML = '<p>Error generating QR code</p>';
+        }
+        
+        // Setup download button
+        downloadQrBtn.addEventListener('click', () => {
+            // Create a temporary link
+            const link = document.createElement('a');
+            link.download = 'feedback-board-qr.png';
+            
+            // Get the canvas and convert to data URL
+            const canvas = qrCodeDisplay.querySelector('canvas');
+            if (canvas) {
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        });
+    });
 }
 
 // Fallback share method (copy to clipboard)
