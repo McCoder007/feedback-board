@@ -4,6 +4,8 @@ import { setupAuth } from './auth.js';
 import { initBoard } from './board.js';
 import { setupModals, setupBoardLoadingFailsafe } from './ui.js';
 import { setupExport } from './export.js';
+// Import mobile fix functionality to ensure proper mobile support
+import './mobile-fix.js';
 
 // Initialize the app when DOM is fully loaded
 window.addEventListener('DOMContentLoaded', () => {

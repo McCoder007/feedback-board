@@ -13,21 +13,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set up mobile enhancements after a short delay
     // to ensure other scripts have had time to run
-    setTimeout(setupMobileView, 1000);
+    setTimeout(setupMobileView, 500);
     
     // Also listen for Firebase state changes
     document.addEventListener('firebase-loaded', setupMobileView);
     
     // Add a safety timeout to ensure board always displays
     setTimeout(ensureBoardVisible, 5000);
+    
+    // Add window resize listener to handle orientation changes
+    window.addEventListener('resize', handleWindowResize);
   });
+  
+  // Debounce function to limit how often resize event fires
+  function debounce(func, wait) {
+    let timeout;
+    return function() {
+      const context = this;
+      const args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+  }
+  
+  // Handle window resize (debounced)
+  const handleWindowResize = debounce(function() {
+    setupMobileView();
+  }, 250);
   
   // Main function to set up the mobile view
   function setupMobileView() {
-    // Only run on mobile devices
-    if (window.innerWidth > 768) return;
+    // Determine if we're in mobile view based on CSS media query
+    const isMobileView = window.matchMedia('(max-width: 768px)').matches;
     
-    console.log('Setting up mobile view');
+    console.log('Setting up mobile view, mobile mode:', isMobileView);
     
     // Hide loading indicator if it's still showing
     const loadingIndicator = document.getElementById('loading-indicator');
@@ -35,14 +54,25 @@ document.addEventListener('DOMContentLoaded', function() {
       loadingIndicator.style.display = 'none';
     }
     
-    // Make sure board is visible
+    // Make sure board is visible with appropriate display mode
     const board = document.querySelector('.board');
     if (board) {
-      board.style.display = 'block';
+      board.style.display = isMobileView ? 'grid' : 'grid';
     }
     
-    // Set up proper collapsible columns
-    setupCollapsibleColumns();
+    // Set up proper collapsible columns only in mobile view
+    if (isMobileView) {
+      setupCollapsibleColumns();
+    } else {
+      // In desktop mode, make sure all columns are expanded
+      document.querySelectorAll('.column').forEach(column => {
+        column.classList.remove('collapsed');
+        const header = column.querySelector('.column-header');
+        if (header) {
+          header.setAttribute('aria-expanded', 'true');
+        }
+      });
+    }
   }
   
   // Function to ensure the board is eventually visible
@@ -57,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (board && board.style.display === 'none') {
       console.log('Safety timeout: showing board');
-      board.style.display = window.innerWidth <= 768 ? 'block' : 'grid';
+      board.style.display = 'grid';
     }
   }
   
@@ -65,6 +95,17 @@ document.addEventListener('DOMContentLoaded', function() {
   function setupCollapsibleColumns() {
     console.log('Setting up collapsible columns');
     const columns = document.querySelectorAll('.column');
+    
+    // Check if we have a saved state
+    let savedState = null;
+    try {
+      const savedStateJSON = localStorage.getItem('feedbackBoardColumnState');
+      if (savedStateJSON) {
+        savedState = JSON.parse(savedStateJSON);
+      }
+    } catch (err) {
+      console.error('Error loading saved column state:', err);
+    }
     
     columns.forEach((column, index) => {
       // Add proper aria attributes for accessibility
@@ -78,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const contentId = `column-content-${index}`;
       
       header.setAttribute('id', headerId);
-      header.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
       header.setAttribute('aria-controls', contentId);
       header.setAttribute('role', 'button');
       header.setAttribute('tabindex', '0');
@@ -87,21 +127,32 @@ document.addEventListener('DOMContentLoaded', function() {
       cardsContainer.setAttribute('role', 'region');
       cardsContainer.setAttribute('aria-labelledby', headerId);
       
-      // Make first column expanded, others collapsed on mobile
-      if (index === 0) {
-        column.classList.remove('collapsed');
+      // Apply saved state if available, otherwise default to first column expanded
+      let isCollapsed = false;
+      
+      if (savedState && savedState.length > index) {
+        isCollapsed = savedState[index];
       } else {
-        column.classList.add('collapsed');
+        isCollapsed = index !== 0;
       }
       
-      // Remove any existing event listeners
-      header.removeEventListener('click', headerClickHandler);
+      if (isCollapsed) {
+        column.classList.add('collapsed');
+        header.setAttribute('aria-expanded', 'false');
+      } else {
+        column.classList.remove('collapsed');
+        header.setAttribute('aria-expanded', 'true');
+      }
       
-      // Add click event listener
-      header.addEventListener('click', headerClickHandler);
+      // Remove any existing event listeners using clone and replace technique
+      const newHeader = header.cloneNode(true);
+      header.parentNode.replaceChild(newHeader, header);
+      
+      // Add click event listener to new element
+      newHeader.addEventListener('click', headerClickHandler);
       
       // Also handle keyboard interaction
-      header.addEventListener('keydown', function(e) {
+      newHeader.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           headerClickHandler.call(this, e);
@@ -129,7 +180,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update ARIA attribute
     header.setAttribute('aria-expanded', !isCollapsed);
     
-    // If we have local storage, save state
+    // If the column is now expanded, scroll it into view
+    if (!isCollapsed) {
+      setTimeout(() => {
+        column.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+    
+    // Save state
+    saveColumnState();
+  }
+  
+  // Save column state to localStorage
+  function saveColumnState() {
     try {
       const columns = document.querySelectorAll('.column');
       const state = Array.from(columns).map(col => col.classList.contains('collapsed'));
@@ -138,3 +201,10 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error('Error saving column state:', error);
     }
   }
+
+// Export functions for potential use in other modules
+export {
+  setupMobileView,
+  ensureBoardVisible,
+  setupCollapsibleColumns
+};

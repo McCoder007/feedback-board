@@ -67,6 +67,7 @@ h1 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
+    width: 100%;
 }
 
 .column {
@@ -74,7 +75,9 @@ h1 {
     border-radius: 8px;
     box-shadow: var(--card-shadow);
     overflow: hidden;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .column-header {
@@ -84,6 +87,9 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 5;
 }
 
 .went-well .column-header {
@@ -132,8 +138,6 @@ h1 {
 .cards {
     padding: 16px;
     min-height: 100px;
-    max-height: 75vh;
-    overflow-y: auto;
 }
 
 .card {
@@ -257,6 +261,34 @@ h1 {
     /* Make the icons even larger on mobile */
     .vote-btn i {
         font-size: 1.4rem;
+    }
+    
+    /* Add custom transition for smooth collapse/expand */
+    .cards {
+        transition: max-height 0.5s ease;
+        overflow: hidden;
+    }
+    
+    /* Enhance collapsed column visuals */
+    .column.collapsed {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .column.collapsed .cards {
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        visibility: hidden;
+    }
+    
+    .column:not(.collapsed) .cards {
+        max-height: 2000px; /* Large value to accommodate any content */
+        visibility: visible;
+    }
+    
+    /* Add subtle hover effect on headers */
+    .column-header:hover {
+        opacity: 0.95;
     }
 }
 
@@ -597,6 +629,37 @@ select {
 @media (max-width: 768px) {
     .board {
         grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .column {
+        margin-bottom: 0; /* We'll use grid gap instead */
+        border-radius: 12px; /* Slightly larger border radius on mobile */
+    }
+    
+    /* Make column headers work as toggles on mobile */
+    .column-header {
+        cursor: pointer;
+        padding: 16px 20px; /* Slightly more padding on mobile */
+    }
+    
+    /* Add an expand/collapse indicator */
+    .column-header::after {
+        content: '\f107'; /* Unicode for down arrow */
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        margin-left: 8px;
+        transition: transform 0.3s ease;
+        display: inline-block;
+    }
+    
+    .column.collapsed .column-header::after {
+        transform: rotate(-90deg);
+    }
+    
+    /* Hide cards in collapsed columns */
+    .column.collapsed .cards {
+        display: none;
     }
     
     header {
@@ -606,6 +669,7 @@ select {
     
     .header-controls {
         margin-left: auto;
+        margin-top: 8px;
     }
     
     h1 {
@@ -620,10 +684,18 @@ select {
     
     .search-input {
         max-width: 100%;
+        width: 100%;
+    }
+    
+    .search-and-sort {
+        width: 100%;
+        margin-bottom: 16px;
     }
     
     .export-tools {
         width: 100%;
+        display: flex;
+        gap: 10px;
     }
     
     .export-tools .btn {
