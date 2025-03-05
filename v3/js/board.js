@@ -428,32 +428,29 @@ import {
     card.className = 'card';
     card.dataset.id = item.id;
     
-    // Format the date
-    const date = item.createdAt ? new Date(item.createdAt.seconds * 1000) : new Date();
-    const formattedDate = date.toLocaleDateString();
-    
     // Check if current user has voted
     const user = getCurrentUser();
     const userId = user ? user.uid : 'anonymous';
     const userVote = item.voters && item.voters[userId] ? item.voters[userId] : 0;
     
+    // Check if user can delete this item
+    const canDelete = user && (user.uid === item.authorId || (currentBoardData && user.uid === currentBoardData.ownerId));
+    
     card.innerHTML = `
       <p>${item.content}</p>
-      <div class="card-meta">
-        <span class="card-date">${formattedDate}</span>
-        <span class="card-author">${item.isAnonymous ? 'Anonymous' : item.authorEmail.split('@')[0]}</span>
-      </div>
       <div class="card-actions">
-        <button class="vote-btn upvote ${userVote > 0 ? 'upvoted' : ''}" data-id="${item.id}">
-          <i class="fas fa-chevron-up"></i>
-        </button>
-        <span class="vote-count">${item.votes || 0}</span>
-        <button class="vote-btn downvote ${userVote < 0 ? 'downvoted' : ''}" data-id="${item.id}">
-          <i class="fas fa-chevron-down"></i>
-        </button>
-        ${user && (user.uid === item.authorId || (currentBoardData && user.uid === currentBoardData.ownerId)) ? 
-          `<button class="delete-btn" data-id="${item.id}">
-            <i class="fas fa-trash"></i>
+        <div class="vote-controls">
+          <button class="vote-btn upvote ${userVote > 0 ? 'upvoted' : ''}" data-id="${item.id}" title="Upvote">
+            <i class="fas fa-chevron-up"></i>
+          </button>
+          <span class="vote-count">${item.votes || 0}</span>
+          <button class="vote-btn downvote ${userVote < 0 ? 'downvoted' : ''}" data-id="${item.id}" title="Downvote">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+        ${canDelete ? 
+          `<button class="delete-btn" data-id="${item.id}" title="Delete item">
+            <i class="fas fa-times"></i>
           </button>` : ''}
       </div>
     `;

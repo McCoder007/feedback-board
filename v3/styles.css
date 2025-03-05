@@ -145,10 +145,10 @@ h1 {
 
 .card {
     background-color: var(--card-bg);
-    border-radius: 8px; /* Slightly more rounded corners */
+    border-radius: 8px;
     padding: 16px;
-    margin-bottom: 16px; /* Slightly more space between cards */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-left: 4px solid #e5e7eb;
     position: relative;
     transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
@@ -169,67 +169,103 @@ h1 {
 .card p {
     margin-bottom: 12px;
     word-wrap: break-word;
+    line-height: 1.5;
 }
 
 .card-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    gap: 12px; /* Increased gap between buttons */
     color: var(--text-color-secondary);
-    font-size: 1rem; /* Slightly larger font size */
-    margin-top: 8px; /* Added space above the voting area */
+    font-size: 1rem;
+    margin-top: 12px;
 }
 
+/* Vote controls container */
+.vote-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Vote buttons */
 .vote-btn {
-    background-color: rgba(0, 0, 0, 0.05); /* Subtle background for better visibility */
+    background-color: rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-color);
-    border-radius: 8px; /* Rounded corners */
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center; /* Center content */
-    gap: 6px; /* Increased space between icon and counter */
+    justify-content: center;
     color: var(--text-color-secondary);
     transition: all 0.2s ease;
-    padding: 8px 12px; /* Larger touch target */
-    min-width: 70px; /* Minimum width to ensure good touch target size */
-    min-height: 40px; /* Minimum height for better touchability */
+    padding: 8px 12px;
+    min-width: 40px;
+    min-height: 36px;
 }
 
-/* Make the icons slightly larger */
-.vote-btn i {
-    font-size: 1.2rem;
+/* Improved delete button styling */
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-color-secondary);
+    opacity: 0.6;
+    transition: all 0.2s ease;
 }
 
+.delete-btn:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    opacity: 1;
+}
+
+.delete-btn i {
+    font-size: 1rem;
+}
+
+/* Hover effects for vote buttons */
 .vote-btn:hover {
     color: var(--primary-color);
-    background-color: rgba(0, 100, 164, 0.1); /* Light blue background on hover */
-    transform: translateY(-2px); /* Slight lift effect */
+    background-color: rgba(0, 100, 164, 0.1);
+    transform: translateY(-2px);
 }
 
 .dark-mode .vote-btn:hover {
-    color: var(--went-well-color); /* Gold color for hover in dark mode */
-    background-color: rgba(255, 210, 0, 0.1); /* Gold tint background in dark mode */
+    color: var(--went-well-color);
+    background-color: rgba(255, 210, 0, 0.1);
 }
 
 .vote-btn:active {
-    transform: scale(0.95); /* Slight press effect */
+    transform: scale(0.95);
 }
 
+/* Upvoted and downvoted states */
 .vote-btn.upvoted {
-    color: #333333; /* Darker text color for better contrast */
-    background-color: rgba(255, 210, 0, 0.9); /* More solid gold background */
-    border-color: #E6BC00; /* Slightly darker gold border */
-    font-weight: 600; /* Make text bolder */
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5); /* Subtle text shadow for legibility */
+    color: #333333;
+    background-color: rgba(255, 210, 0, 0.9);
+    border-color: #E6BC00;
+    font-weight: 600;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 .vote-btn.downvoted {
-    color: white; /* White text for better contrast */
-    background-color: rgba(0, 100, 164, 0.85); /* More solid blue background */
-    border-color: #004A7A; /* Slightly darker blue border */
-    font-weight: 600; /* Make text bolder */
+    color: white;
+    background-color: rgba(0, 100, 164, 0.85);
+    border-color: #004A7A;
+    font-weight: 600;
+}
+
+.vote-count {
+    font-weight: 600;
+    min-width: 24px;
+    text-align: center;
 }
 
 .upvote.upvoted, .downvote.downvoted {
