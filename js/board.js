@@ -63,7 +63,34 @@ import {
           return;
         }
         
-        columnTypeInput.value = btn.dataset.column;
+        const columnType = btn.dataset.column;
+        columnTypeInput.value = columnType;
+        
+        // Customize the modal header based on column type
+        const modalTitle = addItemModal.querySelector('.modal-title');
+        const modalHeader = addItemModal.querySelector('.modal-header');
+        
+        // Reset any previous classes
+        modalHeader.className = 'modal-header';
+        
+        // Set the appropriate title and class based on column type
+        if (columnType === 'went-well') {
+          modalTitle.textContent = 'Add What Went Well';
+          modalHeader.classList.add('went-well-header');
+          document.querySelector('label[for="item-content"]').textContent = 'What went well?';
+          addItemModal.querySelector('button[type="submit"]').className = 'btn btn-went-well';
+        } else if (columnType === 'to-improve') {
+          modalTitle.textContent = 'Add What Needs Improvement';
+          modalHeader.classList.add('to-improve-header');
+          document.querySelector('label[for="item-content"]').textContent = 'What could be improved?';
+          addItemModal.querySelector('button[type="submit"]').className = 'btn btn-to-improve';
+        } else if (columnType === 'action-items') {
+          modalTitle.textContent = 'Add Action Item';
+          modalHeader.classList.add('action-items-header');
+          document.querySelector('label[for="item-content"]').textContent = 'What action should be taken?';
+          addItemModal.querySelector('button[type="submit"]').className = 'btn btn-action-items';
+        }
+        
         addItemModal.classList.add('active');
         
         // Auto-focus the textarea when modal opens

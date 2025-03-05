@@ -586,6 +586,8 @@ h1 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .modal-title {
@@ -798,3 +800,84 @@ select {
       box-shadow: var(--card-shadow);
     }
   }
+
+/* Custom modal headers for different feedback types */
+.went-well-header {
+    background-color: var(--went-well-color);
+    color: black;
+    padding: 16px;
+    margin: -24px -24px 16px -24px;
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+}
+
+.to-improve-header {
+    background-color: var(--to-improve-color);
+    color: white;
+    padding: 16px;
+    margin: -24px -24px 16px -24px;
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+}
+
+.action-items-header {
+    background-color: var(--action-items-color);
+    color: black;
+    padding: 16px;
+    margin: -24px -24px 16px -24px;
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+}
+
+/* Adjust close button for colored headers */
+.went-well-header .close-modal,
+.to-improve-header .close-modal,
+.action-items-header .close-modal {
+    color: inherit;
+    opacity: 0.8;
+    font-size: 1.8rem;
+    transition: opacity 0.2s;
+}
+
+.went-well-header .close-modal:hover,
+.to-improve-header .close-modal:hover,
+.action-items-header .close-modal:hover {
+    opacity: 1;
+}
+
+/* Custom submit buttons for different feedback types */
+.btn-went-well {
+    background-color: var(--went-well-color);
+    color: black;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-went-well:hover {
+    background-color: #e6bd00; /* Slightly darker gold */
+    transform: translateY(-1px);
+}
+
+.btn-to-improve {
+    background-color: var(--to-improve-color);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-to-improve:hover {
+    background-color: #00558a; /* Slightly darker blue */
+    transform: translateY(-1px);
+}
+
+.btn-action-items {
+    background-color: var(--action-items-color);
+    color: black;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-action-items:hover {
+    background-color: #a8acaf; /* Slightly darker silver */
+    transform: translateY(-1px);
+}
