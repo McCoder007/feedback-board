@@ -320,6 +320,7 @@ function setupShareOptions(boardUrl, boardTitle) {
     const boardUrlContainer = document.querySelector('.board-url-container');
     const boardUrlInput = document.getElementById('board-url');
     const copySuccess = document.querySelector('.copy-success');
+    const shareModal = document.getElementById('share-modal');
     
     // Hide success message initially
     copySuccess.style.display = 'none';
