@@ -155,6 +155,7 @@ async function loadUserBoards() {
     try {
         // Get the sort option
         const sortOption = sortBoardsSelect.value;
+        console.log('Sort option selected:', sortOption);
         
         // Get the search term
         const searchTerm = searchBoardsInput.value.trim().toLowerCase();
@@ -165,14 +166,13 @@ async function loadUserBoards() {
             where('ownerId', '==', user.uid)
         );
         
-        // Add sorting
+        // Add sorting - only for createdAt and updatedAt since Firestore can sort these
         if (sortOption === 'recent') {
             boardsQuery = query(boardsQuery, orderBy('createdAt', 'desc'));
-        } else if (sortOption === 'name') {
-            boardsQuery = query(boardsQuery, orderBy('title'));
         } else if (sortOption === 'activity') {
             boardsQuery = query(boardsQuery, orderBy('updatedAt', 'desc'));
         }
+        // For 'name' sorting, we'll sort after fetching the data
         
         const querySnapshot = await getDocs(boardsQuery);
         
@@ -193,6 +193,18 @@ async function loadUserBoards() {
                 boards.push(boardData);
             }
         });
+        
+        // Apply client-side sorting for 'name' option
+        if (sortOption === 'name') {
+            console.log('Sorting by name');
+            boards.sort((a, b) => {
+                const titleA = a.title.toLowerCase();
+                const titleB = b.title.toLowerCase();
+                return titleA.localeCompare(titleB);
+            });
+        }
+        
+        console.log('Boards after sorting:', boards);
         
         // Display boards or no boards message
         if (boards.length > 0) {
