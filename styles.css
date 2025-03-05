@@ -290,6 +290,26 @@ h1 {
     .column-header:hover {
         opacity: 0.95;
     }
+    
+    /* Improve add button for mobile */
+    .add-item {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+        background-color: rgba(255, 255, 255, 0.5);
+        /* Add a subtle shadow for better visibility */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        /* Ensure it's above other elements */
+        position: relative;
+        z-index: 10;
+        /* Add a subtle border for better visibility */
+        border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    
+    /* Ensure the add button doesn't get hidden by column header click handler */
+    .column-header .add-item {
+        pointer-events: auto;
+    }
 }
 
 /* Highlight effect for cards that are being repositioned */

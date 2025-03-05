@@ -144,15 +144,17 @@ document.addEventListener('DOMContentLoaded', function() {
         header.setAttribute('aria-expanded', 'true');
       }
       
-      // Remove any existing event listeners using clone and replace technique
-      const newHeader = header.cloneNode(true);
-      header.parentNode.replaceChild(newHeader, header);
+      // IMPORTANT: Don't replace the entire header as it contains the add button with event listeners
+      // Instead, just add our click handler to the header itself
       
-      // Add click event listener to new element
-      newHeader.addEventListener('click', headerClickHandler);
+      // First, remove any existing click handlers we might have added before
+      header.removeEventListener('click', headerClickHandler);
+      
+      // Add click event listener for collapsing/expanding
+      header.addEventListener('click', headerClickHandler);
       
       // Also handle keyboard interaction
-      newHeader.addEventListener('keydown', function(e) {
+      header.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           headerClickHandler.call(this, e);
@@ -166,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Don't toggle if clicking add button
     if (e.target.classList.contains('add-item') || 
         e.target.closest('.add-item')) {
+      console.log('Add button clicked, not toggling column');
       return;
     }
     

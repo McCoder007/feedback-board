@@ -47,9 +47,16 @@ import {
     const addItemForm = document.getElementById('add-item-form');
     const columnTypeInput = document.getElementById('column-type');
     
-    // Add item buttons
+    // Add item buttons - add both click and touchend events for better mobile support
     addItemBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      // Helper function to handle the add item action
+      const handleAddItem = (e) => {
+        // Prevent default behavior and stop propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Add item button clicked/touched');
+        
         const currentUser = getCurrentUser();
         if (!currentUser) {
           showNotification('Please log in to add items', true);
@@ -63,7 +70,13 @@ import {
         setTimeout(() => {
           document.getElementById('item-content').focus();
         }, 100);
-      });
+      };
+      
+      // Add click event for most browsers
+      btn.addEventListener('click', handleAddItem);
+      
+      // Add touchend event specifically for iOS
+      btn.addEventListener('touchend', handleAddItem, { passive: false });
     });
   
     // Add item form submission
