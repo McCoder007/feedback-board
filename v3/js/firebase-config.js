@@ -13,7 +13,8 @@ import {
   orderBy,
   serverTimestamp,
   where,
-  onSnapshot  // Added onSnapshot for real-time updates
+  onSnapshot,  // Added onSnapshot for real-time updates
+  increment    // Added increment for vote counting
 } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js';
 import { 
   getAuth, 
@@ -28,7 +29,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyA52dIm2y8-D9tuzScz5UxAy1-ljfiQPtw",
     authDomain: "feedback-board-b5889.firebaseapp.com",
     projectId: "feedback-board-b5889",
-    storageBucket: "feedback-board-b5889.firebasestorage.app",
+    storageBucket: "feedback-board-b5889.appspot.com",
     messagingSenderId: "356107718217",
     appId: "1:356107718217:web:9701f2b5fd7ba26063f998",
     measurementId: "G-FZQ5CBDLTV"
@@ -75,6 +76,7 @@ export {
     serverTimestamp,
     where,
     onSnapshot,  // Export onSnapshot
+    increment,   // Export increment
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged,
