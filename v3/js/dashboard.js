@@ -73,30 +73,23 @@ function setupEventListeners() {
 async function handleCreateBoard(e) {
     e.preventDefault();
     
-    const user = getCurrentUser();
-    if (!user) {
-        showNotification('You must be logged in to create a board', true);
-        return;
-    }
-    
-    const titleInput = document.getElementById('board-title');
-    const descriptionInput = document.getElementById('board-description');
-    const accessSelect = document.getElementById('board-access');
-    
-    const title = titleInput.value.trim();
-    const description = descriptionInput.value.trim();
-    const access = accessSelect.value;
+    const title = document.getElementById('board-title').value.trim();
+    const description = document.getElementById('board-description').value.trim();
+    const access = document.getElementById('board-access').value;
     
     if (!title) {
         showNotification('Please enter a board title', true);
         return;
     }
     
+    const user = getCurrentUser();
+    if (!user) {
+        showNotification('You must be logged in to create a board', true);
+        return;
+    }
+    
     try {
-        // Create a unique ID for the board
-        const boardId = generateBoardId();
-        
-        // Create the board document
+        // Create the board
         await addDoc(collection(db, BOARDS_COLLECTION), {
             title,
             description,
@@ -104,8 +97,7 @@ async function handleCreateBoard(e) {
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             ownerId: user.uid,
-            ownerEmail: user.email,
-            boardId
+            ownerEmail: user.email
         });
         
         // Close the modal and reset form
@@ -227,8 +219,8 @@ function createBoardCard(board) {
             </span>
             <span class="board-date">Created: ${createdDate}</span>
         </div>
-        <a href="board.html?id=${board.boardId}" class="btn btn-primary board-open-btn">Open Board</a>
-        <button class="btn btn-outline board-share-btn" data-id="${board.boardId}">
+        <a href="board.html?id=${board.id}" class="btn btn-primary board-open-btn">Open Board</a>
+        <button class="btn btn-outline board-share-btn" data-id="${board.id}">
             <i class="fas fa-share-alt"></i> Share
         </button>
     `;
@@ -253,7 +245,7 @@ function createBoardCard(board) {
     
     shareBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        shareBoardLink(board.boardId, board.title);
+        shareBoardLink(board.id, board.title);
     });
     
     return boardCard;
@@ -310,17 +302,6 @@ function fallbackShare(url) {
 // Show or hide the no boards message
 function showNoBoards(show) {
     noBoardsMessage.style.display = show ? 'flex' : 'none';
-}
-
-// Generate a unique board ID
-function generateBoardId() {
-    // Generate a random string of 10 characters
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < 10; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
 }
 
 // Debounce function for search input

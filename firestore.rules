@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // More permissive rules for boards during testing
+    match /boards/{boardId} {
+      // Allow any authenticated user to create boards
+      allow create: if request.auth != null;
+      
+      // Allow any authenticated user to read boards
+      allow read: if request.auth != null;
+      
+      // Allow the owner to update or delete their boards
+      allow update, delete: if request.auth != null && 
+                           (resource.data.ownerId == request.auth.uid);
+    }
+    
+    // Simplified rules for items - allow authenticated users to read/write items
+    match /items/{itemId} {
+      // Allow any authenticated user to create items
+      allow create: if request.auth != null;
+      
+      // Allow any authenticated user to read items
+      allow read: if request.auth != null;
+      
+      // Allow the author to update or delete their own items
+      allow update, delete: if request.auth != null && 
+                           (resource.data.authorId == request.auth.uid || 
+                            get(/databases/$(database)/documents/boards/$(resource.data.boardId)).data.ownerId == request.auth.uid);
+    }
+    
+    // Allow users to read and write their own user data
+    match /users/{userId} {
+      allow create, read, update, delete: if request.auth != null && userId == request.auth.uid;
+    }
+  }
+} 
