@@ -72,20 +72,18 @@ import {
   // Load board data
   async function loadBoardData(boardId) {
     try {
-      // Query for the board with this boardId
-      const boardsRef = collection(db, BOARDS_COLLECTION);
-      const q = query(boardsRef, where('boardId', '==', boardId));
+      // Query for the board with this ID
+      const boardRef = doc(db, BOARDS_COLLECTION, boardId);
       
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        if (querySnapshot.empty) {
+      const unsubscribe = onSnapshot(boardRef, (docSnapshot) => {
+        if (!docSnapshot.exists()) {
           showNotification('Board not found', true);
           showBoardLoading(false);
           return;
         }
         
-        // Get the first matching board
-        const boardDoc = querySnapshot.docs[0];
-        currentBoardData = { id: boardDoc.id, ...boardDoc.data() };
+        // Get the board data
+        currentBoardData = { id: docSnapshot.id, ...docSnapshot.data() };
         
         // Update board title
         if (boardTitleElement) {
@@ -99,6 +97,10 @@ import {
         setupRealTimeUpdates();
         
         // Hide loading state
+        showBoardLoading(false);
+      }, (error) => {
+        console.error('Error loading board data:', error);
+        showNotification('Failed to load board data', true);
         showBoardLoading(false);
       });
       
@@ -283,8 +285,11 @@ import {
         orderBy('createdAt', 'desc')
       );
       
+      console.log('Setting up real-time updates for board:', currentBoardId);
+      
       // Subscribe to real-time updates
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        console.log('Received items update, count:', querySnapshot.size);
         const items = [];
         querySnapshot.forEach((doc) => {
           items.push({ id: doc.id, ...doc.data() });
@@ -313,8 +318,11 @@ import {
   
   // Process and display items
   function processItems(items) {
+    console.log('Processing items:', items);
+    
     // Apply filters
     const filteredItems = filterItemsData(items);
+    console.log('Filtered items:', filteredItems);
     
     // Group items by type
     const groupedItems = {
@@ -323,8 +331,11 @@ import {
       'action-items': filteredItems.filter(item => item.type === 'action-items')
     };
     
+    console.log('Grouped items:', groupedItems);
+    
     // Update the UI for each column
     Object.keys(groupedItems).forEach(columnType => {
+      console.log(`Updating column ${columnType} with ${groupedItems[columnType].length} items`);
       updateColumn(columnType, groupedItems[columnType]);
     });
   }
