@@ -284,10 +284,6 @@ function createBoardCard(board) {
         </div>
         <p class="board-card-description">${board.description || 'No description'}</p>
         <div class="board-card-meta">
-            <span class="board-access public">
-                <span class="board-status public"></span>
-                Public
-            </span>
             <span class="board-date">Created: ${createdDate}</span>
         </div>
         <div class="board-card-footer">

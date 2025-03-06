@@ -69,7 +69,6 @@ Feedback Board is a collaborative tool that allows teams to collect and organize
 - Board owners can edit board details (title, description)
 - Board owners can delete their boards
 - Board creation date is displayed on the board card
-- Board cards clearly show their public status
 
 ### 3. Item Management
 
