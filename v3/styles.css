@@ -74,32 +74,56 @@ body {
 }
 
 /* ===== HEADER REDESIGN ===== */
-header {
+.main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding: 10px 0;
-    position: relative;
     width: 100%;
-    margin-top: 10px; /* Add space at the top */
+    padding: 15px 0 15px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 15px;
 }
 
-.board-header-left {
+.header-left {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex: 1;
-    position: relative; /* For positioning elements */
+    align-items: center;
+    gap: 16px;
 }
 
-.title-section {
+.back-arrow {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px; /* Increased gap between back link and title */
-    width: 100%;
-    margin-top: 0;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color-secondary);
+    background: transparent;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.back-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--primary-color);
+}
+
+.dark-mode .back-arrow:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.back-arrow i {
+    font-size: 1.2rem;
+}
+
+#board-title, h1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 0;
 }
 
 .header-controls {
@@ -113,7 +137,6 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 4px;
 }
 
 #theme-toggle-btn {
@@ -128,13 +151,31 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
+}
+
+#theme-toggle-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode #theme-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 #share-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-right: 4px;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+    transition: all 0.2s ease;
+}
+
+#share-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
 }
 
 .user-info {
@@ -161,35 +202,88 @@ header {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Mobile Consistency */
-@media (max-width: 768px) {
-    header {
-        padding: 10px 0;
-    }
-    
-    .board-header-left {
-        flex-wrap: nowrap;
-        overflow: hidden;
-    }
-    
-    .header-controls {
-        gap: 8px;
-        flex-wrap: nowrap;
-    }
-    
-    #share-btn {
-        padding: 6px 10px;
-    }
+/* Tool Bar */
+.tool-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    gap: 16px;
 }
 
-/* Extra small screens */
-@media (max-width: 480px) {
-    .header-controls {
-        gap: 4px;
+.tool-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    position: relative;
+    max-width: 250px;
+    width: 100%;
+}
+
+.search-input i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color-secondary);
+}
+
+.search-input input {
+    width: 100%;
+    padding: 8px 8px 8px 32px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.sort-select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    min-width: 150px;
+}
+
+.export-tools {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .main-header, .tool-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
     
-    .user-info {
-        padding: 4px 8px;
+    .header-controls {
+        margin-top: 12px;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .tool-bar-left, .export-tools {
+        width: 100%;
+    }
+    
+    .search-input {
+        max-width: none;
+        flex: 1;
+    }
+    
+    .header-left {
+        width: 100%;
     }
 }
 
@@ -424,26 +518,6 @@ h1 {
     border-color: #ff6b6b;
     color: #ff6b6b;
     background-color: rgba(255, 107, 107, 0.05);
-}
-
-/* Share button - positioned before user info */
-#share-btn {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    border-radius: 24px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.dark-mode #share-btn {
-    background-color: var(--primary-color);
-    color: white;
 }
 
 /* Auth buttons - positioned last */

@@ -60,14 +60,13 @@
 </head>
 <body>
     <div class="container auth-loading">
-        <header>
-            <div class="board-header-left">
-                <div class="title-section">
-                    <a href="dashboard.html" class="back-to-dashboard">
-                        <i class="fas fa-arrow-left"></i> Back to Dashboard
-                    </a>
-                    <h1 id="board-title">Board #1</h1>
-                </div>
+        <!-- Main Header Row -->
+        <header class="main-header">
+            <div class="header-left">
+                <a href="dashboard.html" class="back-arrow" title="Back to Dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 id="board-title">Board #1</h1>
             </div>
             <div class="header-controls">
                 <div class="theme-toggle">
@@ -100,13 +99,14 @@
             </div>
         </header>
         
-        <div class="search-tools">
-            <div class="search-and-sort">
+        <!-- Tool Bar Row -->
+        <div class="tool-bar">
+            <div class="tool-bar-left">
                 <div class="search-input">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search feedback...">
                 </div>
-                <select>
+                <select class="sort-select">
                     <option value="newest">Sort by newest</option>
                     <option value="oldest">Sort by oldest</option>
                     <option value="most-votes">Sort by most votes</option>
