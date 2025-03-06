@@ -85,15 +85,14 @@ function showNotification(message, isError = false) {
   
   // Show a loading state for the board
   function showBoardLoading(isLoading = true) {
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const board = document.querySelector('.board');
+    const boardContainer = document.getElementById('board-container');
     
-    if (loadingIndicator) {
-      loadingIndicator.style.display = isLoading ? 'flex' : 'none';
-    }
-    
-    if (board) {
-      board.style.display = isLoading ? 'none' : 'grid';
+    if (boardContainer) {
+      if (!isLoading) {
+        boardContainer.classList.add('loaded');
+      } else {
+        boardContainer.classList.remove('loaded');
+      }
     }
   }
   

@@ -89,6 +89,12 @@ import {
         boardTitleElement.classList.add('loading');
       }
       
+      // Show board in loading state
+      const boardContainer = document.getElementById('board-container');
+      if (boardContainer) {
+        boardContainer.classList.remove('loaded');
+      }
+      
       // Query for the board with this ID
       const boardRef = doc(db, BOARDS_COLLECTION, boardId);
       
@@ -114,7 +120,6 @@ import {
         setupRealTimeUpdates();
         
         // Show the board with fade-in transition
-        const boardContainer = document.getElementById('board-container');
         if (boardContainer) {
           boardContainer.classList.add('loaded');
         }
@@ -125,6 +130,12 @@ import {
     } catch (error) {
       console.error('Error loading board data:', error);
       showNotification('Error loading board data', true);
+      
+      // Show board even on error (might be partially loaded)
+      const boardContainer = document.getElementById('board-container');
+      if (boardContainer) {
+        boardContainer.classList.add('loaded');
+      }
     }
   }
   
@@ -596,18 +607,6 @@ import {
   function cleanupBoard() {
     unsubscribeListeners.forEach(unsubscribe => unsubscribe());
     unsubscribeListeners = [];
-  }
-  
-  // Update the showBoardLoading function to use the fade transition
-  function showBoardLoading(isLoading) {
-    const boardContainer = document.getElementById('board-container');
-    if (boardContainer) {
-      if (!isLoading) {
-        boardContainer.classList.add('loaded');
-      } else {
-        boardContainer.classList.remove('loaded');
-      }
-    }
   }
   
   // Function to open share modal
