@@ -384,7 +384,7 @@ h1 {
     
     .header-controls {
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-start;
         flex-wrap: wrap;
         gap: 12px;
         height: auto;
@@ -397,6 +397,10 @@ h1 {
     
     #share-btn {
         order: 1;
+    }
+    
+    #share-btn .share-text {
+        display: none;
     }
     
     .user-info {
@@ -412,6 +416,10 @@ h1 {
         order: 4;
         margin-left: auto;
     }
+    
+    .btn {
+        padding: 8px 12px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -421,15 +429,23 @@ h1 {
     
     .btn {
         padding: 8px 12px;
-        font-size: 0.9rem;
+    }
+    
+    .btn .share-text,
+    .btn .btn-text {
+        display: none;
+    }
+    
+    #logout-btn i {
+        margin-right: 0;
     }
     
     .user-info {
-        max-width: 120px;
+        padding: 6px;
     }
     
     #user-name {
-        max-width: 60px;
+        display: none;
     }
 }
 
