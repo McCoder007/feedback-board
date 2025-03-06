@@ -1954,26 +1954,6 @@ select {
     border-color: var(--dark-border-color);
 }
 
-.copy-success {
-    display: none;
-    color: var(--success-color);
-    text-align: center;
-    margin-top: 10px;
-    font-size: 0.9rem;
-}
-
-.copy-success.visible {
-    display: block;
-    animation: fadeInOut 2s ease-in-out;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
 /* Form links for login/signup/password reset */
 .form-links {
   margin-top: 16px;
@@ -2073,50 +2053,6 @@ select {
     margin-bottom: 10px;
 }
 
-.copy-success {
-    color: var(--success-color);
-    font-size: 0.9rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.copy-success.visible {
-    opacity: 1;
-    animation: fadeInOut 2s ease;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-@media (max-width: 768px) {
-    .share-content {
-        gap: 15px;
-    }
-    
-    .board-url-input-container {
-        flex-direction: column;
-    }
-    
-    .board-url-input-container input {
-        border-radius: 4px;
-    }
-    
-    .board-url-input-container button {
-        margin-left: 0;
-        margin-top: 5px;
-        border-radius: 4px;
-    }
-    
-    #qr-code-display {
-        width: 150px;
-        height: 150px;
-    }
-}
-
 /* Add styles for auth placeholder to reserve space */
 .auth-placeholder {
     width: 100px; /* Reserve space for auth elements */
@@ -2173,5 +2109,54 @@ select {
     .header-controls {
         margin-left: auto;
         margin-top: 0; /* Reset top margin on mobile */
+    }
+}
+
+/* Copy button styles */
+#copy-url-btn.copy-success {
+    background-color: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+    transition: all 0.3s ease;
+}
+
+#copy-url-btn.copy-success i {
+    animation: pulse 1s;
+}
+
+#copy-url-btn .fas.fa-copy {
+    transition: transform 0.3s ease;
+}
+
+#copy-url-btn.copy-success .fas.fa-copy {
+    transform: scale(1.2);
+}
+
+#copy-url-btn.copy-success .fas.fa-copy::before {
+    content: "\f00c"; /* Font Awesome check icon */
+}
+
+@media (max-width: 768px) {
+    .share-content {
+        gap: 15px;
+    }
+    
+    .board-url-input-container {
+        flex-direction: column;
+    }
+    
+    .board-url-input-container input {
+        border-radius: 4px;
+    }
+    
+    .board-url-input-container button {
+        margin-left: 0;
+        margin-top: 5px;
+        border-radius: 4px;
+    }
+    
+    #qr-code-display {
+        width: 150px;
+        height: 150px;
     }
 }

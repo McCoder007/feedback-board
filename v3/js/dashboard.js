@@ -371,14 +371,20 @@ function openShareModal(boardId, boardTitle) {
                 // Copy to clipboard
                 navigator.clipboard.writeText(boardUrlInput.value)
                     .then(() => {
-                        // Show success message
-                        const copySuccess = document.getElementById('copy-success');
-                        if (copySuccess) {
-                            copySuccess.classList.add('visible');
+                        // Show success state on button
+                        const copyButton = document.getElementById('copy-url-btn');
+                        if (copyButton) {
+                            // Change button text
+                            const buttonText = copyButton.querySelector('.button-text');
+                            if (buttonText) buttonText.textContent = 'Copied!';
                             
-                            // Hide after 2 seconds
+                            // Add success class for styling
+                            copyButton.classList.add('copy-success');
+                            
+                            // Revert back after 2 seconds
                             setTimeout(() => {
-                                copySuccess.classList.remove('visible');
+                                copyButton.classList.remove('copy-success');
+                                if (buttonText) buttonText.textContent = 'Copy';
                             }, 2000);
                         }
                     })
