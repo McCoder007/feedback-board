@@ -95,7 +95,7 @@ body {
 }
 
 .back-to-dashboard {
-    display: flex;
+    display: none; /* Hide by default until auth state is determined */
     align-items: center;
     gap: 8px;
     color: var(--text-color-secondary);
@@ -105,6 +105,11 @@ body {
     border-radius: 4px;
     transition: all 0.2s ease;
     margin-right: 10px;
+}
+
+/* Show back to dashboard once auth is loaded and JS controls visibility */
+.auth-loaded .back-to-dashboard {
+    display: flex; /* Will be overridden by inline style in JS */
 }
 
 .back-to-dashboard:hover {
@@ -276,17 +281,15 @@ body {
 /* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
     .main-header {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 12px;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 15px;
     }
     
     .header-left {
-        width: auto;
-        flex-direction: row;
-        align-items: center;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
         gap: 8px;
     }
     

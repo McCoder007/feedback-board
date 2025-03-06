@@ -45,11 +45,20 @@ import {
   
   // Function to update user UI
   function updateUserUI() {
+    // Get the back to dashboard link
+    const backToDashboardLink = document.querySelector('.back-to-dashboard');
+    
     if (currentUser) {
+      // User is logged in
       if (loginBtn) loginBtn.style.display = 'none';
       if (signupBtn) signupBtn.style.display = 'none';
       if (userInfo) {
         userInfo.style.display = 'flex';
+      }
+      
+      // Show back to dashboard link for logged in users
+      if (backToDashboardLink) {
+        backToDashboardLink.style.display = 'flex';
       }
       
       // Don't update the display name immediately to prevent flashing
@@ -131,10 +140,16 @@ import {
           document.querySelector('.container').classList.add('auth-loaded');
         });
     } else {
+      // User is not logged in
       if (loginBtn) loginBtn.style.display = 'block';
       if (signupBtn) signupBtn.style.display = 'block';
       if (userInfo) {
         userInfo.style.display = 'none';
+      }
+      
+      // Hide back to dashboard link for non-authenticated users
+      if (backToDashboardLink) {
+        backToDashboardLink.style.display = 'none';
       }
       
       if (userNameElement) {
