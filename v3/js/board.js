@@ -769,6 +769,6 @@ import {
     initBoard,
     setupRealTimeUpdates,
     cleanupBoard,
-    generateQRCode,
+    generateQrCode,
     sortItems
   };
