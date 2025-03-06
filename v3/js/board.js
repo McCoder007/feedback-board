@@ -493,6 +493,27 @@ import {
       if (existingCards[item.id]) {
         card = existingCards[item.id];
         delete existingCards[item.id]; // Remove from object so we know it's been used
+        
+        // Update the vote count and voting status even when reusing the card
+        const user = getCurrentUser();
+        const userId = user ? user.uid : 'anonymous';
+        const userVote = item.voters && item.voters[userId] ? item.voters[userId] : 0;
+        
+        // Update vote count
+        const voteCountEl = card.querySelector('.vote-count');
+        if (voteCountEl) {
+          voteCountEl.textContent = item.votes || 0;
+        }
+        
+        // Update vote button state
+        const voteBtn = card.querySelector('.vote-btn');
+        if (voteBtn) {
+          if (userVote > 0) {
+            voteBtn.classList.add('voted');
+          } else {
+            voteBtn.classList.remove('voted');
+          }
+        }
       } else {
         card = createCard(item);
       }
