@@ -8,13 +8,18 @@ function showNotification(message, isError = false) {
     
     if (isError) {
       notification.classList.add('error');
+      // For errors, use the centered style to make them more visible
+      notification.classList.add('centered');
     }
     
     notification.classList.add('show');
     
+    // Longer timeout for error messages
+    const timeout = isError ? 5000 : 3000;
+    
     setTimeout(() => {
       notification.classList.remove('show');
-    }, 3000);
+    }, timeout);
   }
   
   // Setup modal functionality
@@ -65,6 +70,17 @@ function showNotification(message, isError = false) {
         }
       });
     }
+    
+    // Prevent modals from closing when clicking outside
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        // Only close if the click is directly on the modal background (not on modal content)
+        if (e.target === modal) {
+          // We're preventing the default behavior of closing when clicking outside
+          e.stopPropagation();
+        }
+      });
+    });
   }
   
   // Show a loading state for the board
