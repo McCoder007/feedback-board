@@ -162,18 +162,19 @@ h1 {
 .header-controls {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     gap: 16px;
-    height: 48px;
+    height: 50px;
 }
 
-/* Theme toggle redesign - now positioned on the left */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+
 .theme-toggle {
-    position: relative;
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    margin-right: auto; /* Push other elements to the right */
+    margin-right: 8px;
 }
 
 #theme-toggle-btn {
@@ -390,6 +391,13 @@ h1 {
         height: auto;
     }
     
+    .header-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
     .theme-toggle {
         order: 0;
         margin-right: 0;
@@ -409,12 +417,11 @@ h1 {
     }
     
     #logout-btn {
-        order: 3;
+        order: 0;
     }
     
     .auth-buttons {
-        order: 4;
-        margin-left: auto;
+        order: 1;
     }
     
     .btn {
@@ -445,7 +452,11 @@ h1 {
     }
     
     #user-name {
-        display: none;
+        display: inline-block;
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
 
