@@ -77,10 +77,9 @@ import {
             currentUserData = docSnapshot.data();
             currentUserDocId = docSnapshot.id;
             
-            // Use first name and last name if available
-            if (currentUserData.firstName && currentUserData.lastName) {
-              const fullName = `${currentUserData.firstName} ${currentUserData.lastName}`;
-              if (userNameElement) userNameElement.textContent = fullName;
+            // Use only first name if available
+            if (currentUserData.firstName) {
+              if (userNameElement) userNameElement.textContent = currentUserData.firstName;
             } else if (currentUserData.username) {
               if (userNameElement) userNameElement.textContent = currentUserData.username;
             }
