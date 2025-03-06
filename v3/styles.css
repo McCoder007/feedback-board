@@ -782,6 +782,18 @@ h1 {
     border-left: 4px solid #e5e7eb;
     position: relative;
     transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    will-change: transform; /* Optimize for animations */
+    z-index: 1; /* Ensure proper stacking during animations */
+}
+
+/* Subtle highlight during sort transition */
+.card.sorting {
+    z-index: 2; /* Bring sorted cards to the front */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dark-mode .card.sorting {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .went-well .card {

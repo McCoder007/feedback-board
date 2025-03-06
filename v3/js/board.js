@@ -16,6 +16,7 @@ import {
   } from './firebase-config.js';
   import { getCurrentUser } from './auth.js';
   import { showNotification, showBoardLoading } from './ui.js';
+  import { captureCardPositions, animateCardPositions } from './flip-animation.js';
   
   // Track current sort order
   let currentSortOrder = 'newest'; // Default sort
@@ -380,32 +381,11 @@ import {
     }
   }
   
-  // Process and display items
-  function processItems(items) {
-    console.log('Processing items:', items);
-    
-    // Apply filters
-    const filteredItems = filterItemsData(items);
-    console.log('Filtered items:', filteredItems);
-    
-    // Group items by type
-    const groupedItems = {
-      'went-well': filteredItems.filter(item => item.type === 'went-well'),
-      'to-improve': filteredItems.filter(item => item.type === 'to-improve'),
-      'action-items': filteredItems.filter(item => item.type === 'action-items')
-    };
-    
-    console.log('Grouped items:', groupedItems);
-    
-    // Update the UI for each column
-    Object.keys(groupedItems).forEach(columnType => {
-      console.log(`Updating column ${columnType} with ${groupedItems[columnType].length} items`);
-      updateColumn(columnType, groupedItems[columnType]);
-    });
-  }
-  
   // Filter items based on search and sort
   function filterItems() {
+    // Capture positions of cards before filtering/sorting
+    captureCardPositions();
+    
     // This will trigger the real-time listener to re-process items
     setupRealTimeUpdates();
   }
@@ -459,6 +439,35 @@ import {
     return filteredItems;
   }
   
+  // Process and display items
+  function processItems(items) {
+    console.log('Processing items:', items);
+    
+    // Apply filters
+    const filteredItems = filterItemsData(items);
+    console.log('Filtered items:', filteredItems);
+    
+    // Group items by type
+    const groupedItems = {
+      'went-well': filteredItems.filter(item => item.type === 'went-well'),
+      'to-improve': filteredItems.filter(item => item.type === 'to-improve'),
+      'action-items': filteredItems.filter(item => item.type === 'action-items')
+    };
+    
+    console.log('Grouped items:', groupedItems);
+    
+    // Update the UI for each column
+    Object.keys(groupedItems).forEach(columnType => {
+      console.log(`Updating column ${columnType} with ${groupedItems[columnType].length} items`);
+      updateColumn(columnType, groupedItems[columnType]);
+    });
+    
+    // After rendering, apply FLIP animations
+    requestAnimationFrame(() => {
+      animateCardPositions();
+    });
+  }
+  
   // Update a column with items
   function updateColumn(columnType, items) {
     const column = document.querySelector(`.${columnType}`);
@@ -467,14 +476,38 @@ import {
     const cardsContainer = column.querySelector('.cards');
     if (!cardsContainer) return;
     
-    // Clear existing cards
-    cardsContainer.innerHTML = '';
-    
-    // Add items to the column
-    items.forEach(item => {
-      const card = createCard(item);
-      cardsContainer.appendChild(card);
+    // Get existing cards to preserve them if possible
+    const existingCards = {};
+    cardsContainer.querySelectorAll('.card').forEach(card => {
+      existingCards[card.dataset.id] = card;
     });
+    
+    // Create a document fragment for better performance
+    const fragment = document.createDocumentFragment();
+    
+    // Add items to the fragment
+    items.forEach(item => {
+      let card;
+      
+      // Reuse existing card if available to prevent flickering
+      if (existingCards[item.id]) {
+        card = existingCards[item.id];
+        delete existingCards[item.id]; // Remove from object so we know it's been used
+      } else {
+        card = createCard(item);
+      }
+      
+      fragment.appendChild(card);
+    });
+    
+    // Remove any cards that are no longer present
+    Object.values(existingCards).forEach(card => {
+      card.remove();
+    });
+    
+    // Clear container and add the fragment
+    cardsContainer.innerHTML = '';
+    cardsContainer.appendChild(fragment);
   }
   
   // Create a card element for an item
