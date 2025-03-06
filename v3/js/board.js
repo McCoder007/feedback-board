@@ -45,16 +45,10 @@ import {
   async function initBoard() {
     console.log("Initializing board...");
     
-    // Setup page transitions
-    setupPageTransitions();
+    // No longer using page transitions
+    // setupPageTransitions();
     
-    // Check if DOM elements are found
-    console.log("Sort select found:", sortSelect);
-    if (sortSelect) {
-      console.log("Sort select value:", sortSelect.value);
-    }
-    
-    // Get board ID from URL
+    // Get the board ID from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const boardId = urlParams.get('id');
     
@@ -740,28 +734,6 @@ import {
       }
     } else {
       showNotification('QR code not available for download', true);
-    }
-  }
-  
-  // Add page transition handler for the back link
-  function setupPageTransitions() {
-    // Handle back to dashboard link
-    const backLink = document.querySelector('.back-to-dashboard');
-    if (backLink) {
-      backLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Add the page loading class to start the transition
-        document.documentElement.classList.add('page-loading');
-        
-        // Get the href
-        const href = backLink.getAttribute('href');
-        
-        // Navigate after a short delay
-        setTimeout(function() {
-          window.location.href = href;
-        }, 200);
-      });
     }
   }
   

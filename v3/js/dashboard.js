@@ -21,8 +21,8 @@ const searchBoardsInput = document.getElementById('search-boards');
 async function initDashboard() {
     console.log("Initializing dashboard...");
     
-    // Setup page transitions
-    setupPageTransitions();
+    // No longer using page transitions
+    // setupPageTransitions();
     
     // Setup UI components
     setupModals();
@@ -531,29 +531,6 @@ function debounce(func, delay) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(context, args), delay);
     };
-}
-
-// Add page transition handler for all links to the board page
-function setupPageTransitions() {
-    // Handle all links to board.html
-    document.addEventListener('click', function(e) {
-        // Check if the clicked element is a link to board.html or has a parent that is
-        const link = e.target.closest('a[href*="board.html"]');
-        if (link) {
-            e.preventDefault();
-            
-            // Add the page loading class to start the transition
-            document.documentElement.classList.add('page-loading');
-            
-            // Get the href
-            const href = link.getAttribute('href');
-            
-            // Navigate after a short delay
-            setTimeout(function() {
-                window.location.href = href;
-            }, 200);
-        }
-    });
 }
 
 // Initialize the dashboard when the DOM is loaded
