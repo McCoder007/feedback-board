@@ -1967,3 +1967,17 @@ select {
         height: 150px;
     }
 }
+
+/* Add auth state loading styles to prevent flashing */
+.auth-loading .auth-buttons,
+.auth-loading .user-info {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.auth-loaded .auth-buttons,
+.auth-loaded .user-info {
+    transition: opacity 0.3s ease;
+    opacity: 1;
+    visibility: visible;
+}

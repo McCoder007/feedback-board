@@ -83,6 +83,10 @@ import {
             }
             
             console.log("User data loaded:", currentUserData);
+            
+            // Mark auth as loaded
+            document.querySelector('.container').classList.remove('auth-loading');
+            document.querySelector('.container').classList.add('auth-loaded');
           } else {
             console.log("No user data found, creating new user document");
             // Create a new user document
@@ -105,14 +109,26 @@ import {
                   userNameElement.textContent = displayName;
                   userNameElement.classList.add('loaded');
                 }
+                
+                // Mark auth as loaded
+                document.querySelector('.container').classList.remove('auth-loading');
+                document.querySelector('.container').classList.add('auth-loaded');
               })
               .catch((error) => {
                 console.error("Error creating user document:", error);
+                
+                // Mark auth as loaded even if there was an error
+                document.querySelector('.container').classList.remove('auth-loading');
+                document.querySelector('.container').classList.add('auth-loaded');
               });
           }
         })
         .catch((error) => {
           console.error("Error getting user data:", error);
+          
+          // Mark auth as loaded even if there was an error
+          document.querySelector('.container').classList.remove('auth-loading');
+          document.querySelector('.container').classList.add('auth-loaded');
         });
     } else {
       if (loginBtn) loginBtn.style.display = 'block';
@@ -128,6 +144,10 @@ import {
       
       currentUserData = null;
       currentUserDocId = null;
+      
+      // Mark auth as loaded for non-authenticated users
+      document.querySelector('.container').classList.remove('auth-loading');
+      document.querySelector('.container').classList.add('auth-loaded');
     }
   }
   
