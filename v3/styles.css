@@ -1,3 +1,12 @@
+/* Add preload style to prevent white flash */
+html {
+    background-color: #051a2f; /* Dark theme background color */
+}
+
+html.light-theme {
+    background-color: #f9fafb; /* Light theme background color */
+}
+
 :root {
     --primary-color: #0064A4; /* UCI Blue (changed from #6366f1) */
     --went-well-color: #FFD200; /* UCI Gold (changed from #10b981) */
@@ -566,9 +575,19 @@ h1 {
 .user-info {
     display: flex;
     align-items: center;
-    gap: 8px;
-    min-height: 40px;
-    min-width: 120px; /* Provide enough space for username */
+    gap: 10px;
+    cursor: pointer;
+    min-width: 100px; /* Ensure consistent width */
+}
+
+#user-name {
+    min-width: 50px; /* Ensure consistent width */
+    opacity: 0; /* Start invisible */
+    transition: opacity 0.3s ease;
+}
+
+#user-name.loaded {
+    opacity: 1;
 }
 
 .avatar {

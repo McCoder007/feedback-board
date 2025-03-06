@@ -66,9 +66,8 @@ import {
         userInfo.addEventListener('click', openProfileModal);
       }
       
-      // Update user name display
-      const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
-      if (userNameElement) userNameElement.textContent = displayName;
+      // Don't update the display name immediately to prevent flashing
+      // We'll update it only after we get the data from Firestore
       
       // Get user data from Firestore - use the user's UID as the document ID
       getDoc(doc(db, "users", currentUser.uid))
@@ -79,9 +78,22 @@ import {
             
             // Use only first name if available
             if (currentUserData.firstName) {
-              if (userNameElement) userNameElement.textContent = currentUserData.firstName;
+              if (userNameElement) {
+                userNameElement.textContent = currentUserData.firstName;
+                userNameElement.classList.add('loaded');
+              }
             } else if (currentUserData.username) {
-              if (userNameElement) userNameElement.textContent = currentUserData.username;
+              if (userNameElement) {
+                userNameElement.textContent = currentUserData.username;
+                userNameElement.classList.add('loaded');
+              }
+            } else {
+              // Fallback to email
+              const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
+              if (userNameElement) {
+                userNameElement.textContent = displayName;
+                userNameElement.classList.add('loaded');
+              }
             }
             
             console.log("User data loaded:", currentUserData);
@@ -98,14 +110,36 @@ import {
                 uid: currentUser.uid,
                 email: currentUser.email
               };
+              
+              // Set the display name after creating the user document
+              const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
+              if (userNameElement) {
+                userNameElement.textContent = displayName;
+                userNameElement.classList.add('loaded');
+              }
+              
               console.log("Created new user document with ID:", currentUser.uid);
             }).catch(error => {
               console.error("Error creating user document:", error);
+              
+              // Still show the user name even if there was an error
+              const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
+              if (userNameElement) {
+                userNameElement.textContent = displayName;
+                userNameElement.classList.add('loaded');
+              }
             });
           }
         })
         .catch(error => {
           console.error("Error fetching user data:", error);
+          
+          // Show the user name even if there was an error
+          const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
+          if (userNameElement) {
+            userNameElement.textContent = displayName;
+            userNameElement.classList.add('loaded');
+          }
         });
     } else {
       if (loginBtn) loginBtn.style.display = 'block';
@@ -122,6 +156,12 @@ import {
       // Reset user data
       currentUserData = null;
       currentUserDocId = null;
+      
+      // Reset user name display
+      if (userNameElement) {
+        userNameElement.textContent = '';
+        userNameElement.classList.remove('loaded');
+      }
     }
   }
   

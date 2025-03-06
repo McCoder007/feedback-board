@@ -6,29 +6,42 @@ function initTheme() {
     
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
+        document.documentElement.classList.remove('light-theme');
     } else if (savedTheme === 'light') {
         document.body.classList.remove('dark-mode');
+        document.documentElement.classList.add('light-theme');
     } else {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.body.classList.add('dark-mode');
+            document.documentElement.classList.remove('light-theme');
             localStorage.setItem('feedbackBoardTheme', 'dark');
+        } else {
+            document.documentElement.classList.add('light-theme');
+            localStorage.setItem('feedbackBoardTheme', 'light');
         }
     }
-  }
+}
   
-  // Toggle theme function
-  function toggleTheme() {
-      const isDarkMode = document.body.classList.toggle('dark-mode');
-      localStorage.setItem('feedbackBoardTheme', isDarkMode ? 'dark' : 'light');
-      
-      // Add a smooth animation effect for the toggle
-      const themeToggleBtn = document.getElementById('theme-toggle-btn');
-      themeToggleBtn.classList.add('animate-toggle');
-      setTimeout(() => themeToggleBtn.classList.remove('animate-toggle'), 500);
-  }
+// Toggle theme function
+function toggleTheme() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+    
+    if (isDarkMode) {
+        document.documentElement.classList.remove('light-theme');
+    } else {
+        document.documentElement.classList.add('light-theme');
+    }
+    
+    localStorage.setItem('feedbackBoardTheme', isDarkMode ? 'dark' : 'light');
+    
+    // Add a smooth animation effect for the toggle
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    themeToggleBtn.classList.add('animate-toggle');
+    setTimeout(() => themeToggleBtn.classList.remove('animate-toggle'), 500);
+}
   
-  // Theme toggle setup
-  function setupThemeToggle() {
+// Theme toggle setup
+function setupThemeToggle() {
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     console.log("Setting up theme toggle, button exists:", themeToggleBtn !== null);
     
@@ -45,6 +58,6 @@ function initTheme() {
     
     // Initialize the theme
     initTheme();
-  }
+}
   
-  export { setupThemeToggle, toggleTheme, initTheme };
+export { setupThemeToggle, toggleTheme, initTheme };
