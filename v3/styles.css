@@ -87,8 +87,9 @@ header {
 .board-header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
     flex: 1;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    position: relative; /* For positioning elements */
 }
 
 .header-controls {
@@ -187,7 +188,11 @@ header {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 100%;
+    max-width: 70%; /* Limit width to prevent overlap */
+    margin: 0 0 0 10px; /* Add left margin to create space after back button */
+    font-size: 1.5rem; /* Slightly smaller than default h1 */
+    text-align: left; /* Ensure left alignment */
+    font-weight: 600; /* Make it slightly bolder */
 }
 
 /* Board header left section */
@@ -2042,3 +2047,31 @@ select {
 }
 
 /* Page transition styles have been removed for better performance */
+
+/* Mobile styles for header */
+@media (max-width: 768px) {
+    .board-header-left {
+        width: 100%;
+        margin-bottom: 10px;
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    #board-title, h1 {
+        font-size: 1.3rem;
+        margin-left: 8px;
+    }
+    
+    .back-to-dashboard {
+        padding: 4px 8px;
+        font-size: 0.85rem;
+    }
+    
+    header {
+        flex-wrap: wrap;
+    }
+    
+    .header-controls {
+        margin-left: auto;
+    }
+}
