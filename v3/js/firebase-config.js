@@ -14,7 +14,8 @@ import {
   serverTimestamp,
   where,
   onSnapshot,  // Added onSnapshot for real-time updates
-  increment    // Added increment for vote counting
+  increment,    // Added increment for vote counting
+  setDoc       // Added setDoc for setting documents with specific IDs
 } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js';
 import { 
   getAuth, 
@@ -79,6 +80,7 @@ export {
     where,
     onSnapshot,  // Export onSnapshot
     increment,   // Export increment
+    setDoc,      // Export setDoc
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged,

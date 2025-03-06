@@ -15,7 +15,9 @@ import {
     sendPasswordResetEmail,
     updateProfile,
     doc,
-    updateDoc
+    updateDoc,
+    getDoc,
+    setDoc
   } from './firebase-config.js';
   import { showNotification } from './ui.js';
   import { setupRealTimeUpdates } from './board.js';
@@ -68,11 +70,10 @@ import {
       const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
       if (userNameElement) userNameElement.textContent = displayName;
       
-      // Get user data from Firestore
-      getDocs(query(collection(db, "users"), where("uid", "==", currentUser.uid)))
-        .then((querySnapshot) => {
-          if (!querySnapshot.empty) {
-            const docSnapshot = querySnapshot.docs[0];
+      // Get user data from Firestore - use the user's UID as the document ID
+      getDoc(doc(db, "users", currentUser.uid))
+        .then((docSnapshot) => {
+          if (docSnapshot.exists()) {
             currentUserData = docSnapshot.data();
             currentUserDocId = docSnapshot.id;
             
@@ -87,18 +88,18 @@ import {
             console.log("User data loaded:", currentUserData);
           } else {
             console.log("No user document found for UID:", currentUser.uid);
-            // Create a user document if none exists
-            addDoc(collection(db, "users"), {
+            // Create a user document with the user's UID as the document ID
+            setDoc(doc(db, "users", currentUser.uid), {
               uid: currentUser.uid,
               email: currentUser.email,
               createdAt: serverTimestamp()
-            }).then(docRef => {
-              currentUserDocId = docRef.id;
+            }).then(() => {
+              currentUserDocId = currentUser.uid;
               currentUserData = {
                 uid: currentUser.uid,
                 email: currentUser.email
               };
-              console.log("Created new user document with ID:", docRef.id);
+              console.log("Created new user document with ID:", currentUser.uid);
             }).catch(error => {
               console.error("Error creating user document:", error);
             });
@@ -306,18 +307,21 @@ import {
               console.error("Error updating profile:", error);
             });
             
-            // Add user profile to Firestore
-            addDoc(collection(db, "users"), {
+            // Add user profile to Firestore using UID as document ID
+            setDoc(doc(db, "users", currentUser.uid), {
               uid: currentUser.uid,
               firstName: firstName,
               lastName: lastName,
               email: email,
               createdAt: serverTimestamp()
+            }).then(() => {
+              currentUserDocId = currentUser.uid;
+              if (signupModal) signupModal.classList.remove('active');
+              showNotification('Signed up successfully!');
+              signupForm.reset();
+            }).catch((error) => {
+              showNotification('Error creating user profile: ' + error.message, true);
             });
-            
-            if (signupModal) signupModal.classList.remove('active');
-            showNotification('Signed up successfully!');
-            signupForm.reset();
           })
           .catch((error) => {
             showNotification('Signup error: ' + error.message, true);
@@ -365,50 +369,26 @@ import {
           console.error("Error updating profile:", error);
         });
         
-        // If we don't have a user document yet, create one
-        if (!currentUserDocId) {
-          addDoc(collection(db, "users"), {
+        // Always use the user's UID as the document ID
+        const userDocRef = doc(db, "users", currentUser.uid);
+        
+        // Update user profile in Firestore
+        setDoc(userDocRef, {
+          uid: currentUser.uid,
+          firstName: firstName,
+          lastName: lastName,
+          email: currentUser.email,
+          updatedAt: serverTimestamp()
+        }, { merge: true })
+        .then(() => {
+          // Update local user data
+          currentUserData = {
             uid: currentUser.uid,
             firstName: firstName,
             lastName: lastName,
-            email: currentUser.email,
-            updatedAt: serverTimestamp(),
-            createdAt: serverTimestamp()
-          })
-          .then((docRef) => {
-            currentUserDocId = docRef.id;
-            currentUserData = {
-              uid: currentUser.uid,
-              firstName: firstName,
-              lastName: lastName,
-              email: currentUser.email
-            };
-            
-            // Update UI
-            if (userNameElement) userNameElement.textContent = displayName;
-            
-            if (profileModal) profileModal.classList.remove('active');
-            showNotification('Profile created successfully!');
-          })
-          .catch((error) => {
-            showNotification('Error creating profile: ' + error.message, true);
-          });
-          return;
-        }
-        
-        // Update user profile in Firestore
-        const userDocRef = doc(db, "users", currentUserDocId);
-        updateDoc(userDocRef, {
-          firstName: firstName,
-          lastName: lastName,
-          updatedAt: serverTimestamp()
-        })
-        .then(() => {
-          // Update local user data
-          if (currentUserData) {
-            currentUserData.firstName = firstName;
-            currentUserData.lastName = lastName;
-          }
+            email: currentUser.email
+          };
+          currentUserDocId = currentUser.uid;
           
           // Update UI
           if (userNameElement) userNameElement.textContent = displayName;
