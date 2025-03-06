@@ -50,6 +50,12 @@
                 <h1 id="board-title">Team Feedback Board</h1>
             </div>
             <div class="header-controls">
+                <div class="user-info" style="display: none;">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span id="user-name"></span>
+                </div>
                 <div class="theme-toggle">
                     <button id="theme-toggle-btn" aria-label="Toggle dark mode">
                         <i class="fas fa-sun light-icon"></i>
@@ -59,10 +65,7 @@
                 <div class="auth-buttons">
                     <button id="login-btn" class="btn btn-primary">Login</button>
                     <button id="signup-btn" class="btn btn-outline">Sign Up</button>
-                    <div class="user-info" style="display: none;">
-                        <div class="avatar"></div>
-                        <span class="username"></span>
-                    </div>
+                    <button id="logout-btn" class="btn btn-outline" style="display: none;">Logout</button>
                 </div>
             </div>
         </header>
