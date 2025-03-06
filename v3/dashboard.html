@@ -25,7 +25,9 @@
 <body>
     <div class="container dashboard-container">
         <header>
-            <h1>My Feedback Boards</h1>
+            <div class="board-header-left">
+                <h1>My Feedback Boards</h1>
+            </div>
             <div class="header-controls">
                 <div class="user-info">
                     <div class="avatar">
@@ -39,9 +41,11 @@
                         <i class="fas fa-moon dark-icon"></i>
                     </button>
                 </div>
+                <button id="logout-btn" class="btn" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
                 <div class="auth-buttons">
-                    <button id="login-btn" class="btn btn-outline">Login</button>
-                    <button id="logout-btn" class="btn btn-outline" style="display: none;">Logout</button>
+                    <button id="login-btn" class="btn btn-primary">Login</button>
                 </div>
             </div>
         </header>
