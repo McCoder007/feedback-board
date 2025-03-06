@@ -115,6 +115,30 @@ h1 {
     font-size: 1.8rem;
     font-weight: 600;
     color: var(--header-text);
+    min-height: 2rem; /* Prevent layout shift when title loads */
+}
+
+/* Add a loading state for the board title */
+#board-title:empty::before {
+    content: "Loading...";
+    opacity: 0.5;
+    font-style: italic;
+}
+
+#board-title.loading {
+    position: relative;
+    color: transparent;
+}
+
+#board-title.loading::after {
+    content: "Loading board...";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--text-color);
+    opacity: 0.6;
+    font-style: italic;
+    animation: pulse 1.5s infinite;
 }
 
 .board {

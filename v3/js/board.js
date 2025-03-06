@@ -81,6 +81,11 @@ import {
   // Load board data
   async function loadBoardData(boardId) {
     try {
+      // Set loading state for the board title
+      if (boardTitleElement) {
+        boardTitleElement.classList.add('loading');
+      }
+      
       // Query for the board with this ID
       const boardRef = doc(db, BOARDS_COLLECTION, boardId);
       
@@ -97,6 +102,7 @@ import {
         // Update board title
         if (boardTitleElement) {
           boardTitleElement.textContent = currentBoardData.title || 'Feedback Board';
+          boardTitleElement.classList.remove('loading');
         }
         
         // Set document title
