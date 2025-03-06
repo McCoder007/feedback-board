@@ -162,8 +162,9 @@ h1 {
 .header-controls {
     display: flex;
     align-items: center;
-    gap: 16px;
-    height: 50px;
+    gap: 12px;
+    position: relative;
+    min-width: 200px; /* Ensure minimum width to prevent layout shifts */
 }
 
 .header-right {
@@ -174,7 +175,9 @@ h1 {
 }
 
 .theme-toggle {
-    margin-right: 8px;
+    position: relative;
+    z-index: 2;
+    margin-right: auto; /* Push other elements to the right */
 }
 
 #theme-toggle-btn {
@@ -402,6 +405,8 @@ h1 {
     color: white;
     border: none;
     order: 0; /* Control the order of flex items */
+    position: relative;
+    z-index: 2;
 }
 
 .dark-mode #share-btn {
@@ -423,37 +428,28 @@ h1 {
     header {
         flex-direction: column;
         align-items: flex-start;
+        padding: 16px;
         gap: 16px;
-        padding-bottom: 20px;
     }
     
     .board-header-left {
-        max-width: 100%;
         width: 100%;
+        margin-bottom: 8px;
     }
     
     .header-controls {
         width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        gap: 12px;
-        height: auto;
-    }
-    
-    .header-right {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        justify-content: flex-end;
+        min-width: 100%; /* Full width on mobile */
     }
     
     .theme-toggle {
-        order: 0;
-        margin-right: 0;
+        margin-right: auto; /* Push to left */
+        order: 1;
     }
     
     #share-btn {
-        order: 1;
+        order: 2;
     }
     
     #share-btn .share-text {
@@ -461,26 +457,28 @@ h1 {
     }
     
     .user-info {
-        order: 2;
-        flex-grow: 0;
+        order: 3;
         padding: 6px 10px;
     }
     
-    #logout-btn {
-        order: 0;
-    }
-    
     .auth-buttons {
-        order: 1;
+        order: 3;
     }
     
-    .btn {
-        padding: 8px 12px;
+    .auth-loading .auth-buttons,
+    .auth-loading .user-info {
+        position: absolute;
+        right: 0;
     }
     
     .user-dropdown {
         width: 160px;
         right: -10px;
+    }
+    
+    .btn {
+        padding: 8px 12px;
+        font-size: 14px;
     }
 }
 
@@ -1973,10 +1971,13 @@ select {
 .auth-loading .user-info {
     visibility: hidden;
     opacity: 0;
+    position: absolute;
+    right: 0;
 }
 
 .auth-loaded .auth-buttons,
 .auth-loaded .user-info {
+    position: relative;
     transition: opacity 0.3s ease;
     opacity: 1;
     visibility: visible;
