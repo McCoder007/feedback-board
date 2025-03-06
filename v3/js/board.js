@@ -17,9 +17,6 @@ import {
   import { getCurrentUser } from './auth.js';
   import { showNotification, showBoardLoading } from './ui.js';
   
-  // Import QR code library
-  import { QRCodeStyling } from 'https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/+esm';
-  
   // Track current sort order
   let currentSortOrder = 'newest'; // Default sort
   
@@ -630,38 +627,26 @@ import {
     }
   }
   
-  // Function to generate QR code
-  let qrCode;
+  // Function to generate QR code using Google Charts API
   function generateQrCode(url) {
     const qrCodeDisplay = document.getElementById('qr-code-display');
     if (qrCodeDisplay) {
       // Clear previous QR code
       qrCodeDisplay.innerHTML = '';
       
-      // Create new QR code
-      qrCode = new QRCodeStyling({
-        width: 200,
-        height: 200,
-        type: 'svg',
-        data: url,
-        dotsOptions: {
-          color: '#000000',
-          type: 'rounded'
-        },
-        cornersSquareOptions: {
-          type: 'extra-rounded'
-        },
-        backgroundOptions: {
-          color: '#FFFFFF',
-        },
-        imageOptions: {
-          crossOrigin: 'anonymous',
-          margin: 0
-        }
-      });
+      // Create QR code using Google Charts API
+      const qrCodeUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(url)}&chs=200x200&chld=L|0`;
+      
+      // Create image element
+      const qrCodeImg = document.createElement('img');
+      qrCodeImg.src = qrCodeUrl;
+      qrCodeImg.alt = 'QR Code';
+      qrCodeImg.id = 'qr-code-img';
+      qrCodeImg.style.width = '100%';
+      qrCodeImg.style.height = 'auto';
       
       // Append to container
-      qrCode.append(qrCodeDisplay);
+      qrCodeDisplay.appendChild(qrCodeImg);
     }
   }
   
@@ -696,14 +681,23 @@ import {
   
   // Function to download QR code
   function downloadQrCode() {
-    if (qrCode) {
-      const boardTitle = currentBoardData?.title || 'feedback-board';
+    const qrCodeImg = document.getElementById('qr-code-img');
+    if (qrCodeImg) {
+      // Create a temporary link element
+      const downloadLink = document.createElement('a');
+      
+      // Get board title for filename
+      const boardTitle = document.title.replace('Team Feedback Board', 'feedback-board').trim();
       const fileName = `${boardTitle.toLowerCase().replace(/\s+/g, '-')}-qr.png`;
       
-      qrCode.download({
-        name: fileName,
-        extension: 'png'
-      });
+      // Set download attributes
+      downloadLink.href = qrCodeImg.src;
+      downloadLink.download = fileName;
+      
+      // Append to body, click, and remove
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
     }
   }
   
