@@ -60,6 +60,7 @@ import {
         // Make user info clickable to open profile modal
         userInfo.style.cursor = 'pointer';
         userInfo.title = 'Click to view profile';
+        userInfo.removeEventListener('click', openProfileModal); // Remove first to prevent duplicates
         userInfo.addEventListener('click', openProfileModal);
       }
       
@@ -82,7 +83,29 @@ import {
             } else if (currentUserData.username) {
               if (userNameElement) userNameElement.textContent = currentUserData.username;
             }
+            
+            console.log("User data loaded:", currentUserData);
+          } else {
+            console.log("No user document found for UID:", currentUser.uid);
+            // Create a user document if none exists
+            addDoc(collection(db, "users"), {
+              uid: currentUser.uid,
+              email: currentUser.email,
+              createdAt: serverTimestamp()
+            }).then(docRef => {
+              currentUserDocId = docRef.id;
+              currentUserData = {
+                uid: currentUser.uid,
+                email: currentUser.email
+              };
+              console.log("Created new user document with ID:", docRef.id);
+            }).catch(error => {
+              console.error("Error creating user document:", error);
+            });
           }
+        })
+        .catch(error => {
+          console.error("Error fetching user data:", error);
         });
     } else {
       if (loginBtn) loginBtn.style.display = 'block';
@@ -326,7 +349,7 @@ import {
       profileForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        if (!currentUser || !currentUserDocId) {
+        if (!currentUser) {
           showNotification('You must be logged in to update your profile', true);
           return;
         }
@@ -341,6 +364,37 @@ import {
         }).catch((error) => {
           console.error("Error updating profile:", error);
         });
+        
+        // If we don't have a user document yet, create one
+        if (!currentUserDocId) {
+          addDoc(collection(db, "users"), {
+            uid: currentUser.uid,
+            firstName: firstName,
+            lastName: lastName,
+            email: currentUser.email,
+            updatedAt: serverTimestamp(),
+            createdAt: serverTimestamp()
+          })
+          .then((docRef) => {
+            currentUserDocId = docRef.id;
+            currentUserData = {
+              uid: currentUser.uid,
+              firstName: firstName,
+              lastName: lastName,
+              email: currentUser.email
+            };
+            
+            // Update UI
+            if (userNameElement) userNameElement.textContent = displayName;
+            
+            if (profileModal) profileModal.classList.remove('active');
+            showNotification('Profile created successfully!');
+          })
+          .catch((error) => {
+            showNotification('Error creating profile: ' + error.message, true);
+          });
+          return;
+        }
         
         // Update user profile in Firestore
         const userDocRef = doc(db, "users", currentUserDocId);
@@ -363,6 +417,7 @@ import {
           showNotification('Profile updated successfully!');
         })
         .catch((error) => {
+          console.error("Error updating profile:", error);
           showNotification('Error updating profile: ' + error.message, true);
         });
       });
