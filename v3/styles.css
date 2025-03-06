@@ -83,6 +83,7 @@ header {
     border-bottom: 1px solid var(--border-color);
     min-height: 70px;
     position: relative;
+    box-sizing: border-box; /* Ensure padding is included in the height */
 }
 
 /* Board header left section */
@@ -91,6 +92,7 @@ header {
     flex-direction: column;
     gap: 8px;
     max-width: 60%;
+    flex-shrink: 1; /* Allow this section to shrink */
 }
 
 .back-to-dashboard {
@@ -158,13 +160,16 @@ h1 {
     100% { width: 0; left: 100%; }
 }
 
-/* Header controls section */
+/* Header controls section - make it more rigid with fixed positioning */
 .header-controls {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
-    position: relative;
     min-width: 200px; /* Ensure minimum width to prevent layout shifts */
+    height: 48px; /* Fixed height to prevent vertical jumping */
+    flex-shrink: 0; /* Prevent shrinking */
+    padding-right: 0; /* Remove the padding since we now have a placeholder */
 }
 
 .header-right {
@@ -174,10 +179,14 @@ h1 {
     margin-left: auto;
 }
 
+/* Lock the theme toggle in place with absolute positioning */
 .theme-toggle {
     position: relative;
-    z-index: 2;
+    z-index: 5; /* Ensure it's above other elements */
     margin-right: auto; /* Push other elements to the right */
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 #theme-toggle-btn {
@@ -194,6 +203,8 @@ h1 {
     color: var(--text-color);
     background-color: rgba(0, 0, 0, 0.03);
     transition: all 0.2s ease;
+    position: relative; /* Ensure positioning context */
+    z-index: 2;
 }
 
 .dark-mode #theme-toggle-btn {
@@ -407,6 +418,7 @@ h1 {
     order: 0; /* Control the order of flex items */
     position: relative;
     z-index: 2;
+    height: 38px; /* Fixed height */
 }
 
 .dark-mode #share-btn {
@@ -421,6 +433,33 @@ h1 {
     align-items: center;
     height: 48px;
     order: 3; /* Control the order of flex items */
+}
+
+/* Improved auth loading styles to maintain layout during loading */
+.auth-loading .auth-buttons,
+.auth-loading .user-info {
+    position: absolute;
+    right: 0;
+    top: 0;
+    visibility: hidden;
+    opacity: 0;
+    margin: 0; /* Prevent margin from affecting layout */
+    height: 48px; /* Match the height of the controls */
+    display: flex;
+    align-items: center;
+    pointer-events: none; /* Prevent interaction while hidden */
+    transition: none; /* Disable transitions during loading */
+    transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.auth-loaded .auth-buttons,
+.auth-loaded .user-info {
+    position: relative;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    height: 48px; /* Match the height of the controls */
+    pointer-events: auto; /* Enable interaction when visible */
 }
 
 /* Responsive styles for header */
@@ -441,6 +480,7 @@ h1 {
         width: 100%;
         justify-content: flex-end;
         min-width: 100%; /* Full width on mobile */
+        height: 48px; /* Maintain fixed height */
     }
     
     .theme-toggle {
@@ -469,6 +509,7 @@ h1 {
     .auth-loading .user-info {
         position: absolute;
         right: 0;
+        top: 0;
     }
     
     .user-dropdown {
@@ -914,43 +955,10 @@ h1 {
     box-shadow: 0 0 10px rgba(255, 210, 0, 0.5); /* Changed to UCI gold for dark mode */
 }
 
-/* Theme toggle styles */
-.theme-toggle {
-    margin-right: 16px;
-    position: relative;
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0; /* Prevent shrinking */
-}
-
-#theme-toggle-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: var(--text-color);
-    background-color: rgba(0, 0, 0, 0.03);
-    transition: all 0.2s ease;
-}
-
-.dark-mode #theme-toggle-btn {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-#theme-toggle-btn:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-    transform: translateY(-2px);
-}
-
-.dark-mode #theme-toggle-btn:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-}
+/* 
+  Theme toggle styles moved to line ~177 
+  Removed duplicate styles to prevent conflicts
+*/
 
 .light-icon, .dark-icon {
     position: absolute;
@@ -1966,19 +1974,20 @@ select {
     }
 }
 
-/* Add auth state loading styles to prevent flashing */
-.auth-loading .auth-buttons,
-.auth-loading .user-info {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    right: 0;
+/* Add styles for auth placeholder to reserve space */
+.auth-placeholder {
+    width: 100px; /* Reserve space for auth elements */
+    height: 48px;
+    flex-shrink: 0;
+    margin-left: auto; /* Push to the right */
+    position: relative;
+    display: none; /* Hide by default, will show when needed */
 }
 
-.auth-loaded .auth-buttons,
-.auth-loaded .user-info {
-    position: relative;
-    transition: opacity 0.3s ease;
-    opacity: 1;
-    visibility: visible;
+.auth-loading .auth-placeholder {
+    display: block; /* Show during loading */
+}
+
+.auth-loaded .auth-placeholder {
+    display: none; /* Hide when auth state is loaded */
 }

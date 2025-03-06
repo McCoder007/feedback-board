@@ -190,9 +190,36 @@ import {
     };
   }
   
-  // Setup authentication listeners and handlers
+  // Function to setup auth functionality
   function setupAuth() {
     console.log("Setting up auth functionality");
+    
+    // Immediately show auth loading state
+    document.querySelector('.container').classList.add('auth-loading');
+    
+    // Check if the user is already logged in (from a previous session)
+    firebaseAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is logged in:", user.uid);
+        currentUser = user;
+        // Mark as loaded immediately to prevent flash of login buttons
+        document.querySelector('.container').classList.remove('auth-loading');
+        document.querySelector('.container').classList.add('auth-loaded');
+        updateUserUI();
+        
+        // Notify all callbacks
+        authStateCallbacks.forEach(callback => callback(user));
+      } else {
+        console.log("No user is logged in");
+        currentUser = null;
+        document.querySelector('.container').classList.remove('auth-loading');
+        document.querySelector('.container').classList.add('auth-loaded');
+        updateUserUI();
+        
+        // Notify all callbacks
+        authStateCallbacks.forEach(callback => callback(null));
+      }
+    });
     
     // Setup dropdown functionality
     if (userInfo) {
@@ -448,19 +475,6 @@ import {
           showNotification('Error updating profile: ' + error.message, true);
         });
       });
-    }
-  
-    // Initialize auth state listener
-    if (auth) {
-      firebaseAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        updateUserUI();
-        
-        // Notify all callbacks
-        authStateCallbacks.forEach(callback => callback(user));
-      });
-    } else {
-      console.error("Auth not initialized yet");
     }
   }
   
