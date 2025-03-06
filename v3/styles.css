@@ -204,7 +204,8 @@ header {
     text-align: left; /* Ensure left alignment */
     font-weight: 600; /* Make it slightly bolder */
     margin-left: 2px; /* Small left margin to align with back button text */
-    margin-top: 8px; /* Align vertically with controls */
+    margin-top: 0; /* Remove top margin */
+    margin-bottom: 24px; /* Add bottom margin to create space above search tools */
 }
 
 /* Board header left section */
@@ -220,7 +221,7 @@ header {
     padding: 6px 12px;
     border-radius: 4px;
     margin-left: -12px;
-    margin-bottom: 5px; /* Add space below */
+    margin-bottom: 8px; /* Slightly more space */
 }
 
 .back-to-dashboard:hover {
@@ -1282,6 +1283,7 @@ textarea {
     margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 15px;
+    margin-top: 0; /* Ensure no top margin */
 }
 
 .search-and-sort {
@@ -2065,7 +2067,7 @@ select {
 @media (max-width: 768px) {
     .board-header-left {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 0;
         flex-direction: column;
         align-items: flex-start;
     }
@@ -2073,19 +2075,20 @@ select {
     .title-section {
         width: 100%;
         margin-top: 0;
-        gap: 12px; /* Slightly less gap on mobile */
+        gap: 8px; /* Slightly less gap on mobile */
     }
     
     #board-title, h1 {
         font-size: 1.4rem;
         margin-left: 2px;
-        margin-top: 5px; /* Smaller top margin on mobile */
+        margin-top: 0;
+        margin-bottom: 16px; /* Less margin on mobile */
     }
     
     .back-to-dashboard {
         padding: 4px 8px;
         font-size: 0.85rem;
-        margin-bottom: 3px; /* Less space below on mobile */
+        margin-bottom: 5px; /* Less space below on mobile */
     }
     
     header {
@@ -2095,6 +2098,6 @@ select {
     
     .header-controls {
         margin-left: auto;
-        margin-top: 5px; /* Add top margin on mobile */
+        margin-top: 0; /* Reset top margin on mobile */
     }
 }
