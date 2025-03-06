@@ -1135,7 +1135,7 @@ select {
 }
 
 .no-boards-message p {
-  color: var(--text-secondary);
+  color: var(--text-color-secondary);
   font-size: 1.1rem;
   margin-bottom: 10px;
 }
@@ -1323,4 +1323,33 @@ select {
     20% { opacity: 1; }
     80% { opacity: 1; }
     100% { opacity: 0; }
+}
+
+/* Form links for login/signup/password reset */
+.form-links {
+  margin-top: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-links a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.form-links a:hover {
+  text-decoration: underline;
+  color: var(--went-well-color);
+}
+
+.dark-mode .form-links a {
+  color: var(--went-well-color);
+}
+
+.dark-mode .form-links a:hover {
+  color: #fff;
 }

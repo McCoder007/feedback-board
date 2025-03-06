@@ -21,7 +21,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
-  signOut 
+  signOut,
+  sendPasswordResetEmail,  // Added for password reset
+  updateProfile           // Added for profile updates
 } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js';
 
 // Your web app's Firebase configuration
@@ -80,5 +82,7 @@ export {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged,
-    signOut
+    signOut,
+    sendPasswordResetEmail,  // Export password reset function
+    updateProfile           // Export profile update function
 };

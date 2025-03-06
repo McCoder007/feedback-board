@@ -115,6 +115,70 @@
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Login</button>
                     </div>
+                    <div class="form-links">
+                        <a href="#" id="forgot-password-link">Forgot Password?</a>
+                        <a href="#" id="signup-link">Don't have an account? Sign up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Signup Modal -->
+        <div id="signup-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Sign Up</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-firstname">First Name</label>
+                        <input type="text" id="signup-firstname" required placeholder="Enter your first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-lastname">Last Name</label>
+                        <input type="text" id="signup-lastname" required placeholder="Enter your last name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required placeholder="Enter your password">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm-password">Confirm Password</label>
+                        <input type="password" id="signup-confirm-password" required placeholder="Confirm your password">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </div>
+                    <div class="form-links">
+                        <a href="#" id="login-link">Already have an account? Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Password Reset Modal -->
+        <div id="password-reset-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Reset Password</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <form id="password-reset-form">
+                    <div class="form-group">
+                        <label for="reset-email">Email</label>
+                        <input type="email" id="reset-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Send Reset Link</button>
+                    </div>
+                    <div class="form-links">
+                        <a href="#" id="back-to-login-link">Back to Login</a>
+                    </div>
                 </form>
             </div>
         </div>
@@ -172,6 +236,33 @@
                         </p>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- User Profile Modal -->
+        <div id="profile-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">My Profile</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label for="profile-firstname">First Name</label>
+                        <input type="text" id="profile-firstname" required placeholder="Enter your first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-lastname">Last Name</label>
+                        <input type="text" id="profile-lastname" required placeholder="Enter your last name">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-email">Email</label>
+                        <input type="email" id="profile-email" readonly>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </div>
+                </form>
             </div>
         </div>
 
