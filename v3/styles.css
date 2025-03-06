@@ -118,11 +118,10 @@ h1 {
     min-height: 2rem; /* Prevent layout shift when title loads */
 }
 
-/* Add a loading state for the board title */
+/* Add a loading state for the board title - but without text */
 #board-title:empty::before {
-    content: "Loading...";
-    opacity: 0.5;
-    font-style: italic;
+    content: "";
+    opacity: 0;
 }
 
 #board-title.loading {
@@ -131,14 +130,21 @@ h1 {
 }
 
 #board-title.loading::after {
-    content: "Loading board...";
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
-    color: var(--text-color);
+    width: 100%;
+    height: 2px;
+    background: var(--primary-color);
     opacity: 0.6;
-    font-style: italic;
-    animation: pulse 1.5s infinite;
+    animation: loading-bar 1.5s infinite ease-in-out;
+}
+
+@keyframes loading-bar {
+    0% { width: 0; left: 0; }
+    50% { width: 100%; left: 0; }
+    100% { width: 0; left: 100%; }
 }
 
 .board {
