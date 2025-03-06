@@ -1313,17 +1313,27 @@ select {
 }
 
 #qr-code-display {
-    margin: 20px 0;
-    padding: 15px;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    display: inline-block;
+    padding: 10px;
+    border-radius: 4px;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 .dark-mode #qr-code-display {
-    background-color: white; /* Keep QR code background white even in dark mode for better scanning */
-    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+#qr-code-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 .qr-code-instructions {

@@ -627,26 +627,41 @@ import {
     }
   }
   
-  // Function to generate QR code using Google Charts API
+  // Function to generate QR code using QR Server API
   function generateQrCode(url) {
     const qrCodeDisplay = document.getElementById('qr-code-display');
     if (qrCodeDisplay) {
-      // Clear previous QR code
-      qrCodeDisplay.innerHTML = '';
-      
-      // Create QR code using Google Charts API
-      const qrCodeUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(url)}&chs=200x200&chld=L|0`;
-      
-      // Create image element
-      const qrCodeImg = document.createElement('img');
-      qrCodeImg.src = qrCodeUrl;
-      qrCodeImg.alt = 'QR Code';
-      qrCodeImg.id = 'qr-code-img';
-      qrCodeImg.style.width = '100%';
-      qrCodeImg.style.height = 'auto';
-      
-      // Append to container
-      qrCodeDisplay.appendChild(qrCodeImg);
+      try {
+        // Clear previous QR code
+        qrCodeDisplay.innerHTML = '';
+        
+        // Use QR Server API which is more reliable
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=200x200&margin=10`;
+        
+        // Create image element
+        const qrCodeImg = document.createElement('img');
+        qrCodeImg.src = qrCodeUrl;
+        qrCodeImg.alt = 'QR Code for board URL';
+        qrCodeImg.id = 'qr-code-img';
+        qrCodeImg.style.width = '100%';
+        qrCodeImg.style.height = 'auto';
+        
+        // Add loading indicator and error handling
+        qrCodeImg.onerror = function() {
+          qrCodeDisplay.innerHTML = '<p style="text-align: center; color: var(--error-color);">Failed to load QR code. Please try again.</p>';
+        };
+        
+        qrCodeImg.onload = function() {
+          // QR code loaded successfully
+          console.log('QR code generated successfully');
+        };
+        
+        // Append to container
+        qrCodeDisplay.appendChild(qrCodeImg);
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+        qrCodeDisplay.innerHTML = '<p style="text-align: center; color: var(--error-color);">Failed to generate QR code.</p>';
+      }
     }
   }
   
@@ -683,21 +698,45 @@ import {
   function downloadQrCode() {
     const qrCodeImg = document.getElementById('qr-code-img');
     if (qrCodeImg) {
-      // Create a temporary link element
-      const downloadLink = document.createElement('a');
-      
-      // Get board title for filename
-      const boardTitle = document.title.replace('Team Feedback Board', 'feedback-board').trim();
-      const fileName = `${boardTitle.toLowerCase().replace(/\s+/g, '-')}-qr.png`;
-      
-      // Set download attributes
-      downloadLink.href = qrCodeImg.src;
-      downloadLink.download = fileName;
-      
-      // Append to body, click, and remove
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
+      try {
+        // Create a canvas element
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas dimensions to match the image
+        canvas.width = qrCodeImg.naturalWidth || 200;
+        canvas.height = qrCodeImg.naturalHeight || 200;
+        
+        // Draw the image on the canvas
+        ctx.drawImage(qrCodeImg, 0, 0, canvas.width, canvas.height);
+        
+        // Convert canvas to data URL
+        const dataURL = canvas.toDataURL('image/png');
+        
+        // Create a temporary link element
+        const downloadLink = document.createElement('a');
+        
+        // Get board title for filename
+        const boardTitle = document.title.replace('Team Feedback Board', 'feedback-board').trim();
+        const fileName = `${boardTitle.toLowerCase().replace(/\s+/g, '-')}-qr.png`;
+        
+        // Set download attributes
+        downloadLink.href = dataURL;
+        downloadLink.download = fileName;
+        
+        // Append to body, click, and remove
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        // Show success notification
+        showNotification('QR code downloaded successfully');
+      } catch (error) {
+        console.error('Error downloading QR code:', error);
+        showNotification('Failed to download QR code', true);
+      }
+    } else {
+      showNotification('QR code not available for download', true);
     }
   }
   
