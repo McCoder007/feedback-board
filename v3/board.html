@@ -59,6 +59,9 @@
                     </div>
                     <span id="user-name"></span>
                 </div>
+                <button id="share-btn" class="btn btn-outline">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
                 <div class="theme-toggle">
                     <button id="theme-toggle-btn" aria-label="Toggle dark mode">
                         <i class="fas fa-sun light-icon"></i>
@@ -96,13 +99,8 @@
             </div>
         </div>
         
-        <!-- Initial loading state -->
-        <div id="loading-indicator" class="board-loading">
-            <div class="loading-spinner"></div>
-        </div>
-        
-        <!-- Board will be populated by JavaScript -->
-        <div class="board" style="display: none;">
+        <!-- Remove loading indicator and make board visible with opacity 0 -->
+        <div class="board" id="board-container">
             <div class="column went-well">
                 <div class="column-header">
                     <span>Went Well</span>
@@ -267,6 +265,39 @@
                     <button type="submit" class="btn btn-primary">Update Profile</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Add a Share Modal -->
+    <div class="modal" id="share-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Share Board</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="share-content">
+                <div class="board-url-container">
+                    <label for="board-url">Board URL:</label>
+                    <div class="board-url-input-container">
+                        <input type="text" id="board-url" readonly>
+                        <button id="copy-url-btn" class="btn btn-outline">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <span id="copy-success" class="copy-success">Copied!</span>
+                </div>
+                
+                <div class="qr-code-container">
+                    <h4>QR Code</h4>
+                    <div id="qr-code-display"></div>
+                    <div class="qr-code-instructions">
+                        <p>Scan with your mobile device to open this board</p>
+                        <button id="download-qr-btn" class="btn btn-outline">
+                            <i class="fas fa-download"></i> Download QR Code
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

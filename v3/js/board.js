@@ -17,6 +17,9 @@ import {
   import { getCurrentUser } from './auth.js';
   import { showNotification, showBoardLoading } from './ui.js';
   
+  // Import QR code library
+  import { QRCodeStyling } from 'https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/+esm';
+  
   // Track current sort order
   let currentSortOrder = 'newest'; // Default sort
   
@@ -92,7 +95,6 @@ import {
       const unsubscribe = onSnapshot(boardRef, (docSnapshot) => {
         if (!docSnapshot.exists()) {
           showNotification('Board not found', true);
-          showBoardLoading(false);
           return;
         }
         
@@ -108,24 +110,21 @@ import {
         // Set document title
         document.title = `${currentBoardData.title || 'Feedback Board'}`;
         
-        // Setup real-time updates for this board's items
+        // Setup real-time updates for items
         setupRealTimeUpdates();
         
-        // Hide loading state
-        showBoardLoading(false);
-      }, (error) => {
-        console.error('Error loading board data:', error);
-        showNotification('Failed to load board data', true);
-        showBoardLoading(false);
+        // Show the board with fade-in transition
+        const boardContainer = document.getElementById('board-container');
+        if (boardContainer) {
+          boardContainer.classList.add('loaded');
+        }
       });
       
-      // Add to unsubscribe listeners
+      // Store unsubscribe function for cleanup
       unsubscribeListeners.push(unsubscribe);
-      
     } catch (error) {
       console.error('Error loading board data:', error);
-      showNotification('Failed to load board data', true);
-      showBoardLoading(false);
+      showNotification('Error loading board data', true);
     }
   }
   
@@ -175,6 +174,24 @@ import {
           exportModal.classList.add('active');
         }
       });
+    }
+    
+    // Add share button event listener
+    const shareButton = document.getElementById('share-btn');
+    if (shareButton) {
+      shareButton.addEventListener('click', openShareModal);
+    }
+    
+    // Add copy URL button event listener
+    const copyUrlButton = document.getElementById('copy-url-btn');
+    if (copyUrlButton) {
+      copyUrlButton.addEventListener('click', copyBoardUrl);
+    }
+    
+    // Add download QR code button event listener
+    const downloadQrButton = document.getElementById('download-qr-btn');
+    if (downloadQrButton) {
+      downloadQrButton.addEventListener('click', downloadQrCode);
     }
   }
   
@@ -579,6 +596,116 @@ import {
   function cleanupBoard() {
     unsubscribeListeners.forEach(unsubscribe => unsubscribe());
     unsubscribeListeners = [];
+  }
+  
+  // Update the showBoardLoading function to use the fade transition
+  function showBoardLoading(isLoading) {
+    const boardContainer = document.getElementById('board-container');
+    if (boardContainer) {
+      if (!isLoading) {
+        boardContainer.classList.add('loaded');
+      } else {
+        boardContainer.classList.remove('loaded');
+      }
+    }
+  }
+  
+  // Function to open share modal
+  function openShareModal() {
+    const shareModal = document.getElementById('share-modal');
+    if (shareModal) {
+      // Get the current board URL
+      const boardUrl = window.location.href;
+      
+      // Set the URL in the input field
+      const boardUrlInput = document.getElementById('board-url');
+      if (boardUrlInput) {
+        boardUrlInput.value = boardUrl;
+      }
+      
+      // Generate QR code
+      generateQrCode(boardUrl);
+      
+      // Show the modal
+      shareModal.classList.add('active');
+    }
+  }
+  
+  // Function to generate QR code
+  let qrCode;
+  function generateQrCode(url) {
+    const qrCodeDisplay = document.getElementById('qr-code-display');
+    if (qrCodeDisplay) {
+      // Clear previous QR code
+      qrCodeDisplay.innerHTML = '';
+      
+      // Create new QR code
+      qrCode = new QRCodeStyling({
+        width: 200,
+        height: 200,
+        type: 'svg',
+        data: url,
+        dotsOptions: {
+          color: '#000000',
+          type: 'rounded'
+        },
+        cornersSquareOptions: {
+          type: 'extra-rounded'
+        },
+        backgroundOptions: {
+          color: '#FFFFFF',
+        },
+        imageOptions: {
+          crossOrigin: 'anonymous',
+          margin: 0
+        }
+      });
+      
+      // Append to container
+      qrCode.append(qrCodeDisplay);
+    }
+  }
+  
+  // Function to copy board URL
+  function copyBoardUrl() {
+    const boardUrlInput = document.getElementById('board-url');
+    if (boardUrlInput) {
+      // Select the text
+      boardUrlInput.select();
+      boardUrlInput.setSelectionRange(0, 99999); // For mobile devices
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(boardUrlInput.value)
+        .then(() => {
+          // Show success message
+          const copySuccess = document.getElementById('copy-success');
+          if (copySuccess) {
+            copySuccess.classList.add('visible');
+            
+            // Hide after 2 seconds
+            setTimeout(() => {
+              copySuccess.classList.remove('visible');
+            }, 2000);
+          }
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+          showNotification('Failed to copy URL', true);
+        });
+    }
+  }
+  
+  // Function to download QR code
+  function downloadQrCode() {
+    if (qrCode) {
+      const boardTitle = currentBoardData?.title || 'feedback-board';
+      const fileName = `${boardTitle.toLowerCase().replace(/\s+/g, '-')}-qr.png`;
+      
+      qrCode.download({
+        name: fileName,
+        extension: 'png'
+      });
+    }
   }
   
   export {
