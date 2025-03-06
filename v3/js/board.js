@@ -295,8 +295,8 @@ import {
       
       console.log('Item created successfully with ID:', docRef.id);
       
-      // Update the board's updatedAt timestamp
-      if (currentBoardData && currentBoardData.id) {
+      // Update the board's updatedAt timestamp only if user is authenticated
+      if (currentBoardData && currentBoardData.id && user) {
         await updateDoc(doc(db, BOARDS_COLLECTION, currentBoardData.id), {
           updatedAt: serverTimestamp()
         });

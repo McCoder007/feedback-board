@@ -6,21 +6,24 @@ service cloud.firestore {
       // Allow any authenticated user to create boards
       allow create: if request.auth != null;
       
-      // Allow any authenticated user to read boards
-      allow read: if request.auth != null;
+      // Allow any user (authenticated or not) to read boards
+      allow read: if true;
       
+      // Allow any user to update only the updatedAt field
       // Allow the owner to update or delete their boards
-      allow update, delete: if request.auth != null && 
-                           (resource.data.ownerId == request.auth.uid);
+      allow update: if (request.auth != null && resource.data.ownerId == request.auth.uid) || 
+                     (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['updatedAt']));
+      
+      allow delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
     }
     
-    // Simplified rules for items - allow authenticated users to read/write items
+    // Updated rules for items - allow all users (including unauthenticated) to create items
     match /items/{itemId} {
-      // Allow any authenticated user to create items
-      allow create: if request.auth != null;
+      // Allow any user (authenticated or not) to create items
+      allow create: if true;
       
-      // Allow any authenticated user to read items
-      allow read: if request.auth != null;
+      // Allow any user (authenticated or not) to read items
+      allow read: if true;
       
       // Allow the author to update or delete their own items
       allow update, delete: if request.auth != null && 
