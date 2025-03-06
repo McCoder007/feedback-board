@@ -19,8 +19,7 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Add QR Code library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <!-- Using QR Server API instead of a library for QR code generation -->
 </head>
 <body>
     <div class="container dashboard-container">
@@ -200,25 +199,6 @@
             </div>
         </div>
 
-        <!-- QR Code Share Modal -->
-        <div id="qr-code-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Share Board via QR Code</h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="qr-code-container">
-                    <div id="qr-code-display"></div>
-                    <p class="qr-code-instructions">Scan this QR code to access the board</p>
-                    <div class="form-actions">
-                        <button id="download-qr-btn" class="btn btn-primary">
-                            <i class="fas fa-download"></i> Download QR Code
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Share Board Modal -->
         <div id="share-modal" class="modal">
             <div class="modal-content">
@@ -227,30 +207,26 @@
                     <button class="close-modal">&times;</button>
                 </div>
                 <div class="share-content">
-                    <p>Choose how you want to share this board:</p>
-                    <div class="share-options">
-                        <div class="share-option-btn" id="copy-link-btn">
-                            <i class="fas fa-link"></i>
-                            <span>Copy Link</span>
+                    <div class="board-url-container">
+                        <label for="board-url">Board URL:</label>
+                        <div class="board-url-input-container">
+                            <input type="text" id="board-url" readonly class="board-url-input">
+                            <button id="copy-url-btn" class="btn btn-outline">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
                         </div>
-                        <div class="share-option-btn" id="qr-code-btn">
-                            <i class="fas fa-qrcode"></i>
-                            <span>QR Code</span>
-                        </div>
-                        <div class="share-option-btn" id="email-share-btn">
-                            <i class="fas fa-envelope"></i>
-                            <span>Email</span>
-                        </div>
-                        <div class="share-option-btn" id="native-share-btn">
-                            <i class="fas fa-share-alt"></i>
-                            <span>Share</span>
-                        </div>
+                        <span id="copy-success" class="copy-success">Copied!</span>
                     </div>
-                    <div class="board-url-container" style="margin-top: 20px; display: none;">
-                        <input type="text" id="board-url" readonly class="board-url-input">
-                        <p class="copy-success" style="display: none; color: green; text-align: center; margin-top: 10px;">
-                            <i class="fas fa-check"></i> Link copied to clipboard!
-                        </p>
+                    
+                    <div class="qr-code-container">
+                        <h4>QR Code</h4>
+                        <div id="qr-code-display"></div>
+                        <div class="qr-code-instructions">
+                            <p>Scan with your mobile device to open this board</p>
+                            <button id="download-qr-btn" class="btn btn-outline">
+                                <i class="fas fa-download"></i> Download QR Code
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

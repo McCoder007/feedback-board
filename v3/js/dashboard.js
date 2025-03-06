@@ -321,7 +321,7 @@ function createBoardCard(board) {
     
     shareBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        shareBoardLink(board.id, board.title);
+        openShareModal(board.id, board.title);
     });
     
     return boardCard;
@@ -339,92 +339,61 @@ async function deleteBoard(boardId) {
     }
 }
 
-// Share board link
-function shareBoardLink(boardId, boardTitle) {
-    const boardUrl = `${window.location.origin}${window.location.pathname.replace('dashboard.html', 'board.html')}?id=${boardId}`;
+// Function to open share modal
+function openShareModal(boardId, boardTitle) {
+    console.log('Opening share modal for board:', boardId, boardTitle);
     
-    // Store the board info for sharing
-    window.currentBoardToShare = {
-        id: boardId,
-        title: boardTitle,
-        url: boardUrl
-    };
-    
-    // Show the share modal
-    const shareModal = document.getElementById('share-modal');
-    shareModal.classList.add('active');
-    
-    // Setup share option buttons
-    setupShareOptions(boardUrl, boardTitle);
-}
-
-// Setup share options
-function setupShareOptions(boardUrl, boardTitle) {
-    const copyLinkBtn = document.getElementById('copy-link-btn');
-    const qrCodeBtn = document.getElementById('qr-code-btn');
-    const emailShareBtn = document.getElementById('email-share-btn');
-    const nativeShareBtn = document.getElementById('native-share-btn');
-    const boardUrlContainer = document.querySelector('.board-url-container');
-    const boardUrlInput = document.getElementById('board-url');
-    const copySuccess = document.querySelector('.copy-success');
+    // Get the share modal
     const shareModal = document.getElementById('share-modal');
     
-    // Hide success message initially
-    copySuccess.style.display = 'none';
-    
-    // Set the board URL
-    boardUrlInput.value = boardUrl;
-    
-    // Copy link button
-    copyLinkBtn.addEventListener('click', () => {
-        boardUrlContainer.style.display = 'block';
-        boardUrlInput.select();
-        document.execCommand('copy');
+    if (shareModal) {
+        // Generate the board URL
+        const boardUrl = `${window.location.origin}${window.location.pathname.replace('dashboard.html', 'board.html')}?id=${boardId}`;
         
-        // Show success message
-        copySuccess.style.display = 'block';
-        setTimeout(() => {
-            copySuccess.style.display = 'none';
-        }, 2000);
-    });
-    
-    // QR Code button
-    qrCodeBtn.addEventListener('click', () => {
-        // Close the share modal
-        shareModal.classList.remove('active');
+        // Set the board URL in the input field
+        const boardUrlInput = document.getElementById('board-url');
+        if (boardUrlInput) {
+            boardUrlInput.value = boardUrl;
+        }
         
-        // Open the QR code modal
-        const qrCodeModal = document.getElementById('qr-code-modal');
-        qrCodeModal.classList.add('active');
+        // Setup copy button
+        const copyUrlBtn = document.getElementById('copy-url-btn');
+        if (copyUrlBtn) {
+            // Remove any existing event listeners
+            const newCopyBtn = copyUrlBtn.cloneNode(true);
+            copyUrlBtn.parentNode.replaceChild(newCopyBtn, copyUrlBtn);
+            
+            // Add new event listener
+            newCopyBtn.addEventListener('click', function() {
+                boardUrlInput.select();
+                boardUrlInput.setSelectionRange(0, 99999); // For mobile devices
+                
+                // Copy to clipboard
+                navigator.clipboard.writeText(boardUrlInput.value)
+                    .then(() => {
+                        // Show success message
+                        const copySuccess = document.getElementById('copy-success');
+                        if (copySuccess) {
+                            copySuccess.classList.add('visible');
+                            
+                            // Hide after 2 seconds
+                            setTimeout(() => {
+                                copySuccess.classList.remove('visible');
+                            }, 2000);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        showNotification('Failed to copy URL', true);
+                    });
+            });
+        }
         
         // Generate QR code
         generateQRCode(boardUrl);
-    });
-    
-    // Email share button
-    emailShareBtn.addEventListener('click', () => {
-        const subject = encodeURIComponent(`Feedback Board: ${boardTitle}`);
-        const body = encodeURIComponent(`Check out this feedback board: ${boardTitle}\n\n${boardUrl}`);
-        window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    });
-    
-    // Native share button (Web Share API)
-    if (navigator.share) {
-        nativeShareBtn.style.display = 'flex';
-        nativeShareBtn.addEventListener('click', () => {
-            navigator.share({
-                title: boardTitle,
-                text: `Check out this feedback board: ${boardTitle}`,
-                url: boardUrl
-            })
-            .then(() => {
-                console.log('Shared successfully');
-                shareModal.classList.remove('active');
-            })
-            .catch(error => console.error('Error sharing:', error));
-        });
-    } else {
-        nativeShareBtn.style.display = 'none';
+        
+        // Show the modal
+        shareModal.classList.add('active');
     }
 }
 
@@ -438,47 +407,77 @@ function generateQRCode(url) {
     qrCodeDisplay.innerHTML = '';
     
     try {
-        // Create a canvas element
-        const canvas = document.createElement('canvas');
-        qrCodeDisplay.appendChild(canvas);
+        // Use QR Server API which is more reliable
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=200x200&margin=10`;
         
-        // Generate QR code
-        QRCode.toCanvas(canvas, url, {
-            width: 200,
-            margin: 1,
-            color: {
-                dark: '#000000',
-                light: '#ffffff'
-            }
-        }, function(error) {
-            if (error) {
-                console.error('Error generating QR code:', error);
-                qrCodeDisplay.innerHTML = '<p>Error generating QR code</p>';
-                return;
-            }
-            
+        // Create image element
+        const qrCodeImg = document.createElement('img');
+        qrCodeImg.src = qrCodeUrl;
+        qrCodeImg.alt = 'QR Code for board URL';
+        qrCodeImg.id = 'qr-code-img';
+        qrCodeImg.style.width = '100%';
+        qrCodeImg.style.height = 'auto';
+        
+        // Add loading indicator and error handling
+        qrCodeImg.onerror = function() {
+            qrCodeDisplay.innerHTML = '<p style="text-align: center; color: var(--error-color);">Failed to load QR code. Please try again.</p>';
+        };
+        
+        qrCodeImg.onload = function() {
+            // QR code loaded successfully
             console.log('QR code generated successfully');
-        });
+        };
+        
+        // Append to container
+        qrCodeDisplay.appendChild(qrCodeImg);
         
         // Setup download button
-        downloadQrBtn.addEventListener('click', () => {
-            console.log('Download button clicked');
-            // Create a temporary link
-            const link = document.createElement('a');
-            link.download = 'feedback-board-qr.png';
-            
-            // Get the canvas and convert to data URL
-            if (canvas) {
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                console.log('QR code download initiated');
-            } else {
-                console.error('Canvas not found for download');
-            }
-        });
+        downloadQrBtn.addEventListener('click', downloadQrCode);
     } catch (e) {
         console.error('Exception in QR code generation:', e);
-        qrCodeDisplay.innerHTML = '<p>Error generating QR code: ' + e.message + '</p>';
+        qrCodeDisplay.innerHTML = '<p style="text-align: center; color: var(--error-color);">Failed to generate QR code.</p>';
+    }
+}
+
+// Function to download QR code
+function downloadQrCode() {
+    const qrCodeImg = document.getElementById('qr-code-img');
+    if (qrCodeImg) {
+        try {
+            // Create a canvas element
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas dimensions to match the image
+            canvas.width = qrCodeImg.naturalWidth || 200;
+            canvas.height = qrCodeImg.naturalHeight || 200;
+            
+            // Draw the image on the canvas
+            ctx.drawImage(qrCodeImg, 0, 0, canvas.width, canvas.height);
+            
+            // Convert canvas to data URL
+            const dataURL = canvas.toDataURL('image/png');
+            
+            // Create a temporary link element
+            const downloadLink = document.createElement('a');
+            
+            // Set download attributes
+            downloadLink.href = dataURL;
+            downloadLink.download = 'feedback-board-qr.png';
+            
+            // Append to body, click, and remove
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            // Show success notification
+            showNotification('QR code downloaded successfully');
+        } catch (error) {
+            console.error('Error downloading QR code:', error);
+            showNotification('Failed to download QR code', true);
+        }
+    } else {
+        showNotification('QR code not available for download', true);
     }
 }
 
