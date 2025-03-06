@@ -346,6 +346,14 @@ import {
       // Subscribe to real-time updates
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         console.log('Received items update, count:', querySnapshot.size);
+        
+        // Important: Capture positions before processing the update
+        // Only if we have cards already rendered
+        const hasExistingCards = document.querySelectorAll('.card').length > 0;
+        if (hasExistingCards) {
+          captureCardPositions();
+        }
+        
         const items = [];
         querySnapshot.forEach((doc) => {
           const item = { id: doc.id, ...doc.data() };
@@ -361,7 +369,7 @@ import {
         });
         
         // Process and display items
-        processItems(items);
+        processItems(items, hasExistingCards);
         
         // Hide loading state
         showBoardLoading(false);
@@ -383,7 +391,8 @@ import {
   
   // Filter items based on search and sort
   function filterItems() {
-    // Capture positions of cards before filtering/sorting
+    // Capture positions of cards before filtering/sorting 
+    // This capture is for manual sort changes, not real-time updates
     captureCardPositions();
     
     // This will trigger the real-time listener to re-process items
@@ -440,7 +449,7 @@ import {
   }
   
   // Process and display items
-  function processItems(items) {
+  function processItems(items, shouldAnimate = true) {
     console.log('Processing items:', items);
     
     // Apply filters
@@ -462,10 +471,12 @@ import {
       updateColumn(columnType, groupedItems[columnType]);
     });
     
-    // After rendering, apply FLIP animations
-    requestAnimationFrame(() => {
-      animateCardPositions();
-    });
+    // After rendering, apply FLIP animations if we should animate
+    if (shouldAnimate) {
+      requestAnimationFrame(() => {
+        animateCardPositions();
+      });
+    }
   }
   
   // Update a column with items
@@ -590,6 +601,11 @@ import {
   // Handle voting on an item
   async function handleVote(itemId, voteValue) {
     try {
+      // If we're sorted by votes, capture the current positions before making the change
+      if (sortSelect && sortSelect.value === 'most-votes') {
+        captureCardPositions();
+      }
+      
       const user = getCurrentUser();
       const userId = user ? user.uid : 'anonymous';
       
