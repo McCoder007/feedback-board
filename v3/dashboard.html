@@ -11,6 +11,9 @@
             const savedTheme = localStorage.getItem('feedbackBoardTheme');
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-theme');
+            } else {
+                // Default to dark mode if not explicitly set to light
+                document.documentElement.classList.add('dark-mode');
             }
         })();
     </script>

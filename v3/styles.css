@@ -1,10 +1,12 @@
 /* Add preload style to prevent white flash */
 html {
-    background-color: #051a2f; /* Dark theme background color */
+    height: 100%;
+    background-color: #0f1923; /* Dark background by default */
+    transition: background-color 0.3s ease;
 }
 
 html.light-theme {
-    background-color: #f9fafb; /* Light theme background color */
+    background-color: #ffffff; /* Light background when light theme is active */
 }
 
 :root {
@@ -34,6 +36,15 @@ html.light-theme {
     --input-border: #2d4e76; /* Adjusted for UCI theme (changed from #4b5563) */
     --header-text: #f9fafb;
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    color-scheme: dark;
+}
+
+html.dark-mode {
+    background-color: #0f1923;
+}
+
+body.dark-mode {
+    background-color: inherit;
 }
 
 /* The rest of the file remains unchanged */
@@ -45,16 +56,21 @@ html.light-theme {
 }
 
 body {
-    background-color: var(--bg-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: inherit; /* Inherit from html */
     color: var(--text-color);
     line-height: 1.5;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100%;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
+    background-color: inherit; /* Inherit from body */
 }
 
 header {

@@ -6,16 +6,21 @@ function initTheme() {
     
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
+        document.documentElement.classList.add('dark-mode');
         document.documentElement.classList.remove('light-theme');
     } else if (savedTheme === 'light') {
         document.body.classList.remove('dark-mode');
+        document.documentElement.classList.remove('dark-mode');
         document.documentElement.classList.add('light-theme');
     } else {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.body.classList.add('dark-mode');
+            document.documentElement.classList.add('dark-mode');
             document.documentElement.classList.remove('light-theme');
             localStorage.setItem('feedbackBoardTheme', 'dark');
         } else {
+            document.body.classList.remove('dark-mode');
+            document.documentElement.classList.remove('dark-mode');
             document.documentElement.classList.add('light-theme');
             localStorage.setItem('feedbackBoardTheme', 'light');
         }
@@ -27,8 +32,10 @@ function toggleTheme() {
     const isDarkMode = document.body.classList.toggle('dark-mode');
     
     if (isDarkMode) {
+        document.documentElement.classList.add('dark-mode');
         document.documentElement.classList.remove('light-theme');
     } else {
+        document.documentElement.classList.remove('dark-mode');
         document.documentElement.classList.add('light-theme');
     }
     
