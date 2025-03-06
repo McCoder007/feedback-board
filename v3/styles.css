@@ -86,10 +86,17 @@ header {
 
 .board-header-left {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     flex: 1;
     flex-wrap: wrap; /* Allow wrapping on small screens */
     position: relative; /* For positioning elements */
+}
+
+.title-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
 }
 
 .header-controls {
@@ -189,7 +196,7 @@ header {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 70%; /* Limit width to prevent overlap */
-    margin: 0 0 0 10px; /* Add left margin to create space after back button */
+    margin: 0; /* Remove margins since we're using flex gap */
     font-size: 1.5rem; /* Slightly smaller than default h1 */
     text-align: left; /* Ensure left alignment */
     font-weight: 600; /* Make it slightly bolder */
@@ -2054,12 +2061,17 @@ select {
         width: 100%;
         margin-bottom: 10px;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
+    }
+    
+    .title-section {
+        gap: 4px;
+        width: 100%;
     }
     
     #board-title, h1 {
         font-size: 1.3rem;
-        margin-left: 8px;
+        margin-left: 0;
     }
     
     .back-to-dashboard {
