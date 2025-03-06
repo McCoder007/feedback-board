@@ -42,8 +42,10 @@ async function initDashboard() {
         if (user) {
             loadUserBoards();
         } else {
+            // Clear the boards container when user logs out
+            boardsContainer.innerHTML = '';
             // Show message for non-logged in users
-            showNoBoards(true);
+            showNoBoards(true, true);
             loadingIndicator.style.display = 'none';
         }
     });
@@ -496,8 +498,26 @@ function fallbackShare(url) {
 }
 
 // Show or hide the no boards message
-function showNoBoards(show) {
+function showNoBoards(show, isLoggedOut = false) {
     noBoardsMessage.style.display = show ? 'flex' : 'none';
+    
+    // Update the message based on login status
+    const messageElement = noBoardsMessage.querySelector('p');
+    const createBoardButton = noBoardsMessage.querySelector('.create-first-board-btn');
+    
+    if (messageElement) {
+        if (isLoggedOut) {
+            messageElement.textContent = 'Please log in to view and create feedback boards.';
+            if (createBoardButton) {
+                createBoardButton.style.display = 'none';
+            }
+        } else {
+            messageElement.textContent = 'You don\'t have any boards yet. Create your first board to get started!';
+            if (createBoardButton) {
+                createBoardButton.style.display = 'block';
+            }
+        }
+    }
 }
 
 // Debounce function for search input
