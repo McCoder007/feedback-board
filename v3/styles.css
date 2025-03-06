@@ -82,13 +82,14 @@ header {
     padding: 10px 0;
     position: relative;
     width: 100%;
+    margin-top: 10px; /* Add space at the top */
 }
 
 .board-header-left {
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
     flex: 1;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
     position: relative; /* For positioning elements */
 }
 
@@ -96,9 +97,9 @@ header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 15px; /* Increased gap between back link and title */
     width: 100%;
-    margin-top: 6px;
+    margin-top: 0;
 }
 
 .header-controls {
@@ -203,6 +204,7 @@ header {
     text-align: left; /* Ensure left alignment */
     font-weight: 600; /* Make it slightly bolder */
     margin-left: 2px; /* Small left margin to align with back button text */
+    margin-top: 8px; /* Align vertically with controls */
 }
 
 /* Board header left section */
@@ -218,6 +220,7 @@ header {
     padding: 6px 12px;
     border-radius: 4px;
     margin-left: -12px;
+    margin-bottom: 5px; /* Add space below */
 }
 
 .back-to-dashboard:hover {
@@ -2063,31 +2066,35 @@ select {
     .board-header-left {
         width: 100%;
         margin-bottom: 10px;
-        flex-direction: row;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-start;
     }
     
     .title-section {
         width: 100%;
         margin-top: 0;
-        gap: 6px;
+        gap: 12px; /* Slightly less gap on mobile */
     }
     
     #board-title, h1 {
         font-size: 1.4rem;
         margin-left: 2px;
+        margin-top: 5px; /* Smaller top margin on mobile */
     }
     
     .back-to-dashboard {
         padding: 4px 8px;
         font-size: 0.85rem;
+        margin-bottom: 3px; /* Less space below on mobile */
     }
     
     header {
         flex-wrap: wrap;
+        margin-top: 5px; /* Less top margin on mobile */
     }
     
     .header-controls {
         margin-left: auto;
+        margin-top: 5px; /* Add top margin on mobile */
     }
 }
