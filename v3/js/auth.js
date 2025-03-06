@@ -33,18 +33,10 @@ import {
   // UI elements
   const loginBtn = document.getElementById('login-btn');
   const signupBtn = document.getElementById('signup-btn');
-  const logoutBtn = document.getElementById('logout-btn');
   const userNameElement = document.getElementById('user-name');
   const userInfo = document.querySelector('.user-info');
-  
-  // Create logout button
-  const logoutBtnElement = document.createElement('button');
-  logoutBtnElement.className = 'btn btn-outline';
-  logoutBtnElement.textContent = 'Logout';
-  logoutBtnElement.style.display = 'none';
-  if (userInfo && userInfo.parentNode) {
-    userInfo.parentNode.appendChild(logoutBtnElement);
-  }
+  const logoutLink = document.getElementById('logout-link');
+  const profileLink = document.getElementById('profile-link');
   
   // Function to get current user
   function getCurrentUser() {
@@ -56,14 +48,8 @@ import {
     if (currentUser) {
       if (loginBtn) loginBtn.style.display = 'none';
       if (signupBtn) signupBtn.style.display = 'none';
-      if (logoutBtn) logoutBtn.style.display = 'block';
       if (userInfo) {
         userInfo.style.display = 'flex';
-        // Make user info clickable to open profile modal
-        userInfo.style.cursor = 'pointer';
-        userInfo.title = 'Click to view profile';
-        userInfo.removeEventListener('click', openProfileModal); // Remove first to prevent duplicates
-        userInfo.addEventListener('click', openProfileModal);
       }
       
       // Don't update the display name immediately to prevent flashing
@@ -98,70 +84,50 @@ import {
             
             console.log("User data loaded:", currentUserData);
           } else {
-            console.log("No user document found for UID:", currentUser.uid);
-            // Create a user document with the user's UID as the document ID
-            setDoc(doc(db, "users", currentUser.uid), {
-              uid: currentUser.uid,
+            console.log("No user data found, creating new user document");
+            // Create a new user document
+            const userData = {
               email: currentUser.email,
-              createdAt: serverTimestamp()
-            }).then(() => {
-              currentUserDocId = currentUser.uid;
-              currentUserData = {
-                uid: currentUser.uid,
-                email: currentUser.email
-              };
-              
-              // Set the display name after creating the user document
-              const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
-              if (userNameElement) {
-                userNameElement.textContent = displayName;
-                userNameElement.classList.add('loaded');
-              }
-              
-              console.log("Created new user document with ID:", currentUser.uid);
-            }).catch(error => {
-              console.error("Error creating user document:", error);
-              
-              // Still show the user name even if there was an error
-              const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
-              if (userNameElement) {
-                userNameElement.textContent = displayName;
-                userNameElement.classList.add('loaded');
-              }
-            });
+              createdAt: serverTimestamp(),
+              lastLogin: serverTimestamp()
+            };
+            
+            // Use the UID as the document ID
+            setDoc(doc(db, "users", currentUser.uid), userData)
+              .then(() => {
+                console.log("User document created successfully");
+                currentUserData = userData;
+                currentUserDocId = currentUser.uid;
+                
+                // Set display name to email username
+                const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
+                if (userNameElement) {
+                  userNameElement.textContent = displayName;
+                  userNameElement.classList.add('loaded');
+                }
+              })
+              .catch((error) => {
+                console.error("Error creating user document:", error);
+              });
           }
         })
-        .catch(error => {
-          console.error("Error fetching user data:", error);
-          
-          // Show the user name even if there was an error
-          const displayName = currentUser.email ? currentUser.email.split('@')[0] : 'User';
-          if (userNameElement) {
-            userNameElement.textContent = displayName;
-            userNameElement.classList.add('loaded');
-          }
+        .catch((error) => {
+          console.error("Error getting user data:", error);
         });
     } else {
       if (loginBtn) loginBtn.style.display = 'block';
       if (signupBtn) signupBtn.style.display = 'block';
-      if (logoutBtn) logoutBtn.style.display = 'none';
       if (userInfo) {
         userInfo.style.display = 'none';
-        userInfo.style.cursor = 'default';
-        userInfo.title = '';
-        // Remove event listener
-        userInfo.removeEventListener('click', openProfileModal);
       }
       
-      // Reset user data
-      currentUserData = null;
-      currentUserDocId = null;
-      
-      // Reset user name display
       if (userNameElement) {
         userNameElement.textContent = '';
         userNameElement.classList.remove('loaded');
       }
+      
+      currentUserData = null;
+      currentUserDocId = null;
     }
   }
   
@@ -206,6 +172,45 @@ import {
   
   // Setup authentication listeners and handlers
   function setupAuth() {
+    console.log("Setting up auth functionality");
+    
+    // Setup dropdown functionality
+    if (userInfo) {
+      userInfo.addEventListener('click', (e) => {
+        userInfo.classList.toggle('active');
+        e.stopPropagation();
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', () => {
+        userInfo.classList.remove('active');
+      });
+    }
+    
+    // Profile link
+    if (profileLink) {
+      profileLink.addEventListener('click', openProfileModal);
+    }
+    
+    // Logout button
+    if (logoutLink) {
+      logoutLink.addEventListener('click', () => {
+        signOut(auth).then(() => {
+          currentUser = null;
+          updateUserUI();
+          showNotification('Logged out successfully');
+          
+          // If on a board page, redirect to dashboard
+          if (window.location.pathname.includes('board.html')) {
+            window.location.href = 'dashboard.html';
+          }
+        }).catch((error) => {
+          console.error("Error signing out:", error);
+          showNotification('Error signing out', true);
+        });
+      });
+    }
+    
     const loginModal = document.getElementById('login-modal');
     const signupModal = document.getElementById('signup-modal');
     const passwordResetModal = document.getElementById('password-reset-modal');
@@ -278,23 +283,6 @@ import {
         e.preventDefault();
         closeAllModals();
         if (loginModal) loginModal.classList.add('active');
-      });
-    }
-  
-    // Logout button
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        signOut(auth).then(() => {
-          currentUser = null;
-          updateUserUI();
-          
-          // Notify all callbacks
-          authStateCallbacks.forEach(callback => callback(null));
-          
-          showNotification('Logged out successfully!');
-        }).catch((error) => {
-          showNotification('Error logging out: ' + error.message, true);
-        });
       });
     }
   

@@ -225,14 +225,13 @@ h1 {
 .user-info {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 6px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 24px;
-    background-color: rgba(0, 0, 0, 0.03);
+    padding: 6px 12px;
+    gap: 8px;
     transition: all 0.2s ease;
-    cursor: default;
-    height: 48px;
-    order: 1; /* Control the order of flex items */
+    position: relative;
+    cursor: pointer;
 }
 
 .dark-mode .user-info {
@@ -240,21 +239,71 @@ h1 {
 }
 
 .user-info:hover {
-    background-color: rgba(0, 0, 0, 0.06);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .dark-mode .user-info:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-icon {
+    font-size: 10px;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+}
+
+.user-info.active .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 180px;
+    z-index: 100;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
+.user-info.active .user-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.dropdown-item i {
+    width: 16px;
+    opacity: 0.7;
 }
 
 #user-name {
     font-weight: 500;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    white-space: nowrap;
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 120px;
+    white-space: nowrap;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
 }
 
 #user-name.loaded {
@@ -414,6 +463,7 @@ h1 {
     .user-info {
         order: 2;
         flex-grow: 0;
+        padding: 6px 10px;
     }
     
     #logout-btn {
@@ -426,6 +476,11 @@ h1 {
     
     .btn {
         padding: 8px 12px;
+    }
+    
+    .user-dropdown {
+        width: 160px;
+        right: -10px;
     }
 }
 
@@ -448,7 +503,7 @@ h1 {
     }
     
     .user-info {
-        padding: 6px;
+        padding: 6px 8px;
     }
     
     #user-name {
@@ -457,6 +512,10 @@ h1 {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+    
+    .dropdown-icon {
+        margin-left: -4px;
     }
 }
 
