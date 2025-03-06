@@ -167,7 +167,60 @@ h1 {
     height: 48px;
 }
 
-/* User info section */
+/* Theme toggle redesign - now positioned on the left */
+.theme-toggle {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    margin-right: auto; /* Push other elements to the right */
+}
+
+#theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    background-color: rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+}
+
+.dark-mode #theme-toggle-btn {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+#theme-toggle-btn:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+}
+
+.dark-mode #theme-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.light-icon, .dark-icon {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+.dark-mode .light-icon, body:not(.dark-mode) .dark-icon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0);
+}
+
+.dark-mode .dark-icon, body:not(.dark-mode) .light-icon {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+/* User info section - now positioned next to logout */
 .user-info {
     display: flex;
     align-items: center;
@@ -178,6 +231,7 @@ h1 {
     transition: all 0.2s ease;
     cursor: default;
     height: 48px;
+    order: 1; /* Control the order of flex items */
 }
 
 .dark-mode .user-info {
@@ -228,66 +282,7 @@ h1 {
     font-size: 1rem;
 }
 
-/* Theme toggle redesign */
-.theme-toggle {
-    position: relative;
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-}
-
-#theme-toggle-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: var(--text-color);
-    background-color: rgba(0, 0, 0, 0.03);
-    transition: all 0.2s ease;
-}
-
-.dark-mode #theme-toggle-btn {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-#theme-toggle-btn:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-    transform: translateY(-2px);
-}
-
-.dark-mode #theme-toggle-btn:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-.light-icon, .dark-icon {
-    position: absolute;
-    transition: opacity 0.3s ease, transform 0.5s ease;
-}
-
-.dark-mode .light-icon, body:not(.dark-mode) .dark-icon {
-    opacity: 0;
-    transform: rotate(90deg) scale(0);
-}
-
-.dark-mode .dark-icon, body:not(.dark-mode) .light-icon {
-    opacity: 1;
-    transform: rotate(0) scale(1);
-}
-
 /* Button styles */
-.auth-buttons {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    height: 48px;
-}
-
 .btn {
     padding: 10px 16px;
     border-radius: 6px;
@@ -333,22 +328,12 @@ h1 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-/* Share button specific styles */
-#share-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-}
-
-.dark-mode #share-btn {
-    background-color: var(--went-well-color);
-    color: #333;
-}
-
+/* Logout button - positioned after user info */
 #logout-btn {
     background-color: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-color);
+    order: 2; /* Control the order of flex items */
 }
 
 .dark-mode #logout-btn {
@@ -359,6 +344,28 @@ h1 {
     border-color: #ff6b6b;
     color: #ff6b6b;
     background-color: rgba(255, 107, 107, 0.05);
+}
+
+/* Share button - positioned before user info */
+#share-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    order: 0; /* Control the order of flex items */
+}
+
+.dark-mode #share-btn {
+    background-color: var(--went-well-color);
+    color: #333;
+}
+
+/* Auth buttons - positioned last */
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    height: 48px;
+    order: 3; /* Control the order of flex items */
 }
 
 /* Responsive styles for header */
@@ -383,20 +390,25 @@ h1 {
         height: auto;
     }
     
-    .user-info {
-        order: 1;
-        flex-grow: 1;
+    .theme-toggle {
+        order: 0;
+        margin-right: 0;
     }
     
     #share-btn {
-        order: 2;
+        order: 1;
     }
     
-    .theme-toggle {
-        order: 3;
+    .user-info {
+        order: 2;
+        flex-grow: 0;
     }
     
     #logout-btn {
+        order: 3;
+    }
+    
+    .auth-buttons {
         order: 4;
         margin-left: auto;
     }
@@ -837,24 +849,23 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
-    color: var(--primary-color);
-    background-color: rgba(0, 100, 164, 0.1); /* Changed to UCI blue */
-    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    background-color: rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
 }
 
 .dark-mode #theme-toggle-btn {
-    color: var(--went-well-color); /* Gold in dark mode */
-    background-color: rgba(255, 210, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 #theme-toggle-btn:hover {
-    background-color: rgba(0, 100, 164, 0.2); /* Changed to UCI blue */
+    background-color: rgba(0, 0, 0, 0.06);
     transform: translateY(-2px);
 }
 
 .dark-mode #theme-toggle-btn:hover {
-    background-color: rgba(255, 210, 0, 0.2); /* Gold in dark mode */
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .light-icon, .dark-icon {
@@ -898,12 +909,18 @@ h1 {
 }
 
 .btn {
-    padding: 8px 16px;
+    padding: 10px 16px;
     border-radius: 6px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     border: none;
+    font-size: 0.95rem;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btn-primary {
@@ -913,18 +930,23 @@ h1 {
 
 .btn-outline {
     background-color: transparent;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
 }
 
 .dark-mode .btn-outline {
-    border-color: var(--went-well-color); /* Gold in dark mode */
-    color: var(--went-well-color);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-color);
 }
 
 .btn:hover {
     opacity: 0.9;
     transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .btn:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .user-info {
