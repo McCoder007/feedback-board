@@ -259,10 +259,10 @@ function renderBoards(boards) {
 function createBoardCard(board) {
     const boardCard = document.createElement('div');
     boardCard.className = 'board-card';
+    boardCard.setAttribute('data-id', board.id);
     
     // Format dates
     const createdDate = board.createdAt ? new Date(board.createdAt.seconds * 1000).toLocaleDateString() : 'Unknown';
-    const updatedDate = board.updatedAt ? new Date(board.updatedAt.seconds * 1000).toLocaleDateString() : 'Unknown';
     
     boardCard.innerHTML = `
         <div class="board-card-header">
@@ -279,18 +279,27 @@ function createBoardCard(board) {
         <p class="board-card-description">${board.description || 'No description'}</p>
         <div class="board-card-meta">
             <span class="board-access ${board.access}">
-                <i class="fas ${board.access === 'public' ? 'fa-globe' : 'fa-lock'}"></i>
+                <span class="board-status ${board.access}"></span>
                 ${board.access === 'public' ? 'Public' : 'Private'}
             </span>
             <span class="board-date">Created: ${createdDate}</span>
         </div>
-        <a href="board.html?id=${board.id}" class="btn btn-primary board-open-btn">Open Board</a>
-        <button class="btn btn-outline board-share-btn" data-id="${board.id}">
-            <i class="fas fa-share-alt"></i> Share
-        </button>
+        <div class="board-card-footer">
+            <button class="board-share-btn" data-id="${board.id}">
+                <i class="fas fa-share-alt"></i> Share
+            </button>
+        </div>
     `;
     
-    // Add event listeners
+    // Make the entire card clickable to open the board
+    boardCard.addEventListener('click', (e) => {
+        // Don't navigate if clicking on action buttons
+        if (!e.target.closest('.board-action-btn') && !e.target.closest('.board-share-btn')) {
+            window.location.href = `board.html?id=${board.id}`;
+        }
+    });
+    
+    // Add event listeners for action buttons
     const editBtn = boardCard.querySelector('.edit-board');
     const deleteBtn = boardCard.querySelector('.delete-board');
     const shareBtn = boardCard.querySelector('.board-share-btn');
