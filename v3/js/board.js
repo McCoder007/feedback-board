@@ -495,12 +495,9 @@ import {
       <p>${item.content}</p>
       <div class="card-actions">
         <div class="vote-controls">
-          <button class="vote-btn upvote ${userVote > 0 ? 'upvoted' : ''}" data-id="${item.id}" title="Upvote">
-            <i class="fas fa-chevron-up"></i>
-          </button>
-          <span class="vote-count">${item.votes || 0}</span>
-          <button class="vote-btn downvote ${userVote < 0 ? 'downvoted' : ''}" data-id="${item.id}" title="Downvote">
-            <i class="fas fa-chevron-down"></i>
+          <button class="vote-btn ${userVote > 0 ? 'voted' : ''}" data-id="${item.id}" title="Like">
+            <i class="fas fa-thumbs-up"></i>
+            <span class="vote-count">${item.votes || 0}</span>
           </button>
         </div>
         ${canDelete ? 
@@ -511,12 +508,19 @@ import {
     `;
     
     // Add event listeners
-    const upvoteBtn = card.querySelector('.upvote');
-    const downvoteBtn = card.querySelector('.downvote');
+    const voteBtn = card.querySelector('.vote-btn');
     const deleteBtn = card.querySelector('.delete-btn');
     
-    upvoteBtn.addEventListener('click', () => handleVote(item.id, 1));
-    downvoteBtn.addEventListener('click', () => handleVote(item.id, -1));
+    voteBtn.addEventListener('click', () => {
+      // Add pulse animation
+      voteBtn.classList.add('pulse-animation');
+      // Remove animation after it completes
+      setTimeout(() => {
+        voteBtn.classList.remove('pulse-animation');
+      }, 300);
+      
+      handleVote(item.id, 1);
+    });
     
     if (deleteBtn) {
       deleteBtn.addEventListener('click', () => {
@@ -549,17 +553,17 @@ import {
       const voters = item.voters || {};
       const currentVote = voters[userId] || 0;
       
-      // Calculate vote change
+      // Calculate vote change - implement toggle behavior
       let voteChange = 0;
       
-      if (currentVote === voteValue) {
-        // User is removing their vote
+      if (currentVote === 1) {
+        // User is removing their vote (toggle off)
         voters[userId] = 0;
-        voteChange = -currentVote;
+        voteChange = -1;
       } else {
-        // User is changing their vote
-        voteChange = voteValue - currentVote;
-        voters[userId] = voteValue;
+        // User is adding a vote (toggle on)
+        voters[userId] = 1;
+        voteChange = 1;
       }
       
       // Update the item

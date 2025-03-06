@@ -682,27 +682,26 @@ h1 {
     margin-top: 12px;
 }
 
-/* Vote controls container */
+/* Vote controls */
 .vote-controls {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-/* Vote buttons */
 .vote-btn {
-    background-color: rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
     color: var(--text-color-secondary);
+    cursor: pointer;
+    padding: 4px 12px;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
-    padding: 8px 12px;
-    min-width: 40px;
-    min-height: 36px;
+    gap: 6px;
 }
 
 /* Improved delete button styling */
@@ -731,58 +730,46 @@ h1 {
     font-size: 1rem;
 }
 
-/* Hover effects for vote buttons */
 .vote-btn:hover {
+    background-color: rgba(99, 102, 241, 0.1);
     color: var(--primary-color);
-    background-color: rgba(0, 100, 164, 0.1);
-    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
 .dark-mode .vote-btn:hover {
-    color: var(--went-well-color);
-    background-color: rgba(255, 210, 0, 0.1);
+    background-color: rgba(99, 102, 241, 0.2);
 }
 
 .vote-btn:active {
-    transform: scale(0.95);
+    transform: translateY(0);
 }
 
-/* Upvoted and downvoted states */
-.vote-btn.upvoted {
-    color: #333333;
-    background-color: rgba(255, 210, 0, 0.9);
-    border-color: #E6BC00;
-    font-weight: 600;
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-}
-
-.vote-btn.downvoted {
+/* Voted state */
+.vote-btn.voted {
+    background-color: var(--primary-color);
     color: white;
-    background-color: rgba(0, 100, 164, 0.85);
-    border-color: #004A7A;
-    font-weight: 600;
+    border-color: var(--primary-color);
 }
 
 .vote-count {
-    font-weight: 600;
-    min-width: 24px;
-    text-align: center;
+    font-weight: 500;
 }
 
-.upvote.upvoted, .downvote.downvoted {
-    animation: pulse 0.3s ease-in-out;
-}
-
-/* Add a special focus style for keyboard navigation */
 .vote-btn:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
 }
 
+/* Add animation for when the vote button is clicked */
 @keyframes pulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    50% { transform: scale(1.1); }
     100% { transform: scale(1); }
+}
+
+.pulse-animation {
+    animation: pulse 0.3s ease-in-out;
 }
 
 /* Add mobile-specific adjustments */

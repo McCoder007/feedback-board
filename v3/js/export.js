@@ -83,7 +83,7 @@ function createColumnHTML(title, items, columnClass) {
         <div class="card-item">
           <div class="card-content">${item.content}</div>
           <div class="votes">
-            <span class="vote-count">Votes: ${item.votes || 0}</span>
+            <span class="vote-count"><i class="fas fa-thumbs-up"></i> ${item.votes || 0}</span>
           </div>
         </div>
       `;
