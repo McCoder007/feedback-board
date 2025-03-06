@@ -82,54 +82,56 @@ body {
     padding: 15px 0 15px 0;
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 15px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .header-left {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 16px;
-    width: 100%;
-    margin-bottom: 10px;
+    width: auto;
+    margin-bottom: 0;
 }
 
-.back-arrow {
+.back-to-dashboard {
     display: flex;
-    justify-content: center;
     align-items: center;
+    gap: 8px;
     color: var(--text-color-secondary);
-    background: transparent;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
     text-decoration: none;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    margin-right: 10px;
 }
 
-.back-arrow:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+.back-to-dashboard:hover {
     color: var(--primary-color);
+    background-color: rgba(0, 0, 0, 0.05);
+    opacity: 1;
 }
 
-.dark-mode .back-arrow:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+.dark-mode .back-to-dashboard:hover {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-.back-arrow i {
-    font-size: 1.2rem;
+.back-to-dashboard i {
+    font-size: 0.8rem;
 }
 
 #board-title, h1 {
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin: 0;
-    font-size: 1.7rem;
-    font-weight: 600;
-    padding: 0;
-    text-align: center;
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     min-height: 40px; /* Prevent layout shift during loading */
 }
 
@@ -144,7 +146,7 @@ body {
     align-items: center;
     gap: 12px;
     justify-content: flex-end;
-    width: 100%;
+    width: auto;
 }
 
 .theme-toggle {
@@ -261,7 +263,7 @@ body {
     border: 1px solid var(--border-color);
     background-color: var(--card-bg);
     color: var(--text-color);
-    width: 170px;
+    width: 200px; /* Increased from 170px to accommodate full text */
 }
 
 .export-tools {
@@ -274,24 +276,27 @@ body {
 /* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
     .main-header {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
         gap: 12px;
+        justify-content: space-between;
     }
     
     .header-left {
+        width: auto;
+        flex-direction: row;
         align-items: center;
         gap: 8px;
     }
     
     .back-to-dashboard {
-        align-self: center;
-        margin-bottom: 8px;
+        margin-bottom: 0;
     }
     
     .header-controls {
-        margin-top: 16px;
-        justify-content: center;
+        margin-top: 0;
+        justify-content: flex-end;
     }
     
     .tool-bar {
@@ -315,26 +320,30 @@ body {
         width: 100%;
         justify-content: center;
     }
+    
+    #board-title, h1 {
+        font-size: 1.4rem;
+        max-width: 200px;
+    }
 }
 
 /* Additional style to prevent text overflow in board titles */
 #board-title, h1 {
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 100%; /* Allow full width for the title */
-    margin: 0; /* Remove margins since we're using flex gap */
-    font-size: 1.7rem; /* Slightly larger for emphasis */
-    text-align: left; /* Ensure left alignment */
-    font-weight: 600; /* Make it slightly bolder */
-    margin-left: 2px; /* Small left margin to align with back button text */
-    margin-top: 0; /* Remove top margin */
-    margin-bottom: 24px; /* Add bottom margin to create space above search tools */
+    flex: 1;
+    min-width: 0;
+    min-height: 40px; /* Prevent layout shift during loading */
 }
 
 /* Board header left section */
 .back-to-dashboard {
-    align-self: flex-start;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -344,6 +353,7 @@ body {
     padding: 6px 12px;
     border-radius: 4px;
     transition: all 0.2s ease;
+    margin-right: 10px;
 }
 
 .back-to-dashboard:hover {
