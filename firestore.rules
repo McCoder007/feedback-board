@@ -25,10 +25,17 @@ service cloud.firestore {
       // Allow any user (authenticated or not) to read items
       allow read: if true;
       
-      // Allow the author to update or delete their own items
-      allow update, delete: if request.auth != null && 
-                           (resource.data.authorId == request.auth.uid || 
-                            get(/databases/$(database)/documents/boards/$(resource.data.boardId)).data.ownerId == request.auth.uid);
+      // Allow any user (authenticated or not) to update votes and voters
+      // This allows anonymous voting
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes', 'voters', 'updatedAt']) ||
+                    (request.auth != null && 
+                    (resource.data.authorId == request.auth.uid || 
+                     get(/databases/$(database)/documents/boards/$(resource.data.boardId)).data.ownerId == request.auth.uid));
+      
+      // Only allow authenticated users who are the author or board owner to delete items
+      allow delete: if request.auth != null && 
+                    (resource.data.authorId == request.auth.uid || 
+                     get(/databases/$(database)/documents/boards/$(resource.data.boardId)).data.ownerId == request.auth.uid);
     }
     
     // Allow users to read and write their own user data
