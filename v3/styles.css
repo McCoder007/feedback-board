@@ -1545,6 +1545,7 @@ select {
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-left: 1px; /* Align with the Share button */
 }
 
 .board-access.public {
@@ -1613,12 +1614,13 @@ select {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 20px; /* Make it more rounded like the upvote button */
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 500; /* Make text slightly bolder */
   transition: all 0.2s;
   z-index: 5; /* Ensure button is clickable */
+  margin-left: 1px; /* Align with the status dot */
 }
 
 /* Dark mode specific styling */
@@ -1644,7 +1646,7 @@ select {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  margin-right: 8px;
+  margin-right: 6px; /* Reduced from 8px to align with Share button icon */
 }
 
 .board-status.public {
