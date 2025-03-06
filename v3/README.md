@@ -6,18 +6,17 @@ This version of the Team Feedback Board introduces a multi-board system, allowin
 
 ### Multi-Board System
 - Dashboard interface to view, create, and manage boards
-- Board creation with title, description, and access settings
+- Board creation with title and description
 - Ability to share board links with others
 - Sorting and filtering of boards
 
 ### Enhanced Board Experience
 - Each board has a unique URL for easy sharing
-- Anonymous contribution for public boards
+- Anonymous contribution for all boards
 - Back navigation to dashboard
 - Board-specific data isolation
 
 ### Improved User Experience
-- Clear visual distinction between board types
 - Responsive design for all screen sizes
 - Improved navigation between boards
 - Enhanced sharing capabilities
@@ -65,22 +64,22 @@ Feedback Board is a collaborative tool that allows teams to collect and organize
 
 **Acceptance Criteria:**
 - Authenticated users can create new boards with title and description
-- Boards can be set as public or private
+- All boards are public and can be accessed by anyone with the link
 - Users can view a dashboard of all boards they have created
-- Board owners can edit board details (title, description, access level)
+- Board owners can edit board details (title, description)
 - Board owners can delete their boards
 - Board creation date is displayed on the board card
-- Board cards show a status indicator for public/private visibility
+- Board cards clearly show their public status
 
 ### 3. Item Management
 
 **As a board visitor**, I want to add feedback items to appropriate columns so that I can contribute my thoughts.
 
 **Acceptance Criteria:**
-- Any user (anonymous or authenticated) can add items to a public board
+- Any user (anonymous or authenticated) can add items to a board
 - Items can be added to three categories: "Went Well", "To Improve", and "Action Items"
 - Items display the content entered by the user
-- Authentication is not required to add items to a public board
+- Authentication is not required to add items to a board
 - Board owners can delete any item on their boards
 - Item authors (if authenticated) can delete their own items
 
@@ -156,7 +155,7 @@ Feedback Board is a collaborative tool that allows teams to collect and organize
 
 ### Database
 - Use Firestore for data storage
-- Implement appropriate security rules for public/private access
+- Implement appropriate security rules for public access
 - Structure collections for boards, items, and user data
 - Support real-time updates for collaborative features
 

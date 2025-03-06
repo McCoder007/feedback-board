@@ -123,7 +123,8 @@ async function handleCreateBoard(e) {
     
     const title = document.getElementById('board-title').value.trim();
     const description = document.getElementById('board-description').value.trim();
-    const access = document.getElementById('board-access').value;
+    // All boards are now public - access level selection removed
+    const access = 'public';
     
     if (!title) {
         showNotification('Please enter a board title', true);
@@ -283,9 +284,9 @@ function createBoardCard(board) {
         </div>
         <p class="board-card-description">${board.description || 'No description'}</p>
         <div class="board-card-meta">
-            <span class="board-access ${board.access}">
-                <span class="board-status ${board.access}"></span>
-                ${board.access === 'public' ? 'Public' : 'Private'}
+            <span class="board-access public">
+                <span class="board-status public"></span>
+                Public
             </span>
             <span class="board-date">Created: ${createdDate}</span>
         </div>
