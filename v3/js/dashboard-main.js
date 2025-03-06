@@ -1,21 +1,17 @@
-// This is the main entry point for the board page
+// This is the main entry point for the dashboard page
 
 // Import modules
 import { setupThemeToggle } from './theme.js';
 import { setupAuth } from './auth.js';
-import { initBoard } from './board.js';
-import { setupModals, setupBoardLoadingFailsafe } from './ui.js';
-import { setupExport } from './export.js';
-// Import mobile fix functionality to ensure proper mobile support
-import './mobile-fix.js';
+import { initDashboard } from './dashboard.js';
 
 // Wait for DOM content to be loaded before initializing
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log("DOM loaded, initializing application...");
+    console.log("DOM loaded, initializing dashboard application...");
     
     // Check if we're transitioning from another page
     const prevPage = localStorage.getItem('currentPage');
-    if (prevPage && prevPage !== 'board') {
+    if (prevPage && prevPage !== 'dashboard') {
         // We're coming from another page, delay the initialization slightly
         // to allow the transition to complete
         setTimeout(async function() {
@@ -36,18 +32,11 @@ async function initApp() {
         // Initialize auth functionality
         setupAuth();
         
-        // Initialize board functionality
-        await initBoard();
+        // Initialize dashboard functionality
+        await initDashboard();
         
-        // Setup UI components
-        setupModals();
-        setupBoardLoadingFailsafe();
-        
-        // Setup export functionality
-        setupExport();
-        
-        console.log("Application initialized successfully");
+        console.log("Dashboard application initialized successfully");
     } catch (error) {
-        console.error("Error initializing application:", error);
+        console.error("Error initializing dashboard application:", error);
     }
-}
+} 

@@ -42,8 +42,11 @@ import {
   const exportBtn = document.querySelector('.export-btn');
   
   // Function to initialize board functionality
-  function initBoard() {
+  async function initBoard() {
     console.log("Initializing board...");
+    
+    // Setup page transitions
+    setupPageTransitions();
     
     // Check if DOM elements are found
     console.log("Sort select found:", sortSelect);
@@ -740,8 +743,32 @@ import {
     }
   }
   
+  // Add page transition handler for the back link
+  function setupPageTransitions() {
+    // Handle back to dashboard link
+    const backLink = document.querySelector('.back-to-dashboard');
+    if (backLink) {
+      backLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Add the page loading class to start the transition
+        document.documentElement.classList.add('page-loading');
+        
+        // Get the href
+        const href = backLink.getAttribute('href');
+        
+        // Navigate after a short delay
+        setTimeout(function() {
+          window.location.href = href;
+        }, 200);
+      });
+    }
+  }
+  
   export {
     initBoard,
     setupRealTimeUpdates,
-    cleanupBoard
+    cleanupBoard,
+    generateQRCode,
+    sortItems
   };

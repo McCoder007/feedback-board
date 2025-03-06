@@ -6,10 +6,67 @@
     <title>Team Feedback Board</title>
     <!-- Add favicon to prevent 404 error -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Critical CSS for immediate theme and layout application -->
+    <style>
+        /* Critical styles to prevent flash of layout */
+        .page-transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #121212;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease;
+        }
+        
+        html.light-theme .page-transition-overlay {
+            background-color: #ffffff;
+        }
+        
+        .page-loading .page-transition-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        body {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .page-loading body {
+            opacity: 0;
+        }
+        
+        /* Fix header layout instantly */
+        .theme-toggle {
+            position: fixed !important;
+            z-index: 9998 !important;
+            width: 48px !important;
+            height: 48px !important;
+            top: 16px !important;
+            left: 16px !important;
+            transition: none !important;
+        }
+        
+        @media (min-width: 769px) {
+            .theme-toggle {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+            }
+        }
+    </style>
     <!-- Preload theme script to prevent white flash -->
     <script>
         // Apply theme immediately before any content is rendered
         (function() {
+            // Add page loading class to html
+            document.documentElement.classList.add('page-loading');
+            
+            // Apply saved theme
             const savedTheme = localStorage.getItem('feedbackBoardTheme');
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-theme');
@@ -17,6 +74,16 @@
                 // Default to dark mode if not explicitly set to light
                 document.documentElement.classList.add('dark-mode');
             }
+            
+            // Store current page for transition handling
+            localStorage.setItem('currentPage', 'board');
+            
+            // Remove page loading class after a short delay
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    document.documentElement.classList.remove('page-loading');
+                }, 100);
+            });
         })();
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -46,6 +113,9 @@
     </style>
 </head>
 <body>
+    <!-- Page transition overlay -->
+    <div class="page-transition-overlay"></div>
+    
     <div class="container auth-loading">
         <header>
             <div class="board-header-left">
