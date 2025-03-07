@@ -347,6 +347,9 @@ import {
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         console.log('Received items update, count:', querySnapshot.size);
         
+        // Store the total number of items for comparison when filters are removed
+        setAllItemsCount(querySnapshot.size);
+        
         // Important: Capture positions before processing the update
         // Only if we have cards already rendered
         const hasExistingCards = document.querySelectorAll('.card').length > 0;
@@ -394,9 +397,19 @@ import {
     // Capture positions of cards before filtering/sorting 
     captureCardPositions();
     
-    // Don't re-setup real-time updates, just apply filters to current items
-    // This prevents the flashing caused by fetching data again
+    // Check if search field is empty
+    const isSearchEmpty = !searchInput || searchInput.value.trim() === '';
+    
+    // Get all visible cards
     const itemElements = document.querySelectorAll('.card');
+    
+    // If search is empty and the displayed cards count doesn't match
+    // what's in the database, we need to re-fetch all items
+    if (isSearchEmpty && itemElements.length < getAllItemsCount()) {
+      // The search filter was cleared, reload all items
+      setupRealTimeUpdates();
+      return;
+    }
     
     if (itemElements.length > 0) {
       // We already have items loaded, just filter them locally
@@ -849,6 +862,19 @@ import {
     } else {
       showNotification('QR code not available for download', true);
     }
+  }
+  
+  // Keep track of the total number of items from the database
+  let allItemsCount = 0;
+  
+  // Function to get the total items count
+  function getAllItemsCount() {
+    return allItemsCount;
+  }
+  
+  // Function to set the total items count
+  function setAllItemsCount(count) {
+    allItemsCount = count;
   }
   
   export {
