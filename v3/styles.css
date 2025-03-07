@@ -2422,3 +2422,161 @@ select {
 #edit-board-modal #edit-board-description {
     padding-left: 12px;
 }
+
+/* Mobile-specific enhancements - completely revised */
+@media (max-width: 768px) {
+    /* Properly align and style the header section */
+    header {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 12px;
+        gap: 8px;
+    }
+    
+    /* Fix breadcrumb navigation for perfect alignment */
+    .breadcrumb-navigation {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        margin: 0 0 12px 0;
+        padding: 0;
+        width: 100%;
+    }
+    
+    .breadcrumb-link, 
+    .breadcrumb-separator, 
+    .breadcrumb-current {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        line-height: 40px;
+    }
+    
+    .breadcrumb-link {
+        color: var(--text-color-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        padding: 0 4px;
+    }
+    
+    .breadcrumb-separator {
+        margin: 0 4px;
+    }
+    
+    .breadcrumb-current {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+    }
+    
+    /* Adjust controls layout to be perfectly right-aligned */
+    .header-controls {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+        height: 48px;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Position the theme toggle to the left */
+    .theme-toggle {
+        margin-right: auto;
+        height: 48px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Position user info to the right */
+    .user-info {
+        margin-left: auto;
+        padding: 6px 12px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Fix login button alignment */
+    .auth-buttons {
+        margin-left: auto;
+        height: 48px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Thumbs up button improvements */
+    .vote-btn {
+        height: 36px;
+        min-width: 80px;
+        padding: 0 12px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    /* Dramatically improve the voted state */
+    .vote-btn.voted {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        transform: scale(1);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Keep the vote count easily readable */
+    .vote-count {
+        font-weight: bold;
+        min-width: 24px;
+        text-align: center;
+    }
+    
+    /* Provide a clear visual when voting */
+    @keyframes vote-pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .vote-btn.just-clicked {
+        animation: vote-pulse 0.3s ease;
+    }
+    
+    /* Improve the compact card layout */
+    .card {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .card-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .card p {
+        margin: 0;
+        padding: 0;
+        flex: 1;
+        margin-right: 8px;
+    }
+    
+    .card-actions {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Short content specific styles */
+    .card p.short-content + .card-actions {
+        margin-left: auto;
+    }
+}
