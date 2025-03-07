@@ -1328,7 +1328,7 @@ label {
 
 textarea, input, select {
     width: 100%;
-    padding: 14px 20px;
+    padding: 8px 12px;
     border: 1px solid var(--input-border);
     border-radius: 6px;
     font-size: 1rem;
@@ -1347,12 +1347,12 @@ textarea::placeholder {
 
 /* Add specific styling for the board title input in the create board modal */
 #create-board-modal #board-title {
-    padding-left: 14px;
+    padding-left: 12px;
 }
 
 /* Add consistent padding for the board description textarea */
 #create-board-modal #board-description {
-    padding-left: 14px;
+    padding-left: 12px;
 }
 
 /* Improve placeholder visibility in dark mode */
@@ -2309,9 +2309,9 @@ select {
 
 /* Add consistent styling for edit board modal inputs */
 #edit-board-modal #edit-board-title {
-    padding-left: 14px;
+    padding-left: 12px;
 }
 
 #edit-board-modal #edit-board-description {
-    padding-left: 14px;
+    padding-left: 12px;
 }
