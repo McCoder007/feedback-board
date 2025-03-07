@@ -155,9 +155,10 @@ import {
     
     // Search input
     if (searchInput) {
-      searchInput.addEventListener('input', debounce(() => {
+      // Remove debounce for immediate updates with each keystroke
+      searchInput.addEventListener('input', () => {
         filterItems();
-      }, 400));
+      });
     }
     
     // Sort select
@@ -706,7 +707,13 @@ import {
     }
   }
   
-  // Debounce function for search input
+  // Clean up function to remove listeners
+  function cleanupBoard() {
+    unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+    unsubscribeListeners = [];
+  }
+  
+  // Debounce function (kept for other potential uses)
   function debounce(func, delay) {
     let timeout;
     return function() {
@@ -715,12 +722,6 @@ import {
       clearTimeout(timeout);
       timeout = setTimeout(() => func.apply(context, args), delay);
     };
-  }
-  
-  // Clean up function to remove listeners
-  function cleanupBoard() {
-    unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-    unsubscribeListeners = [];
   }
   
   // Function to open share modal
