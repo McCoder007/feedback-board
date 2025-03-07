@@ -157,7 +157,7 @@ import {
     if (searchInput) {
       searchInput.addEventListener('input', debounce(() => {
         filterItems();
-      }, 300));
+      }, 400));
     }
     
     // Sort select
@@ -392,11 +392,39 @@ import {
   // Filter items based on search and sort
   function filterItems() {
     // Capture positions of cards before filtering/sorting 
-    // This capture is for manual sort changes, not real-time updates
     captureCardPositions();
     
-    // This will trigger the real-time listener to re-process items
-    setupRealTimeUpdates();
+    // Don't re-setup real-time updates, just apply filters to current items
+    // This prevents the flashing caused by fetching data again
+    const itemElements = document.querySelectorAll('.card');
+    
+    if (itemElements.length > 0) {
+      // We already have items loaded, just filter them locally
+      const currentItems = [];
+      itemElements.forEach(card => {
+        const itemId = card.dataset.id;
+        const content = card.querySelector('p')?.textContent || '';
+        const type = card.closest('.column')?.classList.contains('went-well') ? 'went-well' : 
+                    card.closest('.column')?.classList.contains('to-improve') ? 'to-improve' : 'action-items';
+        const votes = parseInt(card.querySelector('.vote-count')?.textContent || '0', 10);
+        // Extract createdAt data attribute if it exists
+        const createdAtSeconds = card.dataset.createdAt ? parseInt(card.dataset.createdAt, 10) : 0;
+        
+        currentItems.push({
+          id: itemId,
+          content: content,
+          type: type,
+          votes: votes,
+          createdAt: { seconds: createdAtSeconds }
+        });
+      });
+      
+      // Process current items without triggering a re-fetch
+      processItems(currentItems, true);
+    } else {
+      // If no items are loaded yet, we need to fetch them
+      setupRealTimeUpdates();
+    }
   }
   
   // Filter items data based on search and sort
@@ -547,6 +575,11 @@ import {
     const card = document.createElement('div');
     card.className = 'card';
     card.dataset.id = item.id;
+    
+    // Store createdAt timestamp as a data attribute for filtering
+    if (item.createdAt && item.createdAt.seconds) {
+      card.dataset.createdAt = item.createdAt.seconds;
+    }
     
     // Check if current user has voted
     const user = getCurrentUser();
