@@ -915,13 +915,16 @@ h1 {
 
 /* Add a subtle animation for vote toggling */
 @keyframes vote-toggle {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1.05); }
+    /* Remove animation completely */
 }
 
 .vote-btn.voted {
-    animation: vote-toggle 0.3s ease;
+    /* No animation reference here */
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .vote-count {
@@ -935,13 +938,11 @@ h1 {
 
 /* Add animation for when the vote button is clicked */
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    /* Remove animation completely */
 }
 
 .pulse-animation {
-    animation: pulse 0.3s ease-in-out;
+    /* Remove animation completely */
 }
 
 /* Add mobile-specific adjustments */
@@ -2556,13 +2557,11 @@ select {
     
     /* Provide a clear visual when voting */
     @keyframes vote-pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+        /* Remove animation completely */
     }
     
     .vote-btn.just-clicked {
-        animation: vote-pulse 0.3s ease;
+        /* Remove animation completely */
     }
     
     /* Improve the compact card layout */

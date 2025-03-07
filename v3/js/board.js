@@ -645,8 +645,8 @@ import {
     const deleteBtn = card.querySelector('.delete-btn');
     
     voteBtn.addEventListener('click', () => {
-      // Add better visual feedback
-      voteBtn.classList.add('just-clicked');
+      // Remove the animation trigger
+      // voteBtn.classList.add('just-clicked');
       
       // Toggle the voted class immediately for instant visual feedback
       const isVoted = voteBtn.classList.contains('voted');
@@ -668,11 +668,11 @@ import {
         }
       }
       
-      // Remove pulse animation after it completes
-      setTimeout(() => {
-        voteBtn.classList.remove('pulse-animation');
-        voteBtn.classList.remove('just-clicked');
-      }, 300);
+      // Remove the animation cleanup code
+      // setTimeout(() => {
+      //   voteBtn.classList.remove('pulse-animation');
+      //   voteBtn.classList.remove('just-clicked');
+      // }, 300);
       
       handleVote(item.id, 1);
     });
