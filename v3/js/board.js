@@ -622,14 +622,14 @@ import {
     const canDelete = user && (user.uid === item.authorId || (currentBoardData && user.uid === currentBoardData.ownerId));
     
     card.innerHTML = `
+      ${canDelete ? 
+        `<button class="delete-btn" data-id="${item.id}" title="Delete item">
+          <i class="fas fa-times"></i>
+        </button>` : 
+        ''}
       <div class="card-content">
         <p class="${isShortContent ? 'short-content' : ''}">${item.content}</p>
         <div class="card-actions">
-          ${canDelete ? 
-            `<button class="delete-btn" data-id="${item.id}" title="Delete item">
-              <i class="fas fa-times"></i>
-            </button>` : 
-            isShortContent ? '' : `<div></div>`} <!-- Only add spacer for longer content -->
           <div class="vote-controls">
             <button class="vote-btn ${userVote > 0 ? 'voted' : ''}" data-id="${item.id}" title="Like">
               <i class="fas fa-thumbs-up"></i>
