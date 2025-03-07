@@ -255,7 +255,7 @@ body {
 
 .search-input input {
     width: 100%;
-    padding: 8px 8px 8px 32px;
+    padding: 8px 8px 8px 40px;
     border-radius: 6px;
     border: 1px solid var(--border-color);
     background-color: var(--card-bg);
@@ -1328,7 +1328,7 @@ label {
 
 textarea, input, select {
     width: 100%;
-    padding: 10px;
+    padding: 12px 16px;
     border: 1px solid var(--input-border);
     border-radius: 6px;
     font-size: 1rem;
@@ -1423,7 +1423,7 @@ textarea {
 }
 
 .search-input input {
-    padding-left: 36px;
+    padding-left: 40px;
 }
 
 .search-input i {
@@ -1435,7 +1435,7 @@ textarea {
 }
 
 select {
-    padding: 8px 12px;
+    padding: 12px 16px;
     border: 1px solid var(--input-border);
     border-radius: 6px;
     background-color: var(--card-bg);
