@@ -600,10 +600,11 @@ h1 {
 /* Responsive styles for header */
 @media (max-width: 768px) {
     header {
+        display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        padding: 16px;
-        gap: 16px;
+        width: 100%;
+        padding: 12px;
+        gap: 8px;
     }
     
     .board-header-left {
@@ -613,31 +614,45 @@ h1 {
     
     .header-controls {
         width: 100%;
-        justify-content: flex-end;
-        min-width: 100%; /* Full width on mobile */
-        height: 48px; /* Maintain fixed height */
+        justify-content: space-between;
+        height: 48px;
+        margin: 0;
+        padding: 0;
     }
     
     .theme-toggle {
-        margin-right: auto; /* Push to left */
-        order: 1;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
     }
     
-    #share-btn {
-        order: 2;
-    }
-    
-    #share-btn .share-text {
-        display: none;
+    #theme-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
     }
     
     .user-info {
-        order: 3;
-        padding: 6px 10px;
+        padding: 6px 12px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin: 0;
     }
     
     .auth-buttons {
-        order: 3;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin: 0;
     }
     
     .auth-loading .auth-buttons,
@@ -825,22 +840,17 @@ h1 {
     line-height: 1.5;
 }
 
+/* Card actions layout for desktop */
 .card-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end; /* Right-align the buttons */
     align-items: center;
     color: var(--text-color-secondary);
     font-size: 1rem;
     margin-top: 8px;
 }
 
-/* Vote controls */
-.vote-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
+/* Vote button styling with NO ANIMATIONS */
 .vote-btn {
     display: flex;
     align-items: center;
@@ -852,302 +862,51 @@ h1 {
     cursor: pointer;
     padding: 4px 12px;
     font-size: 0.9rem;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     gap: 6px;
-}
-
-/* Improved delete button styling */
-.delete-btn {
-    background-color: transparent;
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--text-color-secondary);
-    opacity: 0.6;
-    transition: all 0.2s ease;
-}
-
-.delete-btn:hover {
-    background-color: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
-    opacity: 1;
-}
-
-.delete-btn i {
-    font-size: 1rem;
 }
 
 .vote-btn:hover {
     background-color: rgba(99, 102, 241, 0.1);
     color: var(--primary-color);
     border-color: var(--primary-color);
-    transform: none;
+    /* NO TRANSFORM */
 }
 
-.dark-mode .vote-btn:hover {
-    background-color: rgba(99, 102, 241, 0.2);
-}
-
-.vote-btn:active {
-    transform: none;
-}
-
-/* Voted state */
 .vote-btn.voted {
     background-color: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
-    transform: none;
+    /* NO TRANSFORM */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.dark-mode .vote-btn.voted {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-}
-
-.vote-btn.voted i {
-    color: white;
-}
-
-/* Add a subtle animation for vote toggling */
-@keyframes vote-toggle {
-    /* Remove animation completely */
-}
-
-.vote-btn.voted {
-    /* No animation reference here */
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-    transform: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.vote-count {
-    font-weight: 500;
-}
-
-.vote-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
-}
-
-/* Add animation for when the vote button is clicked */
-@keyframes pulse {
-    /* Remove animation completely */
-}
-
-.pulse-animation {
-    /* Remove animation completely */
-}
-
-/* Add mobile-specific adjustments */
+/* Mobile styles for card actions and vote buttons */
 @media (max-width: 768px) {
-    .board {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-    
-    .column {
-        margin-bottom: 0; /* We'll use grid gap instead */
-        border-radius: 12px; /* Slightly larger border radius on mobile */
-    }
-    
-    /* Make column headers more consistent */
-    .column-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 20px;
-        position: relative;
-        height: 60px; /* Fixed height for consistency */
-        cursor: pointer; /* Make sure it's clickable */
-    }
-    
-    /* Style for the plus button container */
-    .add-item {
-        width: 44px;
-        height: 44px;
-        font-size: 1.5rem;
-        background-color: rgba(255, 255, 255, 0.5);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        border: 1px solid rgba(255, 255, 255, 0.7);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Add right chevron for mobile accordion style */
-    .column-header::after {
-        content: '\f054'; /* Unicode for right chevron */
-        font-family: 'Font Awesome 6 Free';
-        font-weight: 900;
-        font-size: 1.2rem;
-        transition: transform 0.3s ease;
-        display: inline-block;
-        position: absolute;
-        right: 20px;
-    }
-    
-    /* Rotate chevron when expanded */
-    .column:not(.collapsed) .column-header::after {
-        transform: rotate(90deg);
-    }
-    
-    /* Ensure column header text is properly positioned */
-    .column-header span {
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-left: 10px;
-    }
-    
-    /* Hide cards in collapsed columns */
-    .column.collapsed .cards {
-        display: none;
-    }
-    
-    /* Ensure the add button doesn't get hidden by column header click handler */
-    .column-header .add-item {
-        pointer-events: auto;
-    }
-    
-    header {
-        flex-wrap: wrap;
-    }
-    
-    .header-controls {
-        margin-left: auto;
+    /* Card actions - maintain right alignment */
+    .card-actions {
+        justify-content: flex-end;
         margin-top: 8px;
-    }
-    
-    h1 {
-        margin-bottom: 10px;
-        width: 100%;
-    }
-    
-    .search-tools {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .search-input {
-        max-width: 100%;
-        width: 100%;
-    }
-    
-    .search-and-sort {
-        width: 100%;
-        margin-bottom: 16px;
-    }
-    
-    .export-tools {
-        width: 100%;
-        display: flex;
-        gap: 10px;
-    }
-    
-    .export-tools .btn {
-        flex: 1;
-        justify-content: center;
-    }
-    
-    /* Card and voting styles for mobile */
-    .card-actions {
-        justify-content: space-between; /* Spread out buttons on mobile */
-        margin-top: 8px; /* Less space above buttons on mobile */
-        flex-wrap: nowrap; /* Prevent wrapping */
+        flex-wrap: nowrap;
         align-items: center;
     }
     
+    /* Vote button for mobile with NO ANIMATIONS */
     .vote-btn {
-        min-height: 36px; /* Smaller height on mobile */
-        padding: 6px 10px; /* Less padding for space efficiency */
-        font-size: 0.9rem; /* Slightly smaller font */
-        border-radius: 18px; /* Keep it rounded */
-        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+        border-radius: 18px;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        /* NO TRANSFORM */
     }
     
-    /* Make the thumbs up icon more compact but still easy to tap */
-    .vote-btn i {
-        font-size: 1.1rem;
-    }
-    
-    /* Optimize space by making the delete button smaller */
-    .delete-btn {
-        width: 28px;
-        height: 28px;
-    }
-    
-    /* Adjust card padding for mobile */
-    .card {
-        padding: 10px 12px;
-        margin-bottom: 10px;
-    }
-    
-    /* Card with shorter content should be even more compact */
-    .card p:only-child,
-    .card p.short-content {
-        margin-bottom: 0;
-    }
-    
-    /* Single-line content optimization */
-    .card-content {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-    
-    /* When content is short (one line), make the card more compact */
-    .card p {
-        margin-right: 8px;
-        flex: 1;
-    }
-    
-    /* Optimize action buttons for compact display */
-    .card-actions {
-        display: flex;
-        align-items: center;
-        margin-top: 0; /* Remove margin for inline display */
-        flex-shrink: 0; /* Prevent shrinking */
-    }
-    
-    /* Add custom transition for smooth collapse/expand */
-    .cards {
-        transition: max-height 0.5s ease;
-        overflow: hidden;
-    }
-    
-    /* Enhance collapsed column visuals */
-    .column.collapsed {
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-    
-    .column.collapsed .cards {
-        max-height: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        visibility: hidden;
-    }
-    
-    .column:not(.collapsed) .cards {
-        max-height: 2000px; /* Large value to accommodate any content */
-        visibility: visible;
-    }
-    
-    /* Add subtle hover effect on headers */
-    .column-header:hover {
-        opacity: 0.95;
+    .vote-btn.voted {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        /* NO TRANSFORM */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 }
 
@@ -2317,55 +2076,42 @@ select {
 .breadcrumb-navigation {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 1.3rem;
-    margin: 0;
-    flex-wrap: nowrap;
-    max-width: 100%;
-    overflow: hidden;
-    height: 40px; /* Fixed height for consistent alignment */
-    line-height: 40px; /* Align text vertically */
+    height: 40px;
+    margin: 0 0 12px 0;
+    padding: 0;
+    width: 100%;
+}
+
+.breadcrumb-link, 
+.breadcrumb-separator, 
+.breadcrumb-current {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    line-height: 40px;
+    font-size: 1.1rem;
 }
 
 .breadcrumb-link {
     color: var(--text-color-secondary);
     text-decoration: none;
     transition: color 0.2s ease;
-    font-weight: 500;
-    display: none; /* Hide by default until auth check */
-    white-space: nowrap;
-}
-
-.auth-loaded .breadcrumb-link.dashboard-link {
-    display: inline; /* Will be overridden by inline style in JS */
-}
-
-.breadcrumb-link:hover {
-    color: var(--primary-color);
-    text-decoration: none;
+    padding: 0 4px;
 }
 
 .breadcrumb-separator {
-    color: var(--text-color-secondary);
-    font-weight: 300;
-    margin: 0 2px;
-    display: none; /* Hide by default until auth check */
-}
-
-.auth-loaded .breadcrumb-separator {
-    display: inline; /* Will be overridden by inline style in JS */
+    margin: 0 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .breadcrumb-current {
-    color: var(--text-color);
-    font-weight: 600;
-    margin: 0;
-    padding: 0;
+    flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-width: 0;
-    flex: 1;
+    font-weight: 600;
 }
 
 /* Previous Back Link Styles - Keep for compatibility */
@@ -2428,150 +2174,128 @@ select {
 
 /* Mobile-specific enhancements - completely revised */
 @media (max-width: 768px) {
-    /* Properly align and style the header section */
-    header {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        padding: 12px;
-        gap: 8px;
+    /* Restore mobile board layout */
+    .board {
+        grid-template-columns: 1fr;
+        gap: 24px;
     }
     
-    /* Fix breadcrumb navigation for perfect alignment */
-    .breadcrumb-navigation {
-        display: flex;
-        align-items: center;
-        height: 40px;
-        margin: 0 0 12px 0;
-        padding: 0;
-        width: 100%;
+    .column {
+        margin-bottom: 0;
+        border-radius: 12px;
     }
     
-    .breadcrumb-link, 
-    .breadcrumb-separator, 
-    .breadcrumb-current {
-        display: flex;
-        align-items: center;
-        height: 100%;
-        line-height: 40px;
-    }
-    
-    .breadcrumb-link {
-        color: var(--text-color-secondary);
-        text-decoration: none;
-        transition: color 0.2s ease;
-        padding: 0 4px;
-    }
-    
-    .breadcrumb-separator {
-        margin: 0 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .breadcrumb-current {
-        flex: 1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-weight: 600;
-        font-size: 1.2rem;
-    }
-    
-    /* Adjust controls layout to ensure proper right alignment */
-    .header-controls {
+    /* Column headers */
+    .column-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 100%;
-        height: 48px;
-        margin: 0;
-        padding: 0;
+        padding: 16px 20px;
+        position: relative;
+        height: 60px;
+        cursor: pointer;
     }
     
-    /* Position the theme toggle to the left */
-    .theme-toggle {
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        margin: 0;
-    }
-    
-    #theme-toggle-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
+    /* Add item button */
+    .add-item {
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+        background-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        border: 1px solid rgba(255, 255, 255, 0.7);
         border-radius: 50%;
-    }
-    
-    /* Position user info to the right with proper alignment */
-    .user-info {
-        padding: 6px 12px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        margin: 0;
-    }
-    
-    /* Fix login button alignment */
-    .auth-buttons {
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        margin: 0;
-    }
-    
-    /* Thumbs up button improvements */
-    .vote-btn {
-        height: 36px;
-        min-width: 80px;
-        padding: 0 12px;
-        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
-        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
     
-    /* Dramatically improve the voted state */
-    .vote-btn.voted {
-        background-color: var(--primary-color);
-        color: white;
-        border-color: var(--primary-color);
-        transform: none;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Column header chevron */
+    .column-header::after {
+        content: '\f054';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+        display: inline-block;
+        position: absolute;
+        right: 20px;
     }
     
-    /* Keep the vote count easily readable */
-    .vote-count {
-        font-weight: bold;
-        min-width: 24px;
-        text-align: center;
+    .column:not(.collapsed) .column-header::after {
+        transform: rotate(90deg);
     }
     
-    /* Provide a clear visual when voting */
-    @keyframes vote-pulse {
-        /* Remove animation completely */
+    .column-header span {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-left: 10px;
     }
     
-    .vote-btn.just-clicked {
-        /* Remove animation completely */
+    /* Collapsed column states */
+    .column.collapsed .cards {
+        display: none;
     }
     
-    /* Improve the compact card layout */
-    .card {
-        padding: 8px 12px;
-        margin-bottom: 8px;
-        display: flex;
+    .column-header .add-item {
+        pointer-events: auto;
+    }
+    
+    /* Header layout */
+    header {
+        flex-wrap: wrap;
+    }
+    
+    .header-controls {
+        margin-left: auto;
+        margin-top: 8px;
+    }
+    
+    h1 {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    /* Search and export tools */
+    .search-tools {
         flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .search-input {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .search-and-sort {
+        width: 100%;
+        margin-bottom: 16px;
+    }
+    
+    .export-tools {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .export-tools .btn {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    /* Card styles */
+    .card {
+        padding: 10px 12px;
+        margin-bottom: 10px;
+    }
+    
+    .card p:only-child,
+    .card p.short-content {
+        margin-bottom: 0;
     }
     
     .card-content {
@@ -2587,15 +2311,105 @@ select {
         margin-right: 8px;
     }
     
-    .card-actions {
-        display: flex;
-        align-items: center;
-        margin: 0;
-        padding: 0;
+    /* Vote and delete button mobile styles */
+    .vote-btn i {
+        font-size: 1.1rem;
     }
     
-    /* Short content specific styles */
-    .card p.short-content + .card-actions {
-        margin-left: auto;
+    .delete-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    /* Card collapse transitions */
+    .cards {
+        transition: max-height 0.5s ease;
+        overflow: hidden;
+    }
+    
+    .column.collapsed {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .column.collapsed .cards {
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        visibility: hidden;
+    }
+    
+    .column:not(.collapsed) .cards {
+        max-height: 2000px;
+        visibility: visible;
+    }
+    
+    .column-header:hover {
+        opacity: 0.95;
     }
 }
+
+/* Vote controls */
+.vote-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 8px; /* Add spacing between delete and vote buttons */
+}
+
+.dark-mode .vote-btn:hover {
+    background-color: rgba(99, 102, 241, 0.2);
+}
+
+.vote-btn:active {
+    /* No transform */
+}
+
+/* Voted state style and color */
+.vote-btn.voted i {
+    color: white;
+}
+
+.dark-mode .vote-btn.voted {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.vote-count {
+    font-weight: 500;
+}
+
+.vote-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+/* Delete button styling */
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-color-secondary);
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    opacity: 1;
+}
+
+.delete-btn i {
+    font-size: 1rem;
+}
+
+/* Empty animation keyframes - keep these to override any existing ones */
+@keyframes vote-toggle {}
+@keyframes pulse {}
+.pulse-animation {}
+.vote-btn.just-clicked {}
