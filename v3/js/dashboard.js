@@ -60,12 +60,22 @@ function setupEventListeners() {
     createBoardBtn.addEventListener('click', () => {
         const createBoardModal = document.getElementById('create-board-modal');
         createBoardModal.classList.add('active');
+        
+        // Automatically focus on the board title input
+        setTimeout(() => {
+            document.getElementById('board-title').focus();
+        }, 50); // Small delay to ensure modal is fully displayed
     });
     
     // Create first board button (shown when no boards exist)
     createFirstBoardBtn.addEventListener('click', () => {
         const createBoardModal = document.getElementById('create-board-modal');
         createBoardModal.classList.add('active');
+        
+        // Automatically focus on the board title input
+        setTimeout(() => {
+            document.getElementById('board-title').focus();
+        }, 50); // Small delay to ensure modal is fully displayed
     });
     
     // Create board form submission
