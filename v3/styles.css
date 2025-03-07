@@ -2461,7 +2461,10 @@ select {
     }
     
     .breadcrumb-separator {
-        margin: 0 4px;
+        margin: 0 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .breadcrumb-current {
@@ -2470,13 +2473,14 @@ select {
         overflow: hidden;
         text-overflow: ellipsis;
         font-weight: 600;
+        font-size: 1.2rem;
     }
     
-    /* Adjust controls layout to be perfectly right-aligned */
+    /* Adjust controls layout to ensure proper right alignment */
     .header-controls {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
         width: 100%;
         height: 48px;
         margin: 0;
@@ -2485,27 +2489,40 @@ select {
     
     /* Position the theme toggle to the left */
     .theme-toggle {
-        margin-right: auto;
         height: 48px;
         display: flex;
         align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
     }
     
-    /* Position user info to the right */
+    #theme-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+    
+    /* Position user info to the right with proper alignment */
     .user-info {
-        margin-left: auto;
         padding: 6px 12px;
         height: 48px;
         display: flex;
         align-items: center;
+        justify-content: flex-end;
+        margin: 0;
     }
     
     /* Fix login button alignment */
     .auth-buttons {
-        margin-left: auto;
         height: 48px;
         display: flex;
         align-items: center;
+        justify-content: flex-end;
+        margin: 0;
     }
     
     /* Thumbs up button improvements */
@@ -2518,6 +2535,7 @@ select {
         align-items: center;
         justify-content: center;
         gap: 6px;
+        transition: all 0.2s ease;
     }
     
     /* Dramatically improve the voted state */
