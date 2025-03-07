@@ -125,6 +125,19 @@ function setupEventListeners() {
             });
         }
     });
+    
+    // Allow Enter key in description textarea to submit the form (but Shift+Enter for new lines)
+    const boardDescription = document.getElementById('board-description');
+    if (boardDescription) {
+        boardDescription.addEventListener('keydown', (e) => {
+            // If Enter is pressed without Shift key
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // Prevent the default action (new line)
+                // Submit the form
+                createBoardForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    }
 }
 
 // Handle board creation
