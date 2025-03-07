@@ -138,6 +138,7 @@ body {
     flex: 1;
     min-width: 0;
     min-height: 40px; /* Prevent layout shift during loading */
+    max-width: calc(100vw - 150px); /* Ensure space for controls on mobile */
 }
 
 /* Add a placeholder style during loading to prevent flash */
@@ -326,7 +327,10 @@ body {
     
     #board-title, h1 {
         font-size: 1.4rem;
-        max-width: 200px;
+        max-width: calc(100vw - 100px); /* More space for the title */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
@@ -788,6 +792,8 @@ h1 {
 
 .card-content {
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Subtle highlight during sort transition */
@@ -1061,13 +1067,36 @@ h1 {
     
     /* Adjust card padding for mobile */
     .card {
-        padding: 12px; /* Slightly reduced padding */
+        padding: 10px 12px;
+        margin-bottom: 10px;
     }
     
-    /* Ensure text and controls don't crowd each other */
+    /* Card with shorter content should be even more compact */
+    .card p:only-child,
+    .card p.short-content {
+        margin-bottom: 0;
+    }
+    
+    /* Single-line content optimization */
+    .card-content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    /* When content is short (one line), make the card more compact */
     .card p {
-        margin-right: 6px;
-        margin-bottom: 6px;
+        margin-right: 8px;
+        flex: 1;
+    }
+    
+    /* Optimize action buttons for compact display */
+    .card-actions {
+        display: flex;
+        align-items: center;
+        margin-top: 0; /* Remove margin for inline display */
+        flex-shrink: 0; /* Prevent shrinking */
     }
     
     /* Add custom transition for smooth collapse/expand */
@@ -1276,6 +1305,10 @@ h1 {
 .dark-mode .avatar {
     background-color: var(--went-well-color); /* Gold in dark mode */
     color: #333;
+}
+
+.avatar i {
+    font-size: 1rem;
 }
 
 .modal {
