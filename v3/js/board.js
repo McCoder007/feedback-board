@@ -351,6 +351,16 @@ import {
         // Store the total number of items for comparison when filters are removed
         setAllItemsCount(querySnapshot.size);
         
+        // Store all items for local filtering
+        const allItems = [];
+        querySnapshot.forEach((doc) => {
+          const item = { id: doc.id, ...doc.data() };
+          allItems.push(item);
+        });
+        
+        // Store all items for search filtering
+        window.boardAllItems = allItems;
+        
         // Important: Capture positions before processing the update
         // Only if we have cards already rendered
         const hasExistingCards = document.querySelectorAll('.card').length > 0;
@@ -401,21 +411,25 @@ import {
     // Check if search field is empty
     const isSearchEmpty = !searchInput || searchInput.value.trim() === '';
     
-    // Get all visible cards
-    const itemElements = document.querySelectorAll('.card');
-    
-    // If search is empty and the displayed cards count doesn't match
-    // what's in the database, we need to re-fetch all items
-    if (isSearchEmpty && itemElements.length < getAllItemsCount()) {
+    // Always re-fetch all items when search is empty
+    if (isSearchEmpty) {
       // The search filter was cleared, reload all items
       setupRealTimeUpdates();
       return;
     }
     
-    if (itemElements.length > 0) {
+    // For non-empty search, use the complete dataset if available
+    if (window.boardAllItems && window.boardAllItems.length > 0) {
+      // We have the complete data set stored globally, use that for filtering
+      processItems(window.boardAllItems, true);
+      return;
+    }
+    
+    // Fallback to filtering currently visible items if global data isn't available
+    if (document.querySelectorAll('.card').length > 0) {
       // We already have items loaded, just filter them locally
       const currentItems = [];
-      itemElements.forEach(card => {
+      document.querySelectorAll('.card').forEach(card => {
         const itemId = card.dataset.id;
         const content = card.querySelector('p')?.textContent || '';
         const type = card.closest('.column')?.classList.contains('went-well') ? 'went-well' : 
