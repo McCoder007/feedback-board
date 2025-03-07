@@ -619,18 +619,21 @@ import {
     const canDelete = user && (user.uid === item.authorId || (currentBoardData && user.uid === currentBoardData.ownerId));
     
     card.innerHTML = `
-      <p>${item.content}</p>
-      <div class="card-actions">
-        <div class="vote-controls">
-          <button class="vote-btn ${userVote > 0 ? 'voted' : ''}" data-id="${item.id}" title="Like">
-            <i class="fas fa-thumbs-up"></i>
-            <span class="vote-count">${item.votes || 0}</span>
-          </button>
+      <div class="card-content">
+        <p>${item.content}</p>
+        <div class="card-actions">
+          ${canDelete ? 
+            `<button class="delete-btn" data-id="${item.id}" title="Delete item">
+              <i class="fas fa-times"></i>
+            </button>` : 
+            `<div></div>`} <!-- Empty div for spacing when no delete button -->
+          <div class="vote-controls">
+            <button class="vote-btn ${userVote > 0 ? 'voted' : ''}" data-id="${item.id}" title="Like">
+              <i class="fas fa-thumbs-up"></i>
+              <span class="vote-count">${item.votes || 0}</span>
+            </button>
+          </div>
         </div>
-        ${canDelete ? 
-          `<button class="delete-btn" data-id="${item.id}" title="Delete item">
-            <i class="fas fa-times"></i>
-          </button>` : ''}
       </div>
     `;
     

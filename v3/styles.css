@@ -786,6 +786,10 @@ h1 {
     z-index: 1; /* Ensure proper stacking during animations */
 }
 
+.card-content {
+    position: relative;
+}
+
 /* Subtle highlight during sort transition */
 .card.sorting {
     z-index: 2; /* Bring sorted cards to the front */
@@ -809,7 +813,7 @@ h1 {
 }
 
 .card p {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     word-wrap: break-word;
     line-height: 1.5;
 }
@@ -820,7 +824,7 @@ h1 {
     align-items: center;
     color: var(--text-color-secondary);
     font-size: 1rem;
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
 /* Vote controls */
@@ -1032,18 +1036,38 @@ h1 {
     /* Card and voting styles for mobile */
     .card-actions {
         justify-content: space-between; /* Spread out buttons on mobile */
-        margin-top: 12px; /* More space above buttons on mobile */
+        margin-top: 8px; /* Less space above buttons on mobile */
+        flex-wrap: nowrap; /* Prevent wrapping */
+        align-items: center;
     }
     
     .vote-btn {
-        flex: 1; /* Buttons take equal width */
-        min-height: 48px; /* Taller buttons on mobile */
-        padding: 10px 12px; /* More padding for easier touch */
+        min-height: 36px; /* Smaller height on mobile */
+        padding: 6px 10px; /* Less padding for space efficiency */
+        font-size: 0.9rem; /* Slightly smaller font */
+        border-radius: 18px; /* Keep it rounded */
     }
     
-    /* Make the icons even larger on mobile */
+    /* Make the thumbs up icon more compact but still easy to tap */
     .vote-btn i {
-        font-size: 1.4rem;
+        font-size: 1.1rem;
+    }
+    
+    /* Optimize space by making the delete button smaller */
+    .delete-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    /* Adjust card padding for mobile */
+    .card {
+        padding: 12px; /* Slightly reduced padding */
+    }
+    
+    /* Ensure text and controls don't crowd each other */
+    .card p {
+        margin-right: 6px;
+        margin-bottom: 6px;
     }
     
     /* Add custom transition for smooth collapse/expand */
