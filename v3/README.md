@@ -20,12 +20,18 @@ This version of the Team Feedback Board introduces a multi-board system, allowin
 - Responsive design for all screen sizes
 - Improved navigation between boards
 - Enhanced sharing capabilities
+- Breadcrumb-style navigation (Dashboard > Board Title) for intuitive hierarchy
+- Authentication-aware UI elements that adapt to logged-in state
+- Smooth FLIP animations for card transitions during sorting and reordering
 
 ## Technical Improvements
 - Modular code structure
 - Better state management
 - Enhanced real-time updates
 - Improved data organization with board-specific items
+- Advanced FLIP animation technique for smooth card transitions
+- Optimized sorting with reduced visual flashing
+- Authentication-aware UI components that respond to user login state
 
 ## Implementation Plan
 This version is being implemented in phases:
@@ -37,6 +43,16 @@ This version is being implemented in phases:
 5. Advanced Features & Refinement
 
 Each phase builds upon the previous one, ensuring a stable and functional system at each step.
+
+## Recent Updates
+
+- **Breadcrumb Navigation**: Implemented intuitive breadcrumb-style navigation (Dashboard > Board Title) for clearer page hierarchy
+- **Smooth Item Transitions**: Added FLIP animation technique for smooth card movements during sorting
+- **Fixed Double Movement Bug**: Resolved issue causing cards to move twice when upvoting in "most-votes" sort mode
+- **Sort Dropdown Improvements**: Increased width of sort dropdown to ensure all text is fully visible
+- **Authentication-Aware UI**: Dashboard link now only appears for authenticated users
+- **Header Layout Refinements**: Improved alignment and spacing in the application header
+- **Mobile Responsiveness Enhancements**: Optimized layouts for different screen sizes
 
 # Feedback Board - User Stories and Requirements
 
