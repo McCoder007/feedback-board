@@ -878,11 +878,12 @@ h1 {
 /* Card actions layout for desktop */
 .card-actions {
     display: flex;
-    justify-content: flex-end; /* Right-align the buttons */
+    justify-content: flex-start; /* Change to left alignment for web version */
     align-items: center;
     color: var(--text-color-secondary);
     font-size: 1rem;
     margin-top: 8px;
+    width: 100%;
 }
 
 /* Vote button styling with NO ANIMATIONS */
@@ -920,10 +921,7 @@ h1 {
 @media (max-width: 768px) {
     /* Card actions - maintain right alignment */
     .card-actions {
-        justify-content: flex-end;
-        margin-top: 8px;
-        flex-wrap: nowrap;
-        align-items: center;
+        justify-content: flex-end; /* Keep right alignment on mobile */
     }
     
     /* Vote button for mobile with NO ANIMATIONS */
@@ -2394,7 +2392,7 @@ select {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-left: 8px; /* Add spacing between delete and vote buttons */
+    /* No margin needed for left alignment */
 }
 
 .dark-mode .vote-btn:hover {
