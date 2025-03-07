@@ -647,6 +647,27 @@ import {
     voteBtn.addEventListener('click', () => {
       // Add pulse animation
       voteBtn.classList.add('pulse-animation');
+      
+      // Toggle the voted class immediately for instant visual feedback
+      const isVoted = voteBtn.classList.contains('voted');
+      if (isVoted) {
+        voteBtn.classList.remove('voted');
+        // Update count immediately for visual feedback
+        const countEl = voteBtn.querySelector('.vote-count');
+        if (countEl) {
+          let count = parseInt(countEl.textContent, 10);
+          countEl.textContent = Math.max(0, count - 1);
+        }
+      } else {
+        voteBtn.classList.add('voted');
+        // Update count immediately for visual feedback
+        const countEl = voteBtn.querySelector('.vote-count');
+        if (countEl) {
+          let count = parseInt(countEl.textContent, 10);
+          countEl.textContent = count + 1;
+        }
+      }
+      
       // Remove animation after it completes
       setTimeout(() => {
         voteBtn.classList.remove('pulse-animation');
