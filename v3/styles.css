@@ -2208,3 +2208,77 @@ select {
         height: 150px;
     }
 }
+
+/* Breadcrumb Navigation Styles */
+.breadcrumb-navigation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.3rem;
+    margin: 0;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.breadcrumb-link {
+    color: var(--text-color-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-weight: 500;
+    display: none; /* Hide by default until auth check */
+    white-space: nowrap;
+}
+
+.auth-loaded .breadcrumb-link.dashboard-link {
+    display: inline; /* Will be overridden by inline style in JS */
+}
+
+.breadcrumb-link:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-separator {
+    color: var(--text-color-secondary);
+    font-weight: 300;
+    margin: 0 2px;
+    display: none; /* Hide by default until auth check */
+}
+
+.auth-loaded .breadcrumb-separator {
+    display: inline; /* Will be overridden by inline style in JS */
+}
+
+.breadcrumb-current {
+    color: var(--text-color);
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+}
+
+/* Previous Back Link Styles - Keep for compatibility */
+.back-to-dashboard {
+    display: none;
+}
+
+.auth-loaded .back-to-dashboard {
+    display: none;
+}
+
+/* Mobile Styles for Breadcrumbs */
+@media (max-width: 768px) {
+    .breadcrumb-navigation {
+        font-size: 1.1rem;
+        width: 100%;
+    }
+    
+    .breadcrumb-current {
+        font-size: 1.2rem;
+    }
+}

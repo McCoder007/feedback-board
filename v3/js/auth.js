@@ -45,8 +45,10 @@ import {
   
   // Function to update user UI
   function updateUserUI() {
-    // Get the back to dashboard link
+    // Get navigation elements
     const backToDashboardLink = document.querySelector('.back-to-dashboard');
+    const breadcrumbDashboardLink = document.querySelector('.breadcrumb-link.dashboard-link');
+    const breadcrumbSeparator = document.querySelector('.breadcrumb-separator');
     
     if (currentUser) {
       // User is logged in
@@ -56,9 +58,17 @@ import {
         userInfo.style.display = 'flex';
       }
       
-      // Show back to dashboard link for logged in users
+      // Show breadcrumb navigation elements for logged in users
+      if (breadcrumbDashboardLink) {
+        breadcrumbDashboardLink.style.display = 'inline';
+      }
+      if (breadcrumbSeparator) {
+        breadcrumbSeparator.style.display = 'inline';
+      }
+      
+      // For backwards compatibility
       if (backToDashboardLink) {
-        backToDashboardLink.style.display = 'flex';
+        backToDashboardLink.style.display = 'none';
       }
       
       // Don't update the display name immediately to prevent flashing
@@ -147,9 +157,12 @@ import {
         userInfo.style.display = 'none';
       }
       
-      // Hide back to dashboard link for non-authenticated users
-      if (backToDashboardLink) {
-        backToDashboardLink.style.display = 'none';
+      // Hide breadcrumb navigation elements for non-authenticated users
+      if (breadcrumbDashboardLink) {
+        breadcrumbDashboardLink.style.display = 'none';
+      }
+      if (breadcrumbSeparator) {
+        breadcrumbSeparator.style.display = 'none';
       }
       
       if (userNameElement) {
