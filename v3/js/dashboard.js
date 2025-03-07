@@ -81,6 +81,25 @@ function setupEventListeners() {
     // Create board form submission
     createBoardForm.addEventListener('submit', handleCreateBoard);
     
+    // Edit board form submission
+    const editBoardForm = document.getElementById('edit-board-form');
+    if (editBoardForm) {
+        editBoardForm.addEventListener('submit', handleEditBoard);
+        
+        // Allow Enter key in edit description textarea to submit the form
+        const editBoardDescription = document.getElementById('edit-board-description');
+        if (editBoardDescription) {
+            editBoardDescription.addEventListener('keydown', (e) => {
+                // If Enter is pressed without Shift key
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault(); // Prevent the default action (new line)
+                    // Submit the form
+                    editBoardForm.dispatchEvent(new Event('submit'));
+                }
+            });
+        }
+    }
+    
     // Sort boards
     if (sortBoardsSelect) {
         console.log("Adding change event listener to sort select");
@@ -331,8 +350,8 @@ function createBoardCard(board) {
     
     editBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        // TODO: Implement edit board functionality
-        showNotification('Edit board functionality coming soon');
+        // Open edit board modal and populate with board data
+        openEditBoardModal(board);
     });
     
     deleteBtn.addEventListener('click', (e) => {
@@ -348,6 +367,69 @@ function createBoardCard(board) {
     });
     
     return boardCard;
+}
+
+// Open the edit board modal with the board data
+function openEditBoardModal(board) {
+    const editBoardModal = document.getElementById('edit-board-modal');
+    const editBoardId = document.getElementById('edit-board-id');
+    const editBoardTitle = document.getElementById('edit-board-title');
+    const editBoardDescription = document.getElementById('edit-board-description');
+    
+    // Set the values from the board
+    editBoardId.value = board.id;
+    editBoardTitle.value = board.title || '';
+    editBoardDescription.value = board.description || '';
+    
+    // Open the modal
+    editBoardModal.classList.add('active');
+    
+    // Focus on the title field
+    setTimeout(() => {
+        editBoardTitle.focus();
+    }, 50);
+}
+
+// Handle edit board form submission
+async function handleEditBoard(e) {
+    e.preventDefault();
+    
+    const boardId = document.getElementById('edit-board-id').value;
+    const title = document.getElementById('edit-board-title').value.trim();
+    const description = document.getElementById('edit-board-description').value.trim();
+    
+    if (!title) {
+        showNotification('Please enter a board title', true);
+        return;
+    }
+    
+    const user = getCurrentUser();
+    if (!user) {
+        showNotification('You must be logged in to edit a board', true);
+        return;
+    }
+    
+    try {
+        // Update the board
+        await updateDoc(doc(db, BOARDS_COLLECTION, boardId), {
+            title,
+            description,
+            updatedAt: serverTimestamp()
+        });
+        
+        // Close the modal and reset form
+        const editBoardModal = document.getElementById('edit-board-modal');
+        editBoardModal.classList.remove('active');
+        document.getElementById('edit-board-form').reset();
+        
+        // Reload the boards
+        showNotification('Board updated successfully!');
+        loadUserBoards();
+        
+    } catch (error) {
+        console.error('Error updating board:', error);
+        showNotification('Failed to update board. Please try again.', true);
+    }
 }
 
 // Delete a board

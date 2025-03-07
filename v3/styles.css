@@ -2306,3 +2306,12 @@ select {
         font-size: 1.2rem;
     }
 }
+
+/* Add consistent styling for edit board modal inputs */
+#edit-board-modal #edit-board-title {
+    padding-left: 14px;
+}
+
+#edit-board-modal #edit-board-description {
+    padding-left: 14px;
+}

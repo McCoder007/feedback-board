@@ -124,6 +124,30 @@
             </div>
         </div>
 
+        <!-- Edit Board Modal -->
+        <div id="edit-board-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Edit Board</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <form id="edit-board-form">
+                    <input type="hidden" id="edit-board-id">
+                    <div class="form-group">
+                        <label for="edit-board-title">Board Title</label>
+                        <input type="text" id="edit-board-title" required placeholder="Enter a title for your board">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-board-description">Description (Optional)</label>
+                        <textarea id="edit-board-description" placeholder="Describe the purpose of this board"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Login Modal -->
         <div id="login-modal" class="modal">
             <div class="modal-content">
