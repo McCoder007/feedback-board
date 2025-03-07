@@ -272,12 +272,13 @@ import {
     try {
       const user = getCurrentUser();
       const isAnonymous = !user;
+      const anonymousId = isAnonymous ? getAnonymousUserId() : null;
       
       console.log('Creating item with data:', {
         content: content,
         type: columnType,
         boardId: currentBoardId,
-        authorId: user ? user.uid : 'anonymous',
+        authorId: user ? user.uid : anonymousId,
         isAnonymous
       });
       
@@ -290,7 +291,7 @@ import {
         updatedAt: serverTimestamp(),
         votes: 0,
         voters: {},
-        authorId: user ? user.uid : 'anonymous',
+        authorId: user ? user.uid : anonymousId,
         authorEmail: user ? user.email : 'anonymous',
         isAnonymous
       });
@@ -563,7 +564,7 @@ import {
         
         // Update the vote count and voting status even when reusing the card
         const user = getCurrentUser();
-        const userId = user ? user.uid : 'anonymous';
+        const userId = user ? user.uid : getAnonymousUserId();
         const userVote = item.voters && item.voters[userId] ? item.voters[userId] : 0;
         
         // Update vote count
@@ -611,7 +612,7 @@ import {
     
     // Check if current user has voted
     const user = getCurrentUser();
-    const userId = user ? user.uid : 'anonymous';
+    const userId = user ? user.uid : getAnonymousUserId();
     const userVote = item.voters && item.voters[userId] ? item.voters[userId] : 0;
     
     // Check if user can delete this item
@@ -659,6 +660,22 @@ import {
     return card;
   }
   
+  // Function to get a unique ID for anonymous users
+  function getAnonymousUserId() {
+    // Check if we already have a user ID in localStorage
+    let anonymousId = localStorage.getItem('anonymous_user_id');
+    
+    // If no ID exists, create one and store it
+    if (!anonymousId) {
+      // Generate a random ID
+      anonymousId = 'anon_' + Math.random().toString(36).substring(2, 15) + 
+                    Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('anonymous_user_id', anonymousId);
+    }
+    
+    return anonymousId;
+  }
+  
   // Handle voting on an item
   async function handleVote(itemId, voteValue) {
     try {
@@ -668,7 +685,7 @@ import {
       }
       
       const user = getCurrentUser();
-      const userId = user ? user.uid : 'anonymous';
+      const userId = user ? user.uid : getAnonymousUserId();
       
       // Get the current item
       const itemRef = doc(db, ITEMS_COLLECTION, itemId);
