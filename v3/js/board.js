@@ -644,38 +644,53 @@ import {
     const voteBtn = card.querySelector('.vote-btn');
     const deleteBtn = card.querySelector('.delete-btn');
     
-    voteBtn.addEventListener('click', () => {
-      // Remove the animation trigger
-      // voteBtn.classList.add('just-clicked');
-      
-      // Toggle the voted class immediately for instant visual feedback
-      const isVoted = voteBtn.classList.contains('voted');
-      if (isVoted) {
-        voteBtn.classList.remove('voted');
-        // Update count immediately for visual feedback
-        const countEl = voteBtn.querySelector('.vote-count');
-        if (countEl) {
-          let count = parseInt(countEl.textContent, 10);
-          countEl.textContent = Math.max(0, count - 1);
+    // Create a debounce function to prevent rapid toggling
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), wait);
+        };
+    }
+
+    // Add event listeners for the card
+    voteBtn.addEventListener('click', debounce(function(event) {
+        event.preventDefault();
+        // Prevent double clicks
+        if (voteBtn.getAttribute('data-processing') === 'true') return;
+        
+        // Set processing flag
+        voteBtn.setAttribute('data-processing', 'true');
+        
+        // Toggle the voted class immediately for instant visual feedback
+        const isVoted = voteBtn.classList.contains('voted');
+        
+        // Update UI first for responsive feel
+        if (isVoted) {
+            voteBtn.classList.remove('voted');
+            const countEl = voteBtn.querySelector('.vote-count');
+            if (countEl) {
+                const newCount = Math.max(0, parseInt(countEl.textContent || '0') - 1);
+                countEl.textContent = newCount;
+            }
+        } else {
+            voteBtn.classList.add('voted');
+            const countEl = voteBtn.querySelector('.vote-count');
+            if (countEl) {
+                const newCount = parseInt(countEl.textContent || '0') + 1;
+                countEl.textContent = newCount;
+            }
         }
-      } else {
-        voteBtn.classList.add('voted');
-        // Update count immediately for visual feedback
-        const countEl = voteBtn.querySelector('.vote-count');
-        if (countEl) {
-          let count = parseInt(countEl.textContent, 10);
-          countEl.textContent = count + 1;
-        }
-      }
-      
-      // Remove the animation cleanup code
-      // setTimeout(() => {
-      //   voteBtn.classList.remove('pulse-animation');
-      //   voteBtn.classList.remove('just-clicked');
-      // }, 300);
-      
-      handleVote(item.id, 1);
-    });
+        
+        // Handle the vote in the background
+        handleVote(item.id, 1).finally(() => {
+            // Clear processing flag after vote is handled
+            setTimeout(() => {
+                voteBtn.removeAttribute('data-processing');
+            }, 300); // Delay to prevent rapid clicking
+        });
+    }, 200));
     
     if (deleteBtn) {
       deleteBtn.addEventListener('click', () => {
@@ -770,17 +785,6 @@ import {
   function cleanupBoard() {
     unsubscribeListeners.forEach(unsubscribe => unsubscribe());
     unsubscribeListeners = [];
-  }
-  
-  // Debounce function (kept for other potential uses)
-  function debounce(func, delay) {
-    let timeout;
-    return function() {
-      const context = this;
-      const args = arguments;
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(context, args), delay);
-    };
   }
   
   // Function to open share modal
