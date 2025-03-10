@@ -94,6 +94,31 @@
         gap: 8px !important;
         margin: 0 !important;
         flex-shrink: 0 !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    /* Voted state styling for mobile */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted,
+    .card .card-content .card-actions .vote-controls .vote-btn.voted {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+        border-color: var(--primary-color) !important;
+    }
+    
+    /* Voted state icon styling */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted i,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted i,
+    .card .card-content .card-actions .vote-controls .vote-btn.voted i {
+        color: white !important;
+    }
+    
+    /* Dark mode voted state */
+    .dark-mode .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted,
+    .dark-mode .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted,
+    .dark-mode .card .card-content .card-actions .vote-controls .vote-btn.voted {
+        background-color: var(--primary-color) !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
     }
     
     /* Vote button icon */
@@ -199,5 +224,27 @@
         /* Reset flex properties */
         flex: 1 1 auto !important;
         flex-direction: row !important;
+    }
+    
+    /* Hover state for vote buttons on mobile */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn:hover,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn:hover,
+    .card .card-content .card-actions .vote-controls .vote-btn:hover {
+        background-color: rgba(0, 100, 164, 0.1) !important;
+        color: var(--primary-color) !important;
+    }
+    
+    /* Dark mode hover state */
+    .dark-mode .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn:hover,
+    .dark-mode .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn:hover,
+    .dark-mode .card .card-content .card-actions .vote-controls .vote-btn:hover {
+        background-color: rgba(0, 100, 164, 0.2) !important;
+    }
+    
+    /* Active state for vote buttons */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn:active,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn:active,
+    .card .card-content .card-actions .vote-controls .vote-btn:active {
+        transform: scale(0.98) !important;
     }
 } 
