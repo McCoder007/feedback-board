@@ -10,32 +10,52 @@ html.light-theme {
 }
 
 :root {
-    --primary-color: #0064A4; /* UCI Blue (changed from #6366f1) */
-    --went-well-color: #FFD200; /* UCI Gold (changed from #10b981) */
-    --to-improve-color: #0064A4; /* UCI Blue (changed from #ef4444) */
-    --action-items-color: #C1C5C8; /* Silver/Gray Anteater (changed from #8b5cf6) */
+    /* Enhanced color palette */
+    --primary-color: #0064A4; /* UCI Blue */
+    --primary-hover: #0078c8; /* Lighter blue for hover states */
+    --primary-gradient: linear-gradient(135deg, #0064A4, #0078c8); /* Subtle gradient */
+    
+    --went-well-color: #FFD200; /* UCI Gold */
+    --went-well-hover: #ffe04d; /* Lighter gold for hover states */
+    --went-well-gradient: linear-gradient(135deg, #FFD200, #ffe04d); /* Subtle gradient */
+    
+    --to-improve-color: #0064A4; /* UCI Blue */
+    --to-improve-hover: #0078c8; /* Lighter blue for hover */
+    --to-improve-gradient: linear-gradient(135deg, #0064A4, #0085db); /* Subtle gradient */
+    
+    --action-items-color: #C1C5C8; /* Silver/Gray Anteater */
+    --action-items-hover: #d4d8db; /* Lighter gray for hover */
+    --action-items-gradient: linear-gradient(135deg, #C1C5C8, #d4d8db); /* Subtle gradient */
+    
+    --accent-color: #FFD200; /* Accent color for highlights */
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     
     /* Light theme variables */
     --bg-color: #f9fafb;
     --card-bg: #ffffff;
+    --card-hover: #f0f4f8; /* Subtle hover state */
     --text-color: #1f2937;
     --text-color-secondary: #6b7280;
     --border-color: #e5e7eb;
     --input-border: #d1d5db;
     --header-text: #111827;
+    --header-bg: rgba(255, 255, 255, 0.8); /* Semi-transparent header background */
+    --button-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Dark theme variables */
 .dark-mode {
-    --bg-color: #051a2f; /* Deep blue-black for UCI theme (changed from #111827) */
-    --card-bg: #0a2440; /* Darker blue for UCI theme (changed from #1f2937) */
+    --bg-color: #051a2f; /* Deep blue-black for UCI theme */
+    --card-bg: #0a2440; /* Darker blue for UCI theme */
+    --card-hover: #0f3154; /* Subtle hover state */
     --text-color: #f9fafb;
     --text-color-secondary: #d1d5db;
-    --border-color: #1e3a5f; /* Slightly lighter blue (changed from #374151) */
-    --input-border: #2d4e76; /* Adjusted for UCI theme (changed from #4b5563) */
+    --border-color: #1e3a5f; /* Slightly lighter blue */
+    --input-border: #2d4e76; /* Adjusted for UCI theme */
     --header-text: #f9fafb;
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    --header-bg: rgba(5, 26, 47, 0.8); /* Semi-transparent header background */
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --button-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     color-scheme: dark;
 }
 
@@ -83,6 +103,12 @@ body {
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 15px;
     flex-wrap: nowrap;
+    background-color: var(--header-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .header-left {
@@ -177,237 +203,168 @@ body {
 }
 
 #theme-toggle-btn:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-    transform: translateY(-2px);
-}
-
-.dark-mode #theme-toggle-btn:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-#share-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    background-color: transparent;
-    transition: all 0.2s ease;
-}
-
-#share-btn:hover {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: rgba(0, 100, 164, 0.1);
+    transform: rotate(15deg);
     border-color: var(--primary-color);
 }
 
-.user-info {
+.dark-mode #theme-toggle-btn:hover {
+    background-color: rgba(255, 210, 0, 0.1);
+    border-color: var(--accent-color);
+}
+
+/* Enhanced Share button */
+#share-btn {
     display: flex;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    padding: 6px 12px;
+    justify-content: center;
     gap: 8px;
-    transition: all 0.2s ease;
-    position: relative;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #0064A4, #007bd1);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 100, 164, 0.2);
 }
 
-.dark-mode .user-info {
-    background-color: rgba(255, 255, 255, 0.05);
+#share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 100, 164, 0.3);
+    filter: brightness(1.1);
 }
 
-.user-info:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.dark-mode #share-btn {
+    background: linear-gradient(135deg, #0064A4, #0085db);
+    box-shadow: 0 3px 8px rgba(0, 100, 164, 0.3);
 }
 
-.dark-mode .user-info:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Tool Bar */
-.tool-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 20px;
-    gap: 16px;
-}
-
-.search-sort-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: nowrap;
-}
-
-.search-input {
-    position: relative;
-    width: 250px;
-}
-
-.search-input i {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-color-secondary);
-}
-
-.search-input input {
-    width: 100%;
-    padding: 8px 8px 8px 46px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background-color: var(--card-bg);
-    color: var(--text-color);
-}
-
-.sort-select {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background-color: var(--card-bg);
-    color: var(--text-color);
-    width: 200px; /* Increased from 170px to accommodate full text */
-}
-
-.export-tools {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: nowrap;
-}
-
-/* Mobile Responsive Adjustments */
-@media (max-width: 768px) {
-    .main-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 12px 15px;
-    }
-    
-    .header-left {
-        width: 100%;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .back-to-dashboard {
-        margin-bottom: 0;
-    }
-    
-    .header-controls {
-        margin-top: 0;
-        justify-content: flex-end;
-    }
-    
-    .tool-bar {
-        flex-direction: column;
-        align-items: center;
-        gap: 16px;
-    }
-    
-    .search-sort-container {
-        width: 100%;
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .search-input, .sort-select {
-        width: 100%;
-        max-width: none;
-    }
-    
-    .export-tools {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    #board-title, h1 {
-        font-size: 1.4rem;
-        max-width: calc(100vw - 100px); /* More space for the title */
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-/* Additional style to prevent text overflow in board titles */
-#board-title, h1 {
-    font-size: 1.7rem;
+/* Create New Board button enhancement */
+.dashboard-actions .btn-primary, 
+button[data-modal="#create-board-modal"] {
+    background: var(--primary-gradient);
+    color: white;
     font-weight: 600;
-    margin: 0;
-    padding: 0;
-    text-align: left;
-    white-space: nowrap;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 100, 164, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
     overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-    min-width: 0;
-    min-height: 40px; /* Prevent layout shift during loading */
 }
 
-/* Board header left section */
-.back-to-dashboard {
+.dashboard-actions .btn-primary:hover, 
+button[data-modal="#create-board-modal"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 100, 164, 0.4);
+    filter: brightness(1.05);
+}
+
+/* Add a shine effect on hover */
+.dashboard-actions .btn-primary:after,
+button[data-modal="#create-board-modal"]:after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+}
+
+.dashboard-actions .btn-primary:hover:after,
+button[data-modal="#create-board-modal"]:hover:after {
+    left: 100%;
+    opacity: 0.5;
+}
+
+/* Column enhancements */
+.column {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+}
+
+/* Add item button styling */
+.add-item {
+    margin: 10px 15px 15px 15px;
+    padding: 12px 15px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    border-radius: 6px;
+    background-color: transparent;
+    border: 1.5px dashed var(--border-color);
     color: var(--text-color-secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    padding: 6px 12px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    margin-right: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.back-to-dashboard:hover {
+.add-item:hover {
+    background-color: rgba(0, 100, 164, 0.05);
     color: var(--primary-color);
-    background-color: rgba(0, 0, 0, 0.05);
-    opacity: 1;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
-.dark-mode .back-to-dashboard:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+.went-well .add-item:hover {
+    background-color: rgba(255, 210, 0, 0.1);
+    border-color: var(--went-well-color);
+    color: #000;
 }
 
-.back-to-dashboard i {
-    font-size: 0.8rem;
+.to-improve .add-item:hover {
+    background-color: rgba(0, 100, 164, 0.1);
+    border-color: var(--to-improve-color);
+    color: var(--to-improve-color);
 }
 
-h1 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--header-text);
-    min-height: 2rem;
-    margin: 4px 0;
+.action-items .add-item:hover {
+    background-color: rgba(193, 197, 200, 0.2);
+    border-color: var(--action-items-color);
+    color: #333;
 }
 
-/* Board title loading state */
-#board-title.loading {
-    position: relative;
-    color: transparent;
+/* Enhance scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
 }
 
-#board-title.loading::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--primary-color);
-    opacity: 0.6;
-    animation: loading-bar 1.5s infinite ease-in-out;
+::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-@keyframes loading-bar {
-    0% { width: 0; left: 0; }
-    50% { width: 100%; left: 0; }
-    100% { width: 0; left: 100%; }
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 100, 164, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 100, 164, 0.5);
+}
+
+.dark-mode::-webkit-scrollbar-thumb {
+    background: rgba(0, 100, 164, 0.5);
+}
+
+.dark-mode::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 100, 164, 0.7);
 }
 
 /* User info section - now positioned next to logout */
@@ -499,48 +456,47 @@ h1 {
 
 /* Button styles */
 .btn {
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-    font-size: 0.95rem;
-    height: 40px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 10px 16px;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
     gap: 8px;
-}
-
-.btn i {
-    font-size: 0.9rem;
+    color: var(--text-color);
+    box-shadow: var(--button-shadow);
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
+    background: var(--primary-gradient);
+    border: none;
     color: white;
 }
 
 .btn-outline {
     background-color: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
 }
 
 .dark-mode .btn-outline {
-    border-color: rgba(255, 255, 255, 0.2);
-    color: var(--text-color);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .btn:hover {
-    opacity: 0.9;
     transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--primary-hover);
 }
 
 .dark-mode .btn:hover {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Logout button - positioned after user info */
@@ -722,45 +678,31 @@ h1 {
     opacity: 1; /* Fade in when loaded class is added */
 }
 
-.column {
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: var(--card-shadow);
-    overflow: hidden;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
 /* Base column header styles */
 .column-header {
-    padding: 16px;
+    padding: 12px 15px;
     font-weight: 600;
-    font-size: 1.1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 5;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
 .went-well .column-header {
-    background-color: var(--went-well-color);
-    color: black; /* Changed to black for better contrast on gold background */
-    font-weight: 700;
+    background: var(--went-well-gradient);
+    color: #333;
 }
 
 .to-improve .column-header {
-    background-color: var(--to-improve-color);
+    background: var(--to-improve-gradient);
     color: white;
-    font-weight: 700;
 }
 
 .action-items .column-header {
-    background-color: var(--action-items-color);
-    color: black; /* Changed to black for better contrast on silver background */
-    font-weight: 700;
+    background: var(--action-items-gradient);
+    color: #333;
 }
 
 .add-item {
@@ -797,11 +739,20 @@ h1 {
     position: relative; /* Required for absolute positioning of delete button */
     background-color: var(--card-bg);
     border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: var(--card-shadow);
     border-left: 4px solid transparent;
-    transition: opacity 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .card:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Position delete button in top right corner */
@@ -891,30 +842,24 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
+    padding: 6px 10px;
+    background-color: transparent;
     border: 1px solid var(--border-color);
-    border-radius: 20px;
-    color: var(--text-color-secondary);
+    border-radius: 4px;
     cursor: pointer;
-    padding: 4px 12px;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    gap: 6px;
+    transition: all 0.2s ease;
+    color: var(--text-color-secondary);
 }
 
 .vote-btn:hover {
-    background-color: rgba(99, 102, 241, 0.1);
+    background-color: rgba(0, 100, 164, 0.1);
     color: var(--primary-color);
-    border-color: var(--primary-color);
-    /* NO TRANSFORM */
 }
 
 .vote-btn.voted {
     background-color: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
-    /* NO TRANSFORM */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Mobile styles for card actions and vote buttons */
@@ -993,34 +938,16 @@ h1 {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Share button styling */
-#share-btn {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    border-radius: 24px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.dark-mode #share-btn {
-    background-color: var(--primary-color);
-    color: white;
-}
-
 /* Theme toggle hover effect */
 #theme-toggle-btn:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-    transform: translateY(-2px);
+    background-color: rgba(0, 100, 164, 0.1);
+    transform: rotate(15deg);
+    border-color: var(--primary-color);
 }
 
 .dark-mode #theme-toggle-btn:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 210, 0, 0.1);
+    border-color: var(--accent-color);
 }
 
 /* Theme toggle styles moved to line ~177 
@@ -1106,24 +1033,21 @@ h1 {
 }
 
 .avatar {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background-color: #ddd;
+    background-color: var(--primary-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    color: #4b5563;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
 }
 
-.dark-mode .avatar {
-    background-color: var(--went-well-color); /* Gold in dark mode */
-    color: #333;
-}
-
-.avatar i {
-    font-size: 1rem;
+.avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .modal {
@@ -1250,18 +1174,18 @@ textarea {
 }
 
 .notification {
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: var(--primary-gradient);
+    color: white;
     position: fixed;
     bottom: 20px;
     right: 20px;
-    padding: 12px 16px;
-    background-color: var(--went-well-color); /* Changed to gold */
-    color: black; /* Changed to black for better contrast on gold */
-    border-radius: 6px;
-    box-shadow: var(--card-shadow);
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(100px);
     opacity: 0;
-    transition: all 0.3s;
-    z-index: 2000; /* Ensure notifications appear above modals */
+    transition: all 0.3s ease;
 }
 
 .notification.show {
@@ -1270,8 +1194,7 @@ textarea {
 }
 
 .notification.error {
-    background-color: var(--to-improve-color); /* Changed to UCI blue */
-    color: white; /* White for better contrast on blue */
+    background: linear-gradient(135deg, #e53e3e, #f56565);
 }
 
 /* Add centered notification style */
@@ -1525,11 +1448,11 @@ select {
 .board-card {
   background-color: var(--card-bg);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-shadow);
   padding: 20px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border-color);
@@ -1538,9 +1461,9 @@ select {
 }
 
 .board-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-  border-color: var(--primary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: var(--card-hover);
 }
 
 .board-card-header {
@@ -1714,8 +1637,20 @@ select {
   margin-bottom: 10px;
 }
 
-.create-first-board-btn {
-  padding: 10px 20px;
+.create-first-board-btn, 
+.dashboard-actions .btn-primary {
+    background: var(--primary-gradient);
+    box-shadow: 0 4px 8px rgba(0, 100, 164, 0.3);
+    transition: all 0.3s ease;
+    border: none;
+    font-weight: 600;
+}
+
+.create-first-board-btn:hover, 
+.dashboard-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 100, 164, 0.4);
+    filter: brightness(1.05);
 }
 
 /* Mobile Styles for Dashboard */
@@ -2452,3 +2387,96 @@ select {
 @keyframes pulse {}
 .pulse-animation {}
 .vote-btn.just-clicked {}
+
+/* Add a subtle colored accent to board cards */
+.board-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary-gradient);
+    opacity: 0.7;
+}
+
+/* Theme toggle button enhancement */
+#theme-toggle-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+}
+
+#theme-toggle-btn:hover {
+    background-color: rgba(0, 100, 164, 0.1);
+    transform: rotate(15deg);
+    border-color: var(--primary-color);
+}
+
+.dark-mode #theme-toggle-btn:hover {
+    background-color: rgba(255, 210, 0, 0.1);
+    border-color: var(--accent-color);
+}
+
+/* Enhance light/dark icons */
+.light-icon, .dark-icon {
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.light-icon {
+    color: var(--accent-color);
+}
+
+.dark-mode .light-icon {
+    color: var(--accent-color);
+}
+
+.dark-icon {
+    color: var(--primary-color);
+}
+
+.dark-mode .dark-icon {
+    color: var(--primary-color);
+}
+
+/* Enhanced search input */
+.search-input {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.search-input:focus-within {
+    box-shadow: 0 3px 10px rgba(0, 100, 164, 0.15);
+    border-color: var(--primary-color);
+}
+
+.search-input input {
+    background-color: var(--card-bg);
+    padding: 10px 16px 10px 40px;
+    border: none;
+    width: 100%;
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.search-input i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color-secondary);
+    pointer-events: none;
+}
