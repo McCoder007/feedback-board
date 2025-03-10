@@ -2637,3 +2637,47 @@ select {
 }
 
 /* Mobile styles for cards and vote buttons */
+
+/* Fix text wrapping in mobile card layout */
+@media (max-width: 768px) {
+    /* Ensure card content uses proper space */
+    .card-content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between; /* Changed to space-between for better layout */
+        width: 100%;
+        text-align: left;
+    }
+    
+    /* Fix text wrapping in paragraphs to span across available width */
+    .card p {
+        text-align: left;
+        margin: 0;
+        padding: 0;
+        flex: 1;
+        margin-right: 12px;
+        white-space: normal; /* Ensure proper text wrapping */
+        word-wrap: break-word; /* Allow long words to break */
+        overflow-wrap: break-word;
+        width: auto; /* Allow the text to take its natural width */
+        min-width: 0; /* Prevent flex item from overflowing */
+        max-width: calc(100% - 70px); /* Ensure space for the vote button */
+    }
+    
+    /* Make vote button more compact on mobile */
+    .vote-btn {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+        border-radius: 18px;
+        gap: 8px;
+        flex-shrink: 0; /* Prevent button from shrinking */
+        width: auto;
+        min-width: 60px; /* Give consistent width to vote button */
+        align-self: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
