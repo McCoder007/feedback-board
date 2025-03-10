@@ -842,13 +842,14 @@ button[data-modal="#create-board-modal"]:hover:after {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 10px;
+    padding: 6px 12px;
     background-color: transparent;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--text-color-secondary);
+    gap: 8px; /* Increased gap between icon and number */
 }
 
 .vote-btn:hover {
@@ -872,11 +873,15 @@ button[data-modal="#create-board-modal"]:hover:after {
     /* Vote button for mobile with NO ANIMATIONS */
     .vote-btn {
         min-height: 36px;
-        padding: 6px 10px;
+        padding: 6px 12px;
         font-size: 0.9rem;
         border-radius: 18px;
-        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-        /* NO TRANSFORM */
+        gap: 8px; /* Maintain the same gap on mobile */
+    }
+    
+    .vote-btn i {
+        font-size: 14px;
+        min-width: 14px;
     }
     
     .vote-btn.voted {
@@ -1248,7 +1253,14 @@ select {
 }
 
 .export-tools {
-    /* Export tools styles moved to new definition */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.export-tools .btn {
+    min-width: 145px;
+    white-space: nowrap;
 }
 
 /* Animation for new cards that appear in real-time */
@@ -1574,7 +1586,7 @@ select {
 }
 
 .board-share-btn i {
-  font-size: 1rem;
+  font-size: 16px;
 }
 
 /* Status indicator */
@@ -2469,10 +2481,10 @@ select {
 
 .search-sort-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 16px;
     width: auto;
-    max-width: 300px; /* Match the width of the "Export to PDF" button */
+    align-items: center;
 }
 
 .sort-select {
@@ -2481,7 +2493,8 @@ select {
     border-radius: 6px;
     background-color: var(--card-bg);
     color: var(--text-color);
-    width: 100%;
+    width: auto;
+    min-width: 140px;
     box-shadow: var(--button-shadow);
     cursor: pointer;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -2499,8 +2512,8 @@ select {
 
 .search-input {
     position: relative;
-    width: 100%;
-    max-width: 300px; /* Match width with sort-select and export buttons */
+    width: 200px;
+    max-width: 300px;
 }
 
 .search-input input {
@@ -2555,19 +2568,21 @@ select {
     .search-sort-container {
         width: 100%;
         max-width: 100%;
+        flex-direction: column; /* Stack vertically on mobile */
+    }
+    
+    .sort-select {
+        width: 100%;
     }
     
     .search-input {
+        width: 100%;
         max-width: 100%;
     }
-    
-    .export-tools {
-        width: 100%;
-        margin-top: 16px;
-        justify-content: space-between;
-    }
-    
-    .export-tools .btn {
-        flex: 1;
-    }
+}
+
+/* Make sure the icon has consistent sizing */
+.vote-btn i {
+    font-size: 16px;
+    min-width: 16px; /* Ensure consistent width */
 }
