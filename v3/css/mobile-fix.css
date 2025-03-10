@@ -257,39 +257,79 @@
     }
 }
 
-/* iOS-specific fixes for touch handling */
+/* iOS-specific fixes for touch handling - completely reworked */
 @supports (-webkit-touch-callout: none) {
     /* Target iOS devices specifically */
     .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn,
     .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn,
     .card .card-content .card-actions .vote-controls .vote-btn {
         /* Prevent iOS touch highlighting */
-        -webkit-tap-highlight-color: transparent !important;
-        /* Fix for iOS active state persistence */
+        -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+        /* Disable default iOS touch behavior */
         -webkit-touch-callout: none !important;
         -webkit-user-select: none !important;
-        /* Force immediate appearance of voted state */
+        /* Replace transition with none for immediate state change */
         transition: none !important;
+        /* Make the non-voted state visually distinct so changes are obvious */
+        background-color: rgba(255,255,255,0.1) !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
     }
     
-    /* Explicitly override active state on iOS to prevent it interfering with voted state */
+    /* Fix hover state completely for iOS */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn:hover,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn:hover,
+    .card .card-content .card-actions .vote-controls .vote-btn:hover {
+        /* Ensure hover doesn't affect the button on iOS */
+        background-color: rgba(255,255,255,0.1) !important;
+        border-color: rgba(255,255,255,0.2) !important;
+        color: inherit !important;
+    }
+    
+    /* Override active state completely */
     .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn:active,
     .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn:active,
     .card .card-content .card-actions .vote-controls .vote-btn:active {
-        background-color: transparent !important;
+        /* Remove any active visual feedback to prevent state confusion */
+        background-color: rgba(255,255,255,0.1) !important;
+        border-color: rgba(255,255,255,0.2) !important;
         transform: none !important;
         opacity: 1 !important;
     }
     
-    /* Ensure voted state is very strongly styled for iOS */
+    /* Make voted state extremely visually distinct */
     .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted,
     .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted,
     .card .card-content .card-actions .vote-controls .vote-btn.voted {
+        /* Make voted state extremely vivid */
         background-color: var(--primary-color) !important;
         color: white !important;
-        border-color: var(--primary-color) !important;
-        opacity: 1 !important;
-        /* Make it visually distinct */
-        box-shadow: 0 0 0 1px var(--primary-color), 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+        border: 2px solid white !important;
+        box-shadow: 0 0 0 1px var(--primary-color), 0 2px 8px rgba(0, 100, 164, 0.5) !important;
+        transform: scale(1.05) !important;
+    }
+    
+    /* Ensure voted icon state is also clear */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted i,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted i,
+    .card .card-content .card-actions .vote-controls .vote-btn.voted i {
+        color: white !important;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    /* For light theme adjustments */
+    html.light-theme .card .card-content .card-actions .vote-controls .vote-btn {
+        background-color: rgba(0,0,0,0.05) !important;
+        border-color: rgba(0,0,0,0.1) !important;
+    }
+    
+    html.light-theme .card .card-content .card-actions .vote-controls .vote-btn:hover,
+    html.light-theme .card .card-content .card-actions .vote-controls .vote-btn:active {
+        background-color: rgba(0,0,0,0.05) !important;
+        border-color: rgba(0,0,0,0.1) !important;
+    }
+    
+    html.light-theme .card .card-content .card-actions .vote-controls .vote-btn.voted {
+        background-color: var(--primary-color) !important;
+        border-color: white !important;
     }
 } 

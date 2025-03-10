@@ -644,6 +644,10 @@ import {
     const voteBtn = card.querySelector('.vote-btn');
     const deleteBtn = card.querySelector('.delete-btn');
     
+    // iOS detection
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                 
     // Create a debounce function to prevent rapid toggling
     function debounce(func, wait) {
         let timeout;
@@ -653,58 +657,114 @@ import {
             timeout = setTimeout(() => func.apply(context, args), wait);
         };
     }
-
-    // Add event listeners for the card
-    voteBtn.addEventListener('click', debounce(function(event) {
-        event.preventDefault();
-        // Prevent double clicks
-        if (voteBtn.getAttribute('data-processing') === 'true') return;
+    
+    // Special handling for iOS devices
+    if (isIOS) {
+        // Use touchend instead of click for iOS
+        voteBtn.addEventListener('touchend', function(event) {
+            event.preventDefault();
+            handleVoteAction(this);
+        });
+        
+        // Also keep click for non-touch interactions
+        voteBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            // Only process if not already handled by touchend
+            if (!this.hasAttribute('data-touch-processed')) {
+                handleVoteAction(this);
+            }
+            // Reset the touch processed flag
+            this.removeAttribute('data-touch-processed');
+        });
+    } else {
+        // Non-iOS devices use the debounced click handler
+        voteBtn.addEventListener('click', debounce(function(event) {
+            event.preventDefault();
+            handleVoteAction(this);
+        }, 200));
+    }
+    
+    // Shared vote handling function
+    function handleVoteAction(button) {
+        // Prevent double processing
+        if (button.getAttribute('data-processing') === 'true') return;
         
         // Set processing flag
-        voteBtn.setAttribute('data-processing', 'true');
+        button.setAttribute('data-processing', 'true');
         
-        // Toggle the voted class immediately for instant visual feedback
-        const isVoted = voteBtn.classList.contains('voted');
+        // For iOS, mark as touch processed to prevent double handling
+        if (isIOS) {
+            button.setAttribute('data-touch-processed', 'true');
+            
+            // Force the active state to clear immediately on iOS
+            document.activeElement.blur();
+            button.blur();
+        }
         
-        // Handle iOS touch state issues by forcing blur after tap
-        voteBtn.blur();
+        // Toggle the voted class
+        const isVoted = button.classList.contains('voted');
         
-        // Add a small delay for iOS to process the touch state before changing class
-        setTimeout(() => {
-            // Update UI first for responsive feel
+        // iOS-specific state handling
+        if (isIOS) {
+            // Remove all possible iOS state classes that might interfere
+            button.classList.remove('active', 'hover', 'focus');
+            
+            // Force a repaint by temporarily hiding and showing
+            button.style.display = 'none';
+            button.offsetHeight; // Force reflow
+            button.style.display = '';
+            
+            // Delay the class toggle slightly to ensure clean state
+            setTimeout(() => {
+                if (isVoted) {
+                    button.classList.remove('voted');
+                } else {
+                    button.classList.add('voted');
+                }
+                
+                // Update vote count
+                updateVoteDisplay(button, isVoted);
+                
+                // Handle the actual vote data
+                handleVote(item.id, 1).finally(() => {
+                    setTimeout(() => {
+                        button.removeAttribute('data-processing');
+                    }, 300);
+                });
+            }, 50);
+        } else {
+            // Non-iOS devices - simpler handling
             if (isVoted) {
-                voteBtn.classList.remove('voted');
-                const countEl = voteBtn.querySelector('.vote-count');
-                if (countEl) {
-                    const newCount = Math.max(0, parseInt(countEl.textContent || '0') - 1);
-                    countEl.textContent = newCount;
-                }
+                button.classList.remove('voted');
             } else {
-                voteBtn.classList.add('voted');
-                const countEl = voteBtn.querySelector('.vote-count');
-                if (countEl) {
-                    const newCount = parseInt(countEl.textContent || '0') + 1;
-                    countEl.textContent = newCount;
-                }
+                button.classList.add('voted');
             }
             
-            // Ensure the voted class is properly applied (fix for iOS)
-            if (!isVoted) {
-                // Force repaint on iOS
-                voteBtn.style.display = 'none';
-                voteBtn.offsetHeight; // Force reflow
-                voteBtn.style.display = '';
-            }
+            // Update vote count
+            updateVoteDisplay(button, isVoted);
             
-            // Handle the vote in the background
+            // Handle the vote data
             handleVote(item.id, 1).finally(() => {
-                // Clear processing flag after vote is handled
                 setTimeout(() => {
-                    voteBtn.removeAttribute('data-processing');
-                }, 300); // Delay to prevent rapid clicking
+                    button.removeAttribute('data-processing');
+                }, 300);
             });
-        }, 10); // Small delay for iOS
-    }, 200));
+        }
+    }
+    
+    // Helper function to update vote count display
+    function updateVoteDisplay(button, isVoted) {
+        const countEl = button.querySelector('.vote-count');
+        if (countEl) {
+            if (isVoted) {
+                const newCount = Math.max(0, parseInt(countEl.textContent || '0') - 1);
+                countEl.textContent = newCount;
+            } else {
+                const newCount = parseInt(countEl.textContent || '0') + 1;
+                countEl.textContent = newCount;
+            }
+        }
+    }
     
     if (deleteBtn) {
       deleteBtn.addEventListener('click', () => {
