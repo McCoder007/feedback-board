@@ -255,4 +255,41 @@
     .card .card-content .card-actions .vote-controls .vote-btn:active {
         transform: scale(0.98) !important;
     }
+}
+
+/* iOS-specific fixes for touch handling */
+@supports (-webkit-touch-callout: none) {
+    /* Target iOS devices specifically */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn,
+    .card .card-content .card-actions .vote-controls .vote-btn {
+        /* Prevent iOS touch highlighting */
+        -webkit-tap-highlight-color: transparent !important;
+        /* Fix for iOS active state persistence */
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        /* Force immediate appearance of voted state */
+        transition: none !important;
+    }
+    
+    /* Explicitly override active state on iOS to prevent it interfering with voted state */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn:active,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn:active,
+    .card .card-content .card-actions .vote-controls .vote-btn:active {
+        background-color: transparent !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+    
+    /* Ensure voted state is very strongly styled for iOS */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn.voted,
+    .card .card-content .card-actions .vote-controls .vote-btn.voted {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+        border-color: var(--primary-color) !important;
+        opacity: 1 !important;
+        /* Make it visually distinct */
+        box-shadow: 0 0 0 1px var(--primary-color), 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+    }
 } 

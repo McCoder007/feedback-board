@@ -666,30 +666,44 @@ import {
         // Toggle the voted class immediately for instant visual feedback
         const isVoted = voteBtn.classList.contains('voted');
         
-        // Update UI first for responsive feel
-        if (isVoted) {
-            voteBtn.classList.remove('voted');
-            const countEl = voteBtn.querySelector('.vote-count');
-            if (countEl) {
-                const newCount = Math.max(0, parseInt(countEl.textContent || '0') - 1);
-                countEl.textContent = newCount;
-            }
-        } else {
-            voteBtn.classList.add('voted');
-            const countEl = voteBtn.querySelector('.vote-count');
-            if (countEl) {
-                const newCount = parseInt(countEl.textContent || '0') + 1;
-                countEl.textContent = newCount;
-            }
-        }
+        // Handle iOS touch state issues by forcing blur after tap
+        voteBtn.blur();
         
-        // Handle the vote in the background
-        handleVote(item.id, 1).finally(() => {
-            // Clear processing flag after vote is handled
-            setTimeout(() => {
-                voteBtn.removeAttribute('data-processing');
-            }, 300); // Delay to prevent rapid clicking
-        });
+        // Add a small delay for iOS to process the touch state before changing class
+        setTimeout(() => {
+            // Update UI first for responsive feel
+            if (isVoted) {
+                voteBtn.classList.remove('voted');
+                const countEl = voteBtn.querySelector('.vote-count');
+                if (countEl) {
+                    const newCount = Math.max(0, parseInt(countEl.textContent || '0') - 1);
+                    countEl.textContent = newCount;
+                }
+            } else {
+                voteBtn.classList.add('voted');
+                const countEl = voteBtn.querySelector('.vote-count');
+                if (countEl) {
+                    const newCount = parseInt(countEl.textContent || '0') + 1;
+                    countEl.textContent = newCount;
+                }
+            }
+            
+            // Ensure the voted class is properly applied (fix for iOS)
+            if (!isVoted) {
+                // Force repaint on iOS
+                voteBtn.style.display = 'none';
+                voteBtn.offsetHeight; // Force reflow
+                voteBtn.style.display = '';
+            }
+            
+            // Handle the vote in the background
+            handleVote(item.id, 1).finally(() => {
+                // Clear processing flag after vote is handled
+                setTimeout(() => {
+                    voteBtn.removeAttribute('data-processing');
+                }, 300); // Delay to prevent rapid clicking
+            });
+        }, 10); // Small delay for iOS
     }, 200));
     
     if (deleteBtn) {
