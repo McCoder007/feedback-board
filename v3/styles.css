@@ -2763,3 +2763,65 @@ select {
         flex-direction: initial !important;
     }
 }
+
+/* FINAL FIX for mobile text layout problems */
+@media (max-width: 768px) {
+    /* Direct fix for text flowing properly */
+    .card {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+        padding: 12px 15px !important;
+    }
+    
+    /* Card content layout */
+    .card-content {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+    }
+    
+    /* Text styling - critical fixes */
+    .card p {
+        display: inline-block !important; /* Changed to inline-block */
+        width: calc(100% - 70px) !important; /* Fixed width calculation */
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: normal !important;
+        text-align: left !important;
+        writing-mode: horizontal-tb !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        
+        /* Reset any problematic text properties */
+        line-height: 1.5 !important;
+        letter-spacing: normal !important;
+        text-indent: 0 !important;
+        
+        /* Explicitly prevent vertical text */
+        direction: ltr !important;
+        unicode-bidi: normal !important;
+        text-orientation: mixed !important;
+        
+        /* Layout properties */
+        position: relative !important;
+        float: none !important;
+        clear: none !important;
+        overflow: visible !important;
+    }
+    
+    /* Vote button positioning */
+    .vote-btn {
+        display: inline-flex !important;
+        position: relative !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 60px !important;
+        max-width: 60px !important;
+        margin: 0 !important;
+        margin-left: auto !important;
+        align-self: center !important;
+    }
+}
