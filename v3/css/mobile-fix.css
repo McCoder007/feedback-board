@@ -303,8 +303,10 @@
         /* Make voted state extremely vivid */
         background-color: var(--primary-color) !important;
         color: white !important;
-        border: 2px solid white !important;
-        box-shadow: 0 0 0 1px var(--primary-color), 0 2px 8px rgba(0, 100, 164, 0.5) !important;
+        /* Remove white border as requested */
+        border: 1px solid var(--primary-color) !important;
+        /* Enhanced shadow for visual pop without the border */
+        box-shadow: 0 2px 8px rgba(0, 100, 164, 0.5) !important;
         transform: scale(1.05) !important;
     }
     
@@ -330,6 +332,24 @@
     
     html.light-theme .card .card-content .card-actions .vote-controls .vote-btn.voted {
         background-color: var(--primary-color) !important;
-        border-color: white !important;
+        /* Remove white border here too */
+        border-color: var(--primary-color) !important;
     }
+}
+
+/* Prevent hover effects when no-hover attribute is set (for web version) */
+.vote-btn[data-no-hover="true"]:hover {
+    background-color: inherit !important;
+    color: inherit !important;
+    border-color: inherit !important;
+    transform: none !important;
+    cursor: default !important;
+}
+
+/* For voted state with no-hover, maintain the voted appearance */
+.vote-btn.voted[data-no-hover="true"]:hover {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    transform: none !important;
 } 

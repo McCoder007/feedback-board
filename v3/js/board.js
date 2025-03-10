@@ -733,7 +733,12 @@ import {
                 });
             }, 50);
         } else {
-            // Non-iOS devices - simpler handling
+            // Non-iOS devices - handle hover state cleanup
+            
+            // Create a hover blocker to prevent hover effects temporarily
+            button.setAttribute('data-no-hover', 'true');
+            
+            // Add or remove the voted class
             if (isVoted) {
                 button.classList.remove('voted');
             } else {
@@ -742,6 +747,11 @@ import {
             
             // Update vote count
             updateVoteDisplay(button, isVoted);
+            
+            // Remove hover blocker after a delay
+            setTimeout(() => {
+                button.removeAttribute('data-no-hover');
+            }, 1000); // Keep hover disabled for 1 second
             
             // Handle the vote data
             handleVote(item.id, 1).finally(() => {
