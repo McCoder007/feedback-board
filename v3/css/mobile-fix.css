@@ -1,0 +1,203 @@
+/* Mobile-specific fixes for feedback cards */
+@media (max-width: 768px) {
+    /* Reset all potential problematic card styles */
+    .board .column .cards .card,
+    .board[data-board-id] .column .cards .card,
+    .card {
+        display: block !important;
+        width: 100% !important;
+        padding: 12px 15px !important;
+        margin-bottom: 15px !important;
+        position: relative !important;
+        background-color: var(--card-bg) !important;
+        border-radius: 8px !important;
+        box-shadow: var(--card-shadow) !important;
+        height: auto !important;
+        min-height: auto !important;
+    }
+    
+    /* Ensure card content uses proper flow */
+    .board .column .cards .card .card-content,
+    .board[data-board-id] .column .cards .card .card-content,
+    .card .card-content {
+        display: flex !important;
+        flex-flow: row nowrap !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+    }
+    
+    /* Fix paragraphs to display horizontally */
+    .board .column .cards .card .card-content p,
+    .board[data-board-id] .column .cards .card .card-content p,
+    .card .card-content p {
+        display: block !important;
+        text-align: left !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        max-width: calc(100% - 70px) !important;
+        flex: 1 1 auto !important;
+        flex-direction: row !important;
+        white-space: normal !important;
+        overflow-wrap: break-word !important;
+        word-wrap: break-word !important;
+        word-break: normal !important;
+        hyphens: auto !important;
+        writing-mode: horizontal-tb !important;
+        text-orientation: mixed !important;
+        letter-spacing: normal !important;
+        line-height: 1.5 !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Card actions container */
+    .board .column .cards .card .card-content .card-actions,
+    .board[data-board-id] .column .cards .card .card-content .card-actions,
+    .card .card-content .card-actions {
+        display: flex !important;
+        align-items: center !important;
+        margin-left: 10px !important;
+        flex-shrink: 0 !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+    }
+    
+    /* Vote controls wrapper */
+    .board .column .cards .card .card-content .card-actions .vote-controls,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls,
+    .card .card-content .card-actions .vote-controls {
+        display: flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+    }
+    
+    /* Vote button styling */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn,
+    .card .card-content .card-actions .vote-controls .vote-btn {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 6px 12px !important;
+        border-radius: 18px !important;
+        background-color: transparent !important;
+        border: 1px solid var(--border-color) !important;
+        min-width: 60px !important;
+        max-width: 80px !important;
+        gap: 8px !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+    }
+    
+    /* Vote button icon */
+    .board .column .cards .card .card-content .card-actions .vote-controls .vote-btn i,
+    .board[data-board-id] .column .cards .card .card-content .card-actions .vote-controls .vote-btn i,
+    .card .card-content .card-actions .vote-controls .vote-btn i {
+        font-size: 14px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Explicitly override any transform properties that might be causing one-char-per-line layout */
+    .board .column .cards .card .card-content p *,
+    .board[data-board-id] .column .cards .card .card-content p *,
+    .card .card-content p * {
+        transform: none !important;
+        rotate: none !important;
+        writing-mode: horizontal-tb !important;
+        text-orientation: mixed !important;
+        text-transform: none !important;
+    }
+    
+    /* Fix for Safari */
+    @supports (-webkit-touch-callout: none) {
+        .card .card-content p {
+            width: calc(100% - 70px) !important;
+            -webkit-writing-mode: horizontal-tb !important;
+        }
+    }
+    
+    /* Delete button positioning */
+    .board .column .cards .card .delete-btn,
+    .board[data-board-id] .column .cards .card .delete-btn,
+    .card .delete-btn {
+        position: absolute !important;
+        top: 8px !important;
+        right: 8px !important;
+        width: 24px !important;
+        height: 24px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: none !important;
+        background: transparent !important;
+        color: var(--text-color-secondary) !important;
+        z-index: 5 !important;
+    }
+    
+    /* Target all text in cards directly */
+    .card-content p {
+        /* Reset text properties */
+        -webkit-text-size-adjust: 100% !important;
+        -moz-text-size-adjust: 100% !important;
+        -ms-text-size-adjust: 100% !important;
+        text-size-adjust: 100% !important;
+        
+        /* Force horizontal text */
+        -webkit-writing-mode: horizontal-tb !important;
+        -ms-writing-mode: lr-tb !important;
+        writing-mode: horizontal-tb !important;
+        
+        /* Text orientation */
+        -webkit-text-orientation: mixed !important;
+        text-orientation: mixed !important;
+        
+        /* Text alignment */
+        text-align: left !important;
+        vertical-align: baseline !important;
+        
+        /* Text transform */
+        text-transform: none !important;
+        text-indent: 0 !important;
+        
+        /* Layout */
+        display: block !important;
+        width: auto !important;
+        height: auto !important;
+        max-width: calc(100% - 70px) !important;
+        
+        /* Text wrapping */
+        white-space: normal !important;
+        overflow-wrap: break-word !important;
+        word-wrap: break-word !important;
+        word-break: normal !important;
+        hyphens: auto !important;
+        
+        /* Spacing */
+        line-height: 1.5 !important;
+        letter-spacing: normal !important;
+        word-spacing: normal !important;
+        
+        /* Rotation/transform */
+        transform: none !important;
+        transform-origin: unset !important;
+        rotate: none !important;
+        
+        /* Positioning */
+        position: static !important;
+        float: none !important;
+        clear: none !important;
+        overflow: visible !important;
+        
+        /* Reset flex properties */
+        flex: 1 1 auto !important;
+        flex-direction: row !important;
+    }
+} 
