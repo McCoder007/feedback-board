@@ -2681,3 +2681,85 @@ select {
         justify-content: center;
     }
 }
+
+/* Fix the vertical text issue in mobile cards */
+@media (max-width: 768px) {
+    /* Reset any problematic styles causing vertical text */
+    .card {
+        padding: 10px 12px;
+        margin-bottom: 10px;
+    }
+    
+    .card-content {
+        display: flex;
+        flex-direction: row; /* Ensure horizontal layout */
+        align-items: center;
+        width: 100%;
+        text-align: left;
+    }
+    
+    /* Fix text alignment and prevent vertical stacking */
+    .card p {
+        display: block; /* Changed from flex layout */
+        text-align: left;
+        margin: 0;
+        padding: 0;
+        white-space: normal !important; /* Force normal text wrapping */
+        word-break: normal;
+        word-wrap: normal;
+        width: auto;
+        flex: 1; /* Take available space */
+        margin-right: 12px;
+    }
+    
+    /* Ensure vote button is properly aligned */
+    .vote-btn {
+        display: inline-flex; /* Changed to inline-flex */
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0; /* Prevent shrinking */
+        min-width: 60px;
+        padding: 6px 10px;
+        margin-left: auto; /* Push to right */
+    }
+}
+
+/* CRITICAL FIX for vertical text in mobile - highest specificity possible */
+@media (max-width: 768px) {
+    /* Critical fixes for card content */
+    .card p {
+        display: block !important;
+        flex-direction: initial !important;
+        text-align: left !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        word-wrap: normal !important;
+        width: auto !important;
+        flex: 1 !important;
+        margin-right: 12px !important;
+        /* Force horizontal text layout */
+        writing-mode: horizontal-tb !important;
+        letter-spacing: normal !important;
+        word-spacing: normal !important;
+    }
+    
+    /* Ensure card has the right display */
+    .card {
+        display: block !important;
+    }
+    
+    /* Ensure card content has proper layout */
+    .card-content {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+    }
+    
+    /* Fix any flex properties on parent elements that might cause issues */
+    .cards {
+        display: block !important;
+        flex-direction: initial !important;
+    }
+}
