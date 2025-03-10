@@ -261,7 +261,7 @@ button[data-modal="#create-board-modal"]:hover {
     filter: brightness(1.05);
 }
 
-/* Add a shine effect on hover */
+/* Add a shine effect on hover - corrected selector */
 .dashboard-actions .btn-primary:after,
 button[data-modal="#create-board-modal"]:after {
     content: '';
@@ -2256,20 +2256,27 @@ select {
     
     .card-content {
         display: flex;
+        flex-direction: row;
         align-items: center;
+        justify-content: flex-start;
         width: 100%;
+        text-align: left;
     }
     
     .card p {
+        text-align: left;
         margin: 0;
         padding: 0;
         flex: 1;
-        margin-right: 8px;
+        margin-right: 12px;
     }
     
     /* Vote and delete button mobile styles */
     .vote-btn i {
-        font-size: 1.1rem;
+        font-size: 16px;
+        margin-right: 8px;
+        display: flex;
+        align-items: center;
     }
     
     .delete-btn {
@@ -2586,3 +2593,47 @@ select {
     font-size: 16px;
     min-width: 16px; /* Ensure consistent width */
 }
+
+/* Update card content display for mobile views */
+@media (max-width: 768px) {
+    /* Ensure the card content is left-justified on mobile */
+    .card-content {
+        display: flex;
+        flex-direction: row; /* Ensure horizontal layout */
+        align-items: center; /* Center content vertically */
+        justify-content: flex-start; /* Left justify */
+        width: 100%;
+        text-align: left; /* Explicitly set text alignment */
+    }
+    
+    /* Ensure card text is left-aligned */
+    .card p {
+        text-align: left;
+        margin: 0;
+        padding: 0;
+        flex: 1;
+        margin-right: 12px; /* Add more space between text and vote button */
+    }
+    
+    /* Style the vote button to be properly centered vertically */
+    .vote-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto; /* Push to the right */
+        align-self: center; /* Center vertically within the flex container */
+        min-height: 36px;
+        padding: 6px 12px;
+        border-radius: 18px;
+    }
+    
+    /* Ensure consistent spacing between icon and vote count */
+    .vote-btn i {
+        font-size: 16px;
+        margin-right: 8px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Mobile styles for cards and vote buttons */
