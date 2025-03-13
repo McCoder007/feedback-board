@@ -1413,7 +1413,7 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 20px 0;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 15px;
 }
@@ -1617,12 +1617,16 @@ select {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  max-width: 600px;
+  margin: 40px auto;
+  box-shadow: var(--card-shadow);
 }
 
 .no-boards-message p {
   color: var(--text-color-secondary);
   font-size: 1.1rem;
   margin-bottom: 10px;
+  line-height: 1.5;
 }
 
 .create-first-board-btn, 
@@ -2824,4 +2828,54 @@ select {
         margin-left: auto !important;
         align-self: center !important;
     }
+}
+
+.login-prompt {
+  margin-top: 20px;
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.login-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.login-title {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.login-message {
+  font-size: 1.1rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 20px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+#login-prompt-btn {
+  background: var(--primary-gradient);
+  box-shadow: 0 4px 8px rgba(0, 100, 164, 0.3);
+  transition: all 0.3s ease;
+  border: none;
+  font-weight: 600;
+  padding: 10px 20px;
+}
+
+#login-prompt-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 100, 164, 0.4);
+}
+
+/* Hide dashboard actions for non-authenticated users */
+.auth-loaded:not(.auth-authenticated) .dashboard-actions {
+  display: none;
 }

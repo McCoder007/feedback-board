@@ -157,6 +157,17 @@ function setupEventListeners() {
             }
         });
     }
+    
+    // Login prompt button
+    const loginPromptBtn = document.getElementById('login-prompt-btn');
+    if (loginPromptBtn) {
+        loginPromptBtn.addEventListener('click', () => {
+            const loginBtn = document.getElementById('login-btn');
+            if (loginBtn) {
+                loginBtn.click();
+            }
+        });
+    }
 }
 
 // Handle board creation
@@ -614,17 +625,29 @@ function showNoBoards(show, isLoggedOut = false) {
     // Update the message based on login status
     const messageElement = noBoardsMessage.querySelector('p');
     const createBoardButton = noBoardsMessage.querySelector('.create-first-board-btn');
+    const loginPrompt = noBoardsMessage.querySelector('.login-prompt');
     
     if (messageElement) {
         if (isLoggedOut) {
-            messageElement.textContent = 'Please log in to view and create feedback boards.';
+            // Hide the default message for non-authenticated users
+            messageElement.style.display = 'none';
             if (createBoardButton) {
                 createBoardButton.style.display = 'none';
             }
+            // Show login prompt
+            if (loginPrompt) {
+                loginPrompt.style.display = 'flex';
+            }
         } else {
+            // Show the default message for authenticated users
+            messageElement.style.display = 'block';
             messageElement.textContent = 'You don\'t have any boards yet. Create your first board to get started!';
             if (createBoardButton) {
                 createBoardButton.style.display = 'block';
+            }
+            // Hide login prompt
+            if (loginPrompt) {
+                loginPrompt.style.display = 'none';
             }
         }
     }

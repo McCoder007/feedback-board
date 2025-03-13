@@ -50,6 +50,9 @@ import {
     const breadcrumbDashboardLink = document.querySelector('.breadcrumb-link.dashboard-link');
     const breadcrumbSeparator = document.querySelector('.breadcrumb-separator');
     
+    // Get dashboard elements that should be hidden for non-authenticated users
+    const dashboardActions = document.querySelector('.dashboard-actions');
+    
     if (currentUser) {
       // User is logged in
       if (loginBtn) loginBtn.style.display = 'none';
@@ -57,6 +60,14 @@ import {
       if (userInfo) {
         userInfo.style.display = 'flex';
       }
+      
+      // Show dashboard actions for authenticated users
+      if (dashboardActions) {
+        dashboardActions.style.display = 'flex';
+      }
+      
+      // Add authenticated class to container
+      document.querySelector('.container').classList.add('auth-authenticated');
       
       // Show breadcrumb navigation elements for logged in users
       if (breadcrumbDashboardLink) {
@@ -156,6 +167,14 @@ import {
       if (userInfo) {
         userInfo.style.display = 'none';
       }
+      
+      // Hide dashboard actions for non-authenticated users
+      if (dashboardActions) {
+        dashboardActions.style.display = 'none';
+      }
+      
+      // Remove authenticated class from container
+      document.querySelector('.container').classList.remove('auth-authenticated');
       
       // Hide breadcrumb navigation elements for non-authenticated users
       if (breadcrumbDashboardLink) {
