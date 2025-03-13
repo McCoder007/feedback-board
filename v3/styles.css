@@ -520,10 +520,22 @@ button[data-modal="#create-board-modal"]:hover:after {
 /* Auth buttons - positioned last */
 .auth-buttons {
     display: flex;
-    gap: 12px;
-    align-items: center;
-    height: 48px;
-    order: 3; /* Control the order of flex items */
+    gap: 10px;
+}
+
+/* Hide auth buttons for authenticated users */
+.auth-authenticated .auth-buttons {
+  display: none;
+}
+
+/* Hide auth buttons during loading */
+.auth-loading .auth-buttons {
+  display: none;
+}
+
+/* Show auth buttons when auth is loaded (and not authenticated) */
+.auth-loaded:not(.auth-authenticated) .auth-buttons {
+  display: flex;
 }
 
 /* Improved auth loading styles to maintain layout during loading */
@@ -920,15 +932,19 @@ button[data-modal="#create-board-modal"]:hover:after {
 
 /* User info styling */
 .user-info {
-    display: flex;
+    display: none; /* Hidden by default */
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    padding: 6px 12px;
     gap: 8px;
-    transition: all 0.2s ease;
-    position: relative;
     cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 20px;
+    transition: all 0.2s;
+    position: relative;
+}
+
+/* Show user info only for authenticated users */
+.auth-authenticated .user-info {
+    display: flex;
 }
 
 .dark-mode .user-info {
@@ -1410,12 +1426,22 @@ select {
 }
 
 .dashboard-actions {
-  display: flex;
+  display: none; /* Hidden by default */
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 15px;
+}
+
+/* Show dashboard actions only for authenticated users */
+.auth-authenticated .dashboard-actions {
+  display: flex;
+}
+
+/* Remove the rule that hides dashboard actions since we're now hiding by default */
+.auth-loaded:not(.auth-authenticated) .dashboard-actions {
+  display: none;
 }
 
 .dashboard-filters {

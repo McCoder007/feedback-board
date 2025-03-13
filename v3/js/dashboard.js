@@ -40,6 +40,12 @@ async function initDashboard() {
     // Setup event listeners
     setupEventListeners();
     
+    // Prepare the login prompt for non-authenticated users
+    const loginPrompt = noBoardsMessage.querySelector('.login-prompt');
+    if (loginPrompt) {
+        loginPrompt.style.display = 'none'; // Hide initially to prevent flashing
+    }
+    
     // Load boards when auth state changes
     onAuthStateChanged((user) => {
         if (user) {
