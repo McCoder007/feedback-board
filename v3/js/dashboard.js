@@ -42,12 +42,18 @@ async function initDashboard() {
     
     // Prepare the login prompt for non-authenticated users
     const loginPrompt = noBoardsMessage.querySelector('.login-prompt');
+    console.log("Login prompt element during init:", loginPrompt);
     if (loginPrompt) {
+        console.log("Setting initial login prompt display to none");
         loginPrompt.style.display = 'none'; // Hide initially to prevent flashing
+    } else {
+        console.error("Login prompt element not found during initialization!");
+        console.log("No-boards-message HTML:", noBoardsMessage.innerHTML);
     }
     
     // Load boards when auth state changes
     onAuthStateChanged((user) => {
+        console.log("Auth state changed, user:", user ? "authenticated" : "not authenticated");
         if (user) {
             loadUserBoards();
         } else {
@@ -626,6 +632,7 @@ function fallbackShare(url) {
 
 // Show or hide the no boards message
 function showNoBoards(show, isLoggedOut = false) {
+    console.log("showNoBoards called with:", { show, isLoggedOut });
     noBoardsMessage.style.display = show ? 'flex' : 'none';
     
     // Update the message based on login status
@@ -633,8 +640,15 @@ function showNoBoards(show, isLoggedOut = false) {
     const createBoardButton = noBoardsMessage.querySelector('.create-first-board-btn');
     const loginPrompt = noBoardsMessage.querySelector('.login-prompt');
     
+    console.log("Elements found:", { 
+        messageElement: messageElement ? true : false, 
+        createBoardButton: createBoardButton ? true : false,
+        loginPrompt: loginPrompt ? true : false
+    });
+    
     if (messageElement) {
         if (isLoggedOut) {
+            console.log("Showing login prompt for non-authenticated user");
             // Hide the default message for non-authenticated users
             messageElement.style.display = 'none';
             if (createBoardButton) {
@@ -642,9 +656,13 @@ function showNoBoards(show, isLoggedOut = false) {
             }
             // Show login prompt
             if (loginPrompt) {
+                console.log("Setting login prompt display to flex");
                 loginPrompt.style.display = 'flex';
+            } else {
+                console.error("Login prompt element not found!");
             }
         } else {
+            console.log("Showing default message for authenticated user");
             // Show the default message for authenticated users
             messageElement.style.display = 'block';
             messageElement.textContent = 'You don\'t have any boards yet. Create your first board to get started!';
