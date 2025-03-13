@@ -26,6 +26,7 @@ import {
   sendPasswordResetEmail,  // Added for password reset
   updateProfile           // Added for profile updates
 } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js';
+import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -39,7 +40,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let app, db, auth;
+let app, db, auth, analytics;
 
 try {
     app = initializeApp(firebaseConfig);
@@ -58,6 +59,13 @@ try {
     } catch (authError) {
         console.error("Auth initialization error:", authError);
     }
+    
+    try {
+        analytics = getAnalytics(app);
+        console.log("Analytics initialized successfully");
+    } catch (analyticsError) {
+        console.error("Analytics initialization error:", analyticsError);
+    }
 } catch (error) {
     console.error("Firebase initialization error:", error);
 }
@@ -67,6 +75,7 @@ export {
     app, 
     db, 
     auth,
+    analytics,
     collection,
     addDoc,
     getDocs,

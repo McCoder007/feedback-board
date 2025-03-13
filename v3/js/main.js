@@ -6,6 +6,8 @@ import { setupAuth } from './auth.js';
 import { initBoard } from './board.js';
 import { setupModals, setupBoardLoadingFailsafe } from './ui.js';
 import { setupExport } from './export.js';
+// Import error monitoring
+import { logError } from './error-monitor.js';
 // Import mobile fix functionality to ensure proper mobile support
 import './mobile-fix.js';
 
@@ -47,7 +49,27 @@ async function initApp() {
         setupExport();
         
         console.log("Application initialized successfully");
+        
+        // Log successful initialization to analytics
+        if (window.gtag) {
+            window.gtag('event', 'app_initialized', {
+                'environment': 'production'
+            });
+        }
     } catch (error) {
         console.error("Error initializing application:", error);
+        logError(error, { component: 'initApp' });
+        
+        // Show a user-friendly error message
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'error-message';
+        errorMessage.innerHTML = `
+            <div class="error-container">
+                <h3>Something went wrong</h3>
+                <p>We encountered an error while loading the application. Please try refreshing the page.</p>
+                <button onclick="window.location.reload()">Refresh Page</button>
+            </div>
+        `;
+        document.body.appendChild(errorMessage);
     }
 }

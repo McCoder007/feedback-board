@@ -269,9 +269,22 @@ import {
       return;
     }
     
+    // Add rate limiting for submissions to prevent abuse
+    const user = getCurrentUser();
+    const isAnonymous = !user;
+    
+    // Apply stricter rate limiting for anonymous users
+    if (isAnonymous) {
+      const lastSubmitTime = localStorage.getItem('last_item_submit_time');
+      const now = Date.now();
+      if (lastSubmitTime && (now - parseInt(lastSubmitTime)) < 10000) { // 10 seconds
+        showNotification('Please wait a moment before submitting another item', true);
+        return;
+      }
+      localStorage.setItem('last_item_submit_time', now.toString());
+    }
+    
     try {
-      const user = getCurrentUser();
-      const isAnonymous = !user;
       const anonymousId = isAnonymous ? getAnonymousUserId() : null;
       
       console.log('Creating item with data:', {
@@ -314,18 +327,29 @@ import {
       showNotification('Item added successfully!');
     } catch (error) {
       console.error('Error adding item:', error);
-      showNotification('Failed to add item', true);
+      
+      // More detailed error handling
+      if (error.code === 'permission-denied') {
+        showNotification('Permission denied. Please try again later.', true);
+      } else if (error.code === 'unavailable') {
+        showNotification('Service temporarily unavailable. Please try again later.', true);
+      } else if (error.code === 'resource-exhausted') {
+        showNotification('Too many requests. Please try again later.', true);
+      } else {
+        showNotification('Failed to add item: ' + (error.message || 'Unknown error'), true);
+      }
     }
   }
   
   // Set up real-time updates using Firestore onSnapshot
-  function setupRealTimeUpdates() {
+  function setupRealTimeUpdates(retryCount = 0) {
     // Clear any existing listeners
     unsubscribeListeners.forEach(unsubscribe => unsubscribe());
     unsubscribeListeners = [];
     
     if (!currentBoardId) {
       console.error('No board ID for real-time updates');
+      showNotification('Board ID is missing. Please reload the page.', true);
       return;
     }
     
@@ -390,7 +414,24 @@ import {
         showBoardLoading(false);
       }, (error) => {
         console.error('Error getting real-time updates:', error);
-        showNotification('Failed to get real-time updates', true);
+        
+        // Enhanced error handling with specific messages
+        if (error.code === 'permission-denied') {
+          showNotification('Permission denied accessing board data. Please try again later.', true);
+        } else if (error.code === 'unavailable') {
+          showNotification('Service temporarily unavailable. Retrying...', true);
+          // Retry after a delay for transient errors
+          setTimeout(() => {
+            if (retryCount < 3) {
+              setupRealTimeUpdates(retryCount + 1);
+            } else {
+              showNotification('Failed to connect after multiple attempts. Please reload the page.', true);
+            }
+          }, 3000);
+        } else {
+          showNotification('Failed to get real-time updates: ' + (error.message || 'Unknown error'), true);
+        }
+        
         showBoardLoading(false);
       });
       
@@ -399,8 +440,16 @@ import {
       
     } catch (error) {
       console.error('Error setting up real-time updates:', error);
-      showNotification('Failed to set up real-time updates', true);
-      showBoardLoading(false);
+      
+      // Enhanced error handling with retry mechanism
+      if (retryCount < 3) {
+        console.log(`Retrying setup (attempt ${retryCount + 1})...`);
+        setTimeout(() => setupRealTimeUpdates(retryCount + 1), 2000);
+        showNotification('Connection issue. Retrying...', true);
+      } else {
+        showNotification('Failed to set up real-time updates after multiple attempts. Please reload the page.', true);
+        showBoardLoading(false);
+      }
     }
   }
   

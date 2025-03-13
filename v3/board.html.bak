@@ -4,21 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Feedback Board</title>
-    <!-- iOS-specific meta tags for better touch handling -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Prevent touch delay on iOS -->
-    <meta name="format-detection" content="telephone=no">
     <!-- Add favicon to prevent 404 error -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FZQ5CBDLTV"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-FZQ5CBDLTV');
-    </script>
     <!-- Critical CSS for immediate theme application -->
     <style>
         /* Applied for instant theme and preventing FOUC */
@@ -47,10 +34,6 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Mobile-specific fixes - Load after main stylesheet to ensure it takes precedence -->
-    <link rel="stylesheet" href="css/mobile-fix.css">
-    <!-- Error styling -->
-    <link rel="stylesheet" href="css/error.css">
     <style>
         /* Add a loading state */
         .board-loading {
@@ -80,11 +63,10 @@
         <!-- Main Header Row -->
         <header class="main-header">
             <div class="header-left">
-                <div class="breadcrumb-navigation">
-                    <a href="dashboard.html" class="breadcrumb-link dashboard-link" title="Back to Dashboard">Dashboard</a>
-                    <span class="breadcrumb-separator">›</span>
-                    <h1 id="board-title" class="breadcrumb-current"></h1>
-                </div>
+                <a href="dashboard.html" class="back-arrow" title="Back to Dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 id="board-title">Board #1</h1>
             </div>
             <div class="header-controls">
                 <div class="theme-toggle">
@@ -119,16 +101,16 @@
         
         <!-- Tool Bar Row -->
         <div class="tool-bar">
-            <div class="search-sort-container">
+            <div class="tool-bar-left">
+                <div class="search-input">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search feedback...">
+                </div>
                 <select class="sort-select">
                     <option value="newest">Sort by newest</option>
                     <option value="oldest">Sort by oldest</option>
                     <option value="most-votes">Sort by most votes</option>
                 </select>
-                <div class="search-input">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search feedback...">
-                </div>
             </div>
             
             <div class="export-tools">
@@ -323,9 +305,10 @@
                     <div class="board-url-input-container">
                         <input type="text" id="board-url" readonly>
                         <button id="copy-url-btn" class="btn btn-outline">
-                            <i class="fas fa-copy"></i> <span class="button-text">Copy</span>
+                            <i class="fas fa-copy"></i> Copy
                         </button>
                     </div>
+                    <span id="copy-success" class="copy-success">Copied!</span>
                 </div>
                 
                 <div class="qr-code-container">

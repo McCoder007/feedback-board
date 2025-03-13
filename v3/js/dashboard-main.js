@@ -4,6 +4,8 @@
 import { setupThemeToggle } from './theme.js';
 import { setupAuth } from './auth.js';
 import { initDashboard } from './dashboard.js';
+// Import error monitoring
+import { logError } from './error-monitor.js';
 
 // Wait for DOM content to be loaded before initializing
 document.addEventListener('DOMContentLoaded', async function() {
@@ -36,7 +38,27 @@ async function initApp() {
         await initDashboard();
         
         console.log("Dashboard application initialized successfully");
+        
+        // Log successful initialization to analytics
+        if (window.gtag) {
+            window.gtag('event', 'dashboard_initialized', {
+                'environment': 'production'
+            });
+        }
     } catch (error) {
         console.error("Error initializing dashboard application:", error);
+        logError(error, { component: 'dashboardInitApp' });
+        
+        // Show a user-friendly error message
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'error-message';
+        errorMessage.innerHTML = `
+            <div class="error-container">
+                <h3>Something went wrong</h3>
+                <p>We encountered an error while loading the dashboard. Please try refreshing the page.</p>
+                <button onclick="window.location.reload()">Refresh Page</button>
+            </div>
+        `;
+        document.body.appendChild(errorMessage);
     }
 } 
